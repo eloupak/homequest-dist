@@ -1,0 +1,14 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "HomeQuest",
+        "description": "Add HomeQuest, the chore game for children. Then open HomeQuest in the sidebar: the setup guide asks for the children, their accounts and the parents."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "HomeQuest is set up already (one per Home Assistant).",
+      "already_configured": "HomeQuest is set up already (one per Home Assistant)."
+    }
+  }
+}

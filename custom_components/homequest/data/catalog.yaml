@@ -1,0 +1,574 @@
+# HomeQuest default catalog (tools/default_catalog.py): the children are added in the setup guide, the daily tasks in Rodič -> Úkoly.
+starter_items:
+  male:
+  - outfit_cloth_0
+  - hair_short_messy
+  female:
+  - outfit_cloth_0
+  - hair_long_braid
+appearance:
+  skins:
+  - light
+  - amber
+  - olive
+  - taupe
+  - bronze
+  - brown
+  hair_colors:
+  - brown
+  hair_styles:
+  - id: braid
+    name: Dlouhý cop
+    art: long_braid
+  - id: messy
+    name: Rozcuchané
+    art: short_messy
+items:
+- id: outfit_cloth_0
+  name: Plátěné oblečení
+  slot: outfit
+  art: cloth_0
+  style: cloth
+  tier: 0
+  price: 0
+  shop: false
+  material: cloth
+- id: outfit_light_1
+  name: Kožená vesta
+  slot: outfit
+  art: light_1
+  style: light
+  tier: 1
+  rarity: common
+  material: leather
+- id: outfit_light_2
+  name: Průzkumnická výstroj
+  slot: outfit
+  art: light_2
+  style: light
+  tier: 2
+  rarity: rare
+  material: leather
+- id: outfit_light_3
+  name: Stínový plášť
+  slot: outfit
+  art: light_3
+  style: light
+  tier: 3
+  rarity: epic
+  material: leather
+- id: outfit_heavy_1
+  name: Kožešinová zbroj
+  slot: outfit
+  art: heavy_1
+  style: heavy
+  tier: 1
+  rarity: common
+  material: leather
+- id: outfit_heavy_2
+  name: Rytířský tabard
+  slot: outfit
+  art: heavy_2
+  style: heavy
+  tier: 2
+  rarity: rare
+  material: leather
+- id: outfit_heavy_3
+  name: Plátová zbroj
+  slot: outfit
+  art: heavy_3
+  style: heavy
+  tier: 3
+  rarity: epic
+  material: leather
+- id: outfit_robe_1
+  name: Modrá róba
+  slot: outfit
+  art: robe_1
+  style: robe
+  tier: 1
+  rarity: common
+  material: cloth
+- id: outfit_robe_2
+  name: Fialová róba
+  slot: outfit
+  art: robe_2
+  style: robe
+  tier: 2
+  rarity: rare
+  material: cloth
+- id: outfit_robe_3
+  name: Hvězdná róba
+  slot: outfit
+  art: robe_3
+  style: robe
+  tier: 3
+  rarity: epic
+  material: cloth
+- id: sword_wooden
+  name: Dřevěný meč
+  slot: weapon
+  price: 10
+  shop: true
+  material: wood
+- id: staff_wooden
+  name: Dřevěná hůl
+  slot: weapon
+  rarity: common
+  material: wood
+  shop: false
+- id: bow_short
+  name: Krátký luk
+  slot: weapon
+  rarity: common
+  material: wood
+  shop: false
+- id: wand_star
+  name: Hvězdná hůlka
+  slot: weapon
+  rarity: rare
+  material: magic
+  shop: false
+- id: dagger_iron
+  name: Železná dýka
+  slot: weapon
+  rarity: common
+  material: iron
+- id: sword_iron
+  name: Železný meč
+  slot: weapon
+  rarity: rare
+  material: iron
+- id: axe_hand
+  name: Ruční sekera
+  slot: weapon
+  rarity: rare
+  material: iron
+- id: shield_wooden
+  name: Dřevěný štít
+  slot: offhand
+  rarity: common
+  material: wood
+- id: book_spell
+  name: Kniha kouzel
+  slot: offhand
+  rarity: common
+  material: cloth
+- id: ears_elven
+  name: Elfí uši
+  slot: ears
+  art: elven
+  rarity: rare
+  material: magic
+  shop: false
+- id: tunic_basic
+  name: Obyčejná tunika
+  slot: torso
+  price: 0
+  shop: false
+  color: white
+  material: cloth
+- id: pants_basic
+  name: Obyčejné kalhoty
+  slot: legs
+  price: 0
+  shop: false
+  color: teal
+  material: cloth
+- id: boots_basic
+  name: Obyčejné boty
+  slot: feet
+  price: 0
+  shop: false
+  color: brown
+  material: leather
+- id: robe_basic
+  name: Obyčejné roucho
+  slot: torso
+  price: 0
+  shop: false
+  color: blue
+  material: cloth
+- id: tunic_royal
+  name: Královská tunika
+  slot: torso
+  price: 0
+  shop: false
+  material: cloth
+- id: tunic_green
+  name: Zelená tunika
+  slot: torso
+  price: 0
+  shop: false
+  color: green
+  material: cloth
+- id: dress_basic
+  name: Obyčejné šaty
+  slot: torso
+  price: 0
+  shop: false
+  color: pink
+  material: cloth
+- id: slippers_basic
+  name: Obyčejné pantofle
+  slot: feet
+  price: 0
+  shop: false
+  color: pink
+  material: cloth
+- id: helmet_leather
+  name: Kožená čapka
+  slot: head
+  price: 8
+  rarity: common
+  color: leather
+  material: leather
+- id: hat_wizard
+  name: Kouzelnický klobouk
+  slot: head
+  price: 8
+  shop: false
+  rarity: common
+  color: base_brown
+  material: magic
+- id: crown_gold
+  name: Zlatá koruna
+  slot: head
+  price: 50
+  rarity: epic
+  color: crown_gold
+  material: mithril
+- id: armor_leather
+  name: Kožená zbroj
+  slot: torso
+  price: 12
+  shop: false
+  rarity: common
+  material: leather
+- id: pants_leather
+  name: Kožené kalhoty
+  slot: legs
+  price: 10
+  shop: false
+  rarity: common
+  color: leather
+  material: leather
+- id: boots_leather
+  name: Kožené boty
+  slot: feet
+  price: 10
+  shop: false
+  rarity: common
+  color: leather
+  material: leather
+- id: gloves_iron
+  name: Železné rukavice
+  slot: hands
+  price: 8
+  rarity: common
+  color: iron
+  material: iron
+- id: cape_red
+  name: Červený plášť
+  slot: back
+  price: 25
+  rarity: rare
+  color: red
+  material: cloth
+- id: staff_wizard
+  name: Kouzelnická hůl
+  slot: weapon
+  price: 30
+  shop: false
+  rarity: rare
+  color: medium
+  material: wood
+- id: shield_wood
+  name: Dřevěný štít
+  slot: offhand
+  price: 10
+  shop: false
+  rarity: common
+  color: brown
+  material: wood
+- id: cape_gold
+  name: Zlatý plášť
+  slot: back
+  price: 60
+  rarity: epic
+  color: yellow
+  material: cloth
+- id: sword_steel
+  name: Ocelový meč
+  slot: weapon
+  art: sword_steel
+  rarity: rare
+  tier: 2
+  material: steel
+  price: 30
+- id: sword_golden
+  name: Zlatý meč
+  slot: weapon
+  art: sword_golden
+  rarity: epic
+  tier: 3
+  material: steel
+  price: 70
+- id: dagger_silver
+  name: Stříbrná dýka
+  slot: weapon
+  art: dagger_silver
+  rarity: rare
+  tier: 2
+  material: steel
+  price: 30
+- id: axe_battle
+  name: Bitevní sekera
+  slot: weapon
+  art: axe_battle
+  rarity: epic
+  tier: 3
+  material: iron
+  price: 70
+- id: wand_crystal
+  name: Krystalová hůlka
+  slot: weapon
+  art: wand_crystal
+  rarity: rare
+  tier: 2
+  material: magic
+  price: 30
+  shop: false
+- id: wand_fire
+  name: Ohnivá hůlka
+  slot: weapon
+  art: wand_fire
+  rarity: epic
+  tier: 3
+  material: magic
+  price: 70
+  shop: false
+- id: staff_crystal
+  name: Krystalová hůl
+  slot: weapon
+  art: staff_crystal
+  rarity: rare
+  tier: 2
+  material: magic
+  price: 30
+  shop: false
+- id: staff_moon
+  name: Měsíční hůl
+  slot: weapon
+  art: staff_moon
+  rarity: epic
+  tier: 3
+  material: magic
+  price: 70
+  shop: false
+- id: hair_long_waves
+  name: Dlouhé vlny
+  slot: hair
+  art: long_waves
+  rarity: common
+  tier: 1
+  material: cloth
+  price: 10
+  body: girl
+- id: hair_high_ponytail
+  name: Vysoký culík
+  slot: hair
+  art: high_ponytail
+  rarity: common
+  tier: 1
+  material: cloth
+  price: 10
+  body: girl
+- id: hair_twin_buns
+  name: Dva drdoly
+  slot: hair
+  art: twin_buns
+  rarity: common
+  tier: 1
+  material: cloth
+  price: 10
+  body: girl
+- id: hair_short_bob
+  name: Krátký bob
+  slot: hair
+  art: short_bob
+  rarity: common
+  tier: 1
+  material: cloth
+  price: 10
+  body: girl
+- id: hair_side_part
+  name: Pěšinka
+  slot: hair
+  art: side_part
+  rarity: common
+  tier: 1
+  material: cloth
+  price: 10
+  body: boy
+- id: hair_short_curly
+  name: Kudrnaté
+  slot: hair
+  art: short_curly
+  rarity: common
+  tier: 1
+  material: cloth
+  price: 10
+  body: any
+- id: hair_spiky
+  name: Ježek
+  slot: hair
+  art: spiky
+  rarity: common
+  tier: 1
+  material: cloth
+  price: 10
+  body: boy
+- id: dye_blonde
+  name: Zlatavá blond
+  slot: hair_dye
+  color: blonde
+  icon: hair_dye
+  price: 5
+  rarity: common
+- id: dye_black
+  name: Havraní černá
+  slot: hair_dye
+  color: black
+  icon: hair_dye
+  price: 5
+  rarity: common
+- id: dye_red
+  name: Zrzavá
+  slot: hair_dye
+  color: red
+  icon: hair_dye
+  price: 5
+  rarity: common
+- id: dye_chestnut
+  name: Kaštanová
+  slot: hair_dye
+  color: chestnut
+  icon: hair_dye
+  price: 5
+  rarity: common
+- id: dye_platinum
+  name: Stříbrná
+  slot: hair_dye
+  color: platinum
+  icon: hair_dye
+  price: 8
+  rarity: common
+  shop: false
+- id: dye_pink
+  name: Růžová
+  slot: hair_dye
+  color: pink
+  icon: hair_dye
+  price: 8
+  rarity: common
+  shop: false
+- id: dye_blue
+  name: Modrá
+  slot: hair_dye
+  color: blue
+  icon: hair_dye
+  price: 8
+  rarity: common
+  shop: false
+- id: dye_green
+  name: Elfí zelená
+  slot: hair_dye
+  color: green
+  icon: hair_dye
+  price: 8
+  rarity: common
+  shop: false
+- id: dye_purple
+  name: Kouzelná fialová
+  slot: hair_dye
+  color: purple
+  icon: hair_dye
+  price: 10
+  rarity: common
+  shop: false
+- id: dye_brown
+  name: Hnědá
+  slot: hair_dye
+  color: brown
+  icon: hair_dye
+  price: 5
+  rarity: common
+- id: hair_short_messy
+  name: Rozcuchané
+  slot: hair
+  art: short_messy
+  body: boy
+  price: 0
+  shop: false
+  rarity: common
+  material: cloth
+- id: hair_long_braid
+  name: Dlouhý cop
+  slot: hair
+  art: long_braid
+  body: girl
+  price: 0
+  shop: false
+  rarity: common
+  material: cloth
+tasks:
+- id: daily_morning
+  name: Ráno
+  note: vyčistit zuby, ustlat, obléknout, učesat, nasnídat, svačina a pití
+  icon: mdi:weather-sunset-up
+  period: daily
+  reward: 1
+  days:
+  - workday
+- id: daily_morning_free
+  name: Víkendové ráno
+  note: vyčistit zuby, ustlat, obléknout, učesat, nasnídat
+  icon: mdi:coffee
+  period: daily
+  reward: 1
+  days:
+  - free
+- id: daily_afternoon
+  name: Odpoledne
+  note: úkoly a připravit tašku
+  icon: mdi:bag-personal
+  period: daily
+  reward: 1
+  days:
+  - workday
+- id: daily_room
+  name: Uklidit pokojíček
+  icon: mdi:broom
+  period: daily
+  reward: 1
+  days:
+  - workday
+  - free
+- id: daily_desk
+  name: Uklidit stůl
+  icon: mdi:desk
+  period: daily
+  reward: 1
+  days:
+  - workday
+  - free
+- id: daily_evening
+  name: Večer
+  note: vyčistit zuby, pyžamo
+  icon: mdi:weather-night
+  period: daily
+  reward: 1
+  days:
+  - workday
+  - free

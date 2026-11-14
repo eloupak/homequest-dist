@@ -1,0 +1,10 @@
+{
+  "name": "HomeQuest",
+  "homeassistant": "2026.8.0",
+  "zip_release": true,
+  "filename": "homequest.zip",
+  "render_readme": true,
+  "country": [
+    "CZ"
+  ]
+}

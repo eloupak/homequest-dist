@@ -1,0 +1,79 @@
+# Hunt (maths): one player, turn based. The kid types the result, the hero shoots the hare. Test only (dev_panels). Everything below is data:
+# ranges and thresholds of the learning part, and the scene (fractions of the scene box; frontend/games/lib/scene.js draws it).
+id: hunt
+title: Lov
+subject: math
+
+learning:
+  set_size: 10
+  ops: [add, sub, mul, div]
+  ranges:                                   # the same for every child
+    add: {max: 100}                         # a + b <= max, no negative results anywhere
+    sub: {max: 100}                         # a - b >= 0, a <= max
+    mul: {a: [2, 10], b: [2, 10]}           # the small times table
+    div: {divisor: [2, 10], quotient: [2, 10]}   # no remainder: (divisor * quotient) / divisor
+  problematic:
+    min_attempts: 2                         # a problem needs this many attempts before the rate counts
+    wrong_rate: 0.34                        # wrong / attempts at least this = problematic
+    slow_factor: 1.8                        # median time at least this x the child's median for the operation = problematic
+    min_times: 3                            # times needed before slowness counts
+  weights:
+    unseen: 1                               # a problem the child has not met
+    per_score: 4                            # + this x the problem score (0..1): problematic problems come up more often
+    fresh_per_set: 2                        # at least this many problems of each set are drawn from problems the child has never met
+  repeat:
+    gap: [3, 5]                             # a wrong problem comes back this many places later
+    max_repeats: 2                          # but at most this many times per set
+  max_time_ms: 120000                       # longer times are cut (the child went away)
+  daily:
+    require_each_op: true
+    sets_per_op: 1                          # also: hams are paid for the first finished set of each operation per day only (4 operations x 10 = at most 40 hams a day)
+  reward:
+    hams_per_hit: 1                         # a ham for every right answer (the set always has set_size problems, a wrong one counts)
+    hams_per_coin: 25                       # the balance of hams (all operations together) turns into a coin per this many; 50 = two coins
+
+scene:
+  aspect: 0.62                              # scene height / width (portrait phone: the scene takes the upper ~55 % of the screen)
+  background:
+    sky: ["#9fd4f2", "#d9f0e0"]
+    ground: ["#6fa84a", "#4d8a38"]
+    horizon: 0.46                           # fraction of the height where the forest meets the meadow
+    trees: 9
+  covers:                                   # where the target peeks out from (x, y = centre of the foot, w, h = size, all fractions of the scene)
+    - {id: bush_a, x: 0.52, y: 0.60, w: 0.20, h: 0.14}
+    - {id: bush_b, x: 0.76, y: 0.52, w: 0.18, h: 0.12}
+    - {id: bush_c, x: 0.64, y: 0.78, w: 0.24, h: 0.16}
+    - {id: bush_d, x: 0.90, y: 0.72, w: 0.20, h: 0.14}
+  target:
+    sprite: hare
+    size: 0.15                              # width as a fraction of the scene
+    states: [peek, wait, hit, flee]
+    peek_ms: 450
+    flee_ms: 900
+    hit_ms: 350
+  hero:
+    x: 0.17                                 # centre of the feet
+    y: 0.93
+    size: 0.46                              # height as a fraction of the scene height
+    action: shoot                           # fishing: cast
+    draw_ms: 420
+    release_ms: 140
+  side: hero_left                           # the hero (drawn facing us, NOT mirrored) stands left, the forest right; the bow is in his left hand = the right of the screen. Fishing: same
+  bow:                                      # string always on the hero's side, the back of the bow towards the target; drawing moves the nock towards the body
+    grip_canvas: { boy: [643, 499], girl: [694, 542] }   # the left fist of the drawn hero: design/anchors.json sets.<body>.lhand.point (px of the 1024 canvas)
+    grip: { x: 0.2, y: 0.38 }          # the same as fractions, when the body is unknown (placeholder hero)               # the fist of the stretched hand: fractions of the hero's height, from his centre and from his feet
+    height: 0.2                             # fraction of the scene height
+    curve: 0.28                             # belly of the bow as a fraction of its height
+  projectile:
+    sprite: arrow
+    flight_ms: 420
+    miss_overshoot: 0.22                    # a missed arrow flies this much past the target (fraction of the scene width)
+  loot:                                     # what the hit target turns into: leaps in an arc into the score
+    sprite: ham
+    arc_ms: 750
+    arc_height: 0.28
+    to: score
+  score:
+    label: Šunky
+  reveal_ms: 1700                           # how long the right result stays on the scene after a wrong answer
+  sprites: {}                               # id -> {state: file}: the finished art replaces the placeholders; empty = placeholders from CSS shapes

@@ -1,0 +1,49 @@
+# Defend the fortress v2 (side view): the fortress is a picture behind the heroes in the middle (x = 0). One hero stands at 0, two at
+# -hero_gap (lane 0, left) and +hero_gap (lane 1, right). Orcs come along one horizontal axis (x in units, signed) from both sides to the
+# nearest hero who is still in the game and attack him; a blow that gets through costs him a life.
+# Whole numbers only: time in ms, distance in units, speeds in units per second, multipliers in permille (1000 = 1.0),
+# so that Python and JS agree to the last digit. Hidden stats (reach) are never shown as numbers; they are not wired to the inventory.
+game: defend_gate_v2
+engine: v2
+title: Obrana brány 2
+lanes_max: 2
+countdown_ms: 3000
+step_ms: 50             # the simulation steps; an action counts at the step it was made in (floor)
+grace_ms: 250           # the server settles the state this much behind its clock (late packets still count) and refuses older actions
+hero_gap: 180           # with two players each hero stands this far from the centre
+spawn_gap: 620          # orcs appear this far outside the outer hero (the same way to walk for one and two players)
+engage_gap: 120         # melee orcs stop this far in front of the hero (close fight: the weapons cross; was 250 before addendum 4 of #100)
+hold_gap: 45            # drawing only: the grabber holding the hero stands this close to him
+throw_gap: 420          # throwers stand this far in front of the hero
+cooldown_ms: 350        # swing pause
+shake_cd_ms: 120        # swing pause while held (shaking off)
+jump_ms: 650
+jump_gap_ms: 150
+hit_stun_ms: 500
+knock: 60               # an orc that was hit and survived is pushed back this far
+flee_ms: 900
+flee_speed: 300
+lives: 5                # per hero (not shown, a lost life = the stagger); 0 = out until the next wave starts (back with all lives); everybody out = the game is lost
+stagger_ms: 1500        # after a blow got through the hero staggers (no swing, no further hit) this long
+weapons:
+  default: {reach: 330}              # swing reach from the hero outwards, a place for later (weapon -> reach), not wired to the inventory
+# orc types. behavior: melee | thrower | grabber. windup/period: raised weapon before the blow / pause between blows.
+types:
+  basic:   {behavior: melee, hp: 1, speed: 110, windup_ms: 800, period_ms: 1400, gem_pm: 350}
+  armored: {behavior: melee, hp: 2, speed: 85, windup_ms: 900, period_ms: 1500, gem_pm: 700, helmet: true}
+  scout:   {behavior: melee, hp: 1, speed: 230, windup_ms: 500, period_ms: 1000, gem_pm: 250}
+  thrower: {behavior: thrower, hp: 1, speed: 100, windup_ms: 800, period_ms: 1400, gem_pm: 500, throws: 3, throw_windup_ms: 900, throw_period_ms: 2200, stone_ms: 1100}
+  grabber: {behavior: grabber, hp: 1, speed: 120, windup_ms: 700, period_ms: 1400, gem_pm: 500, shake_count: 6, shake_ms: 3500}
+# per-player difficulty (younger child: slower orcs, longer reach, longer wind-ups)
+levels:
+  easy: {speed_pm: 800, window_pm: 1400}
+  normal: {speed_pm: 1000, window_pm: 1000}
+  hard: {speed_pm: 1200, window_pm: 850}
+# groups of orcs with pauses between them (two players: every player gets the groups on his own side; one player: from both sides)
+waves:
+  - {start_ms: 1500, count: 4, gap_ms: 2800, jitter_ms: 500, types: [[basic, 1]]}
+  - {start_ms: 16000, count: 5, gap_ms: 2600, jitter_ms: 500, types: [[basic, 3], [armored, 1], [scout, 1]]}
+  - {start_ms: 33000, count: 6, gap_ms: 2400, jitter_ms: 500, types: [[basic, 2], [armored, 1], [scout, 1], [thrower, 2], [grabber, 1]]}
+  - {start_ms: 54000, count: 6, gap_ms: 2300, jitter_ms: 500, types: [[basic, 2], [armored, 1], [thrower, 1], [grabber, 2]]}
+  - {start_ms: 76000, count: 7, gap_ms: 2200, jitter_ms: 500, types: [[basic, 2], [armored, 1], [scout, 1], [thrower, 1], [grabber, 1]]}    # v1.4.0: wave 5
+  - {start_ms: 100000, count: 8, gap_ms: 2100, jitter_ms: 500, types: [[basic, 2], [armored, 2], [scout, 1], [thrower, 1], [grabber, 2]]}  # the finale; 36 per player

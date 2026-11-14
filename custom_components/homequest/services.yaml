@@ -1,0 +1,26 @@
+approve:
+  fields:
+    kid_id:
+      required: true
+      example: karel
+      selector:
+        text:
+    task_id:
+      required: true
+      example: brush_teeth_morning
+      selector:
+        text:
+reject:
+  fields:
+    kid_id:
+      required: true
+      example: karel
+      selector:
+        text:
+    task_id:
+      required: true
+      example: brush_teeth_morning
+      selector:
+        text:
+reload_catalog:
+start_siege:

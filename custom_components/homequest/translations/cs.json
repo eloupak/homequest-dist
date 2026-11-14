@@ -1,0 +1,14 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "HomeQuest",
+        "description": "Přidat HomeQuest, hru na domácí úkoly pro děti. Pak v bočním panelu otevřete HomeQuest: průvodce se zeptá na děti, jejich účty a rodiče."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "HomeQuest už je nastavený (jeden na Home Assistant).",
+      "already_configured": "HomeQuest už je nastavený (jeden na Home Assistant)."
+    }
+  }
+}

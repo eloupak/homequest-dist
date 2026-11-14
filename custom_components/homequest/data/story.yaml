@@ -1,0 +1,159 @@
+# HomeQuest story: the cast, the fortress (a place for future upgrades), the intro every child sees at the first start, and the chapters.
+# Edit freely; reload with the homequest.reload_catalog service (no restart). ids: a-z, 0-9, _.
+# Pictures live in homequest/assets/story/ (npc_<art>.webp, bg_<stage>.webp); a placeholder is shown until a picture exists.
+# giver_pos (optional, per intro/chapter; otherwise the position of the stage), enter_from (per character): the side it walks in from, default right
+
+# Places and characters of the story (v1.5, #128): the texts write {obec}, {sedlak}, ... and these are the default values. A parent changes them
+# in Settings -> Story (that setting wins). Every Czech case the texts need is its own variable (no automatic declension).
+vars:
+  obec: "Zlatá Ves"
+  obec_2: "Zlaté Vsi"
+  obec_4: "Zlatou Ves"
+  obec_kde: "ve Zlaté Vsi"
+  obec_odkud: "ze Zlaté Vsi"
+  ulice: "Lísková"
+  hora: "Skřetí hřeben"
+  hora_2: "Skřetího hřebene"
+  sedlak: "Matouš"
+  sedlak_5: "Matouši"
+  kastelan: "Bohumil"
+  kastelan_5: "Bohumile"
+
+cast:
+  - id: farmer
+    name: Sedlák {sedlak}
+    role: Průvodce, úvod do hry
+    quote: "Hej, vy tam!"
+    show: true
+  - id: castellan
+    name: Kastelán {kastelan}
+    role: Péče o tvrz (běžné úkoly)
+    quote: "Vítejte doma, páni tvrze!"
+    show: true
+    gives: [fortress_care]
+  # only a record for now (show: false): they do not appear in the game yet
+  - id: guard_captain
+    name: Velitelka stráže
+    role: Obrana před skřety
+  - id: merchant
+    name: Kupec
+    role: Obchod
+  - id: herbalist
+    name: Bylinkářka
+    role: Výpravy, kouzla
+  - id: raven_kvak
+    name: Havran Kvak
+    role: Posel, novinky a upozornění
+
+# The fortress grows with completed tasks of both children together (daily, weekly, one-off; approved ones only, a rejected one does not count;
+# coins are only for the shop). `tasks` = completed tasks in total needed for the stage; the picture is assets/story/bg_<id>.webp
+# (missing picture: the previous stage stays, the count goes on, the celebration waits for the picture).
+# `announce` = what is said (text only) when the stage is reached; `scene` = instead of it, characters speaking in turn ({giver, text}, {deti} = the children's names in the vocative) after the rebuilding animation; `gives: {coins, note}` = a gift for every child, paid once by the server (kid.gifts); `giver_pos` = where the giver stands at this stage (% of the scene picture:
+# x = centre of the feet, y = feet line, h = height of the figure). Stages 0-1: on the road in the yard; from stage 2 outside, before the gate.
+fortress:
+  baseline: 0                  # completed tasks that do not count (the bar starts at 0 / 30 + what is done after it); the live file sets what was done before the fortress existed
+  stages:
+    - id: fortress_0
+      name: Rozpadlá tvrz
+      description: Zarostlá, tmavá okna, rozbitá brána.
+      tasks: 0
+      giver_pos: {x: 46, y: 86, h: 34}
+    - id: fortress_1
+      name: Opravená tvrz
+      description: Opravená střecha, svítící okna, brána a dlážděná cesta; hradby ještě rozbité.
+      tasks: 30
+      replay_label: "Opravená tvrz"
+      scene:
+        - giver: farmer
+          text:
+            - "No tohle! {deti}, byl jsem pryč jen pár dní a tvrz skoro nepoznávám."
+            - "Střecha drží, v oknech se svítí a k bráně vede cesta. To jste stihli vy dva? Kdo by to do vás řekl!"
+            - "Hele, od hradu sem někdo jde. Ten vám toho poví víc. Já už musím na pole."
+        - giver: castellan
+          text:
+            - "Buďte zdrávi. Jsem {kastelan}, kastelán. Starám se o tvrze a hrady v celém kraji."
+            - "Slyšel jsem, že se tu někdo pustil do práce. A vidím, že to nebyly jen řeči. Kus poctivé práce, jen co je pravda."
+            - "Takhle opravenou tvrz tu dlouho nikdo neviděl. Možná {obec_kde} konečně svítá na lepší časy."
+            - "Nesu ale i horší zprávy. Moji zvědové zahlédli skřety u Osady {ulice}. To už není daleko."
+            - "Pár dní ještě máme. Víc bych ale neriskoval. Vyzbrojte se, aspoň trochu."
+            - "Tady máte každý tři zlaťáky na zbraně. Utraťte je s rozumem."
+      gives: {coins: 3, note: "Dar od kastelána"}
+      giver_pos: {x: 56, y: 86, h: 34}
+    - id: fortress_2
+      name: Tvrz s hradbou
+      description: Hradba s cimbuřím a obloukovou bránou, dvůr je za hradbou.
+      tasks: 100
+      replay_label: "Skřeti jdou"
+      done_label: "Připravit se"
+      scene:
+        - giver: farmer
+          text:
+            - "Troubím! Skřeti vylézají z lesa!"
+        - giver: castellan
+          hurry: 2
+          text:
+            - "{deti}, je to tady. Skřeti jdou na tvrz."
+            - "Vezměte zbraně a postavte se před bránu. Společně je zaženeme!"
+      siege:
+        game: defend_gate_v2
+        won_label: "Ubráněná tvrz"
+        battle_label: "Do boje se skřety"
+        lost:
+          giver: castellan
+          text:
+            - "Zatlačili nás, ale hradby vydržely. Nadechněte se, zkusíme to znovu!"
+        won:
+          giver: castellan
+          text:
+            - "Utíkají! Podívejte, prchají zpátky do lesa!"
+            - "Tvrz stojí a nikomu se nic nestalo. To je vaše zásluha."
+            - "Celý kraj se dozví, kdo ubránil {obec_4}."
+            - "Tohle je Amulet obránce. Říká se, že kdo ho nosí, toho žádná skřetí rána neskolí. Patří vám."
+        gives:
+          item: item_amulet_defender
+          name: "Amulet obránce"
+          colors: [blue, red, green, purple]
+          note: "Dar od kastelána"
+          choose: "Každý amulet nese kámen jiné barvy. Vyber si ten, který k tobě patří."
+          chosen: "Ať tě chrání."
+      giver_pos: {x: 56, y: 90, h: 30}
+    - id: fortress_3
+      name: Tvrz s věží
+      description: Hlásná věž nad branou.
+      tasks: 220
+      announce:
+        - "Nad bránou vyrostla věž! Hlídky uvidí nepřítele dřív, než dojde k lesu."
+      giver_pos: {x: 56, y: 90, h: 30}
+    - id: fortress_4
+      name: Opevněná tvrz
+      description: Padací most před branou.
+      tasks: 400
+      announce:
+        - "Padací most! Kdo nás chce navštívit, musí zaklepat. Tvrz je pevnější než kdy dřív."
+      giver_pos: {x: 56, y: 90, h: 30}
+    - id: fortress_5
+      name: Hrad
+      description: Z tvrze je hrad.
+      tasks: 650
+      announce:
+        - "Z naší tvrze je hrad! Celý kraj o vás mluví. Děkuji vám, páni hradu – a skřeti ať se bojí!"
+      giver_pos: {x: 56, y: 90, h: 30}
+
+intro:
+  replay_label: "Příchod do {obec_2}"
+  giver: farmer
+  background: fortress_0
+  # {jmeno} = the hero's name, {jeden} = "jeden" (boy) / "jedna" (girl)
+  text:
+    - "Hej, ty tam! Ty musíš být {jmeno}, {jeden} z těch nových, o kterých jsem slyšel! Jsem sedlák {sedlak}, tady {obec_odkud}."
+    - "Tvrz na kopci je teď vaše – jenže je zarostlá a rozpadlá a celý kraj je zvědavý, jestli ji udržíte. Prý se kolem {hora_2} zase potulují skřeti…"
+    - "Každý splněný úkol tvrz posílí a tobě vynese zlaťáky na lepší výbavu. Tak do toho!"
+
+# The castellan stays in the cast (the later story) but is not shown anywhere for now.
+chapters:
+  - id: fortress_care
+    title: Péče o tvrz
+    giver: castellan
+    text:
+      - "Tvrz je vaše, ale sama se neuklidí ani neopraví. Každý splněný úkol ji posílí – ukazatel nahoře ukazuje, kolik zbývá do další opravy."
+      - "A za úkoly přibudou zlaťáky na lepší výbavu. Začněte s denními úkoly – až tvrz trochu zabydlíme, přijdou větší výpravy!"

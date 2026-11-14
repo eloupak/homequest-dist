@@ -1,0 +1,27 @@
+# Defend the gate: every player has one lane, orcs run to the shared wall. A tap inside the window (the last `window_ms` before
+# the orc reaches the wall) knocks it back, a late one lets it kick the wall. All times are whole milliseconds, speeds and
+# window multipliers are permille (1000 = 1.0) so that Python and JS agree to the last digit.
+game: defend_gate
+title: Obrana brány
+lanes_max: 4
+countdown_ms: 3000
+track_ms: 4000          # run time of an orc over the track at speed 1000
+window_ms: 450          # width of the hit window before the orc reaches the wall (at window_pm 1000)
+grace_ms: 250           # a tap whose own time is inside the window still counts when it arrives this late (= server validation tolerance)
+wall_hp: 6              # shared wall: wall_hp + wall_hp_per_player * players
+wall_hp_per_player: 4
+# orc types: speed_pm (of the track), damage to the wall when it gets through
+types:
+  orc: {speed_pm: 1000, damage: 1}
+  runner: {speed_pm: 1500, damage: 1}
+# per-player difficulty (younger child: slower orcs, wider window)
+levels:
+  easy: {speed_pm: 800, window_pm: 1500}
+  normal: {speed_pm: 1000, window_pm: 1000}
+  hard: {speed_pm: 1200, window_pm: 800}
+# weapon -> window_pm: a place for later, not wired to the inventory
+weapons: {}
+waves:
+  - {start_ms: 1000, count: 8, gap_ms: 2200, jitter_ms: 600, types: [[orc, 1]]}
+  - {start_ms: 22000, count: 10, gap_ms: 2000, jitter_ms: 600, types: [[orc, 3], [runner, 1]]}
+  - {start_ms: 46000, count: 12, gap_ms: 1800, jitter_ms: 600, types: [[orc, 2], [runner, 1]]}
