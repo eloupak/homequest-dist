@@ -6,7 +6,7 @@ the text (comments and the family's own changes stay) and are idempotent:
 - `replace_block`: an exact block of the default text is replaced only when it is there unchanged (checked by its sha256); a block the family
   changed in the file is left alone and reported. A paragraph the parent rewrote in the app (story_texts, v1.6) is kept apart from the file
   and stays: Settings shows "výchozí text se změnil" for it.
-- custom functions for structural changes (cast_ids below).
+- custom functions for structural changes (cast_ids, shop_off below).
 Pure Python (re, hashlib, yaml), no HA imports.
 """
 from __future__ import annotations
@@ -83,8 +83,72 @@ def cast_ids(text: str) -> tuple[str, int, list[str]]:
     return text, n, notes
 
 
+# items taken out of the shop: `shop: false`, the item stays in the catalog (owners keep it), its art stays (#130, #140)
+#   hat_wizard - the wizard hat was dropped from the game (#130); its art stays
+SHOP_OFF = ("hat_wizard",)
+
+
+def _flow(text: str, iid: str) -> tuple[str, str]:
+    """One-line item: returns (new text, 'changed' | 'ok' | '')."""
+    m = re.compile(r"^( *- \{ *id: " + re.escape(iid) + r" *,)(.*)\}[ \t]*$", re.M).search(text)
+    if not m:
+        return text, ""
+    body = m.group(2)
+    sm = re.search(r"\bshop: *(\w+)", body)
+    if sm and sm.group(1).lower() == "false":
+        return text, "ok"
+    if sm:
+        body = body[: sm.start()] + "shop: false" + body[sm.end():]
+    else:
+        pm = re.search(r"(\bprice: *[^,}]+,?)", body)               # next to the price, like the other items with shop: false
+        if pm and pm.group(1).endswith(","):
+            body = body[: pm.end()] + " shop: false," + body[pm.end():]
+        else:
+            body = body.rstrip() + ", shop: false "
+    line = m.group(1) + body + "}"
+    return text[: m.start()] + line + text[m.end():], "changed"
+
+
+def _block(text: str, iid: str) -> tuple[str, str]:
+    """Block item `- id: X` followed by keys indented deeper: returns (new text, 'changed' | 'ok' | '')."""
+    m = re.compile(r"^( *)- id: " + re.escape(iid) + r"[ \t]*\n", re.M).search(text)
+    if not m:
+        return text, ""
+    key_indent = m.group(1) + "  "
+    end = m.end()
+    keys = re.compile(r"^" + re.escape(key_indent) + r"(\w+):(.*)\n", re.M)
+    while True:
+        k = keys.match(text, end)
+        if not k:
+            break
+        if k.group(1) == "shop":
+            if k.group(2).strip().lower() == "false":
+                return text, "ok"
+            return text[: k.start()] + f"{key_indent}shop: false\n" + text[k.end():], "changed"
+        end = k.end()
+    return text[: m.end()] + f"{key_indent}shop: false\n" + text[m.end():], "changed"
+
+
+def shop_off_ids(text: str, ids=SHOP_OFF) -> tuple[str, dict]:
+    """Returns (new text, {id: 'changed' | 'ok' | 'missing'})."""
+    out = {}
+    for iid in ids:
+        text, how = _flow(text, iid)
+        if not how:
+            text, how = _block(text, iid)
+        out[iid] = how or "missing"
+    return text, out
+
+
+def shop_off(text: str) -> tuple[str, int, list[str]]:
+    """v1.7: SHOP_OFF items get `shop: false` (text-level, comments stay); an item missing in the catalog is fine (a new family)."""
+    text, res = shop_off_ids(text)
+    return text, sum(1 for h in res.values() if h == "changed"), []
+
+
 STEPS: list[Step] = [
     Step("v1.7-cast-ids", "story.yaml", cast_ids),
+    Step("v1.7-shop-off", "catalog.yaml", shop_off),
 ]
 
 
