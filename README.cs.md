@@ -2,30 +2,28 @@
 
 [English](README.md)
 
-> Názvy položek menu označené \* zatím nejsou ověřené v české verzi Home Assistantu a mohou se lišit.
-
 Hra pro děti v Home Assistantu: děti plní každodenní úkoly (vyčistit zuby, uklidit pokoj, …), dostávají za ně zlaťáky, kupují si
 výbavu pro svého hrdinu a společně staví tvrz. Rodič úkoly nastavuje a schvaluje v aplikaci Home Assistant.
 
 ## Co potřebujete
-- Home Assistant 2026.11 nebo novější (**Marketplace**\* je v něm zabudovaný; integrace sama běží od 2026.8.0).
-- Pro každé dítě vlastní účet v Home Assistantu (bez práv správce): **Nastavení**\* → **Lidé**\* → **Přidat osobu**\*, zapnout **Povolit přihlášení**\*.
+- Home Assistant 2026.11 nebo novější (**Marketplace** je v něm zabudovaný; integrace sama běží od 2026.8.0).
+- Pro každé dítě vlastní účet v Home Assistantu (bez práv správce): **Nastavení** → **Osoby** → **Přidat osobu**, zapnout **Povolit přihlášení**.
 - Pro hraní na telefonu a notifikace aplikaci Home Assistant.
 
 ## Instalace
-1. **Nastavení**\* → **Marketplace**\* → vpravo nahoře **Přidat z odkazu**\* → do pole **Odkaz na GitHub**\* zadejte `https://github.com/eloupak/homequest-dist` → **Přidat**\*.
-   Při prvním přidání repozitáře požádá **Marketplace**\* o propojení s účtem GitHub (kód zadáte na GitHubu a potvrdíte). Typ integrace pozná sám.
+1. **Nastavení** → **Marketplace** → vpravo nahoře **Přidat z odkazu na GitHubu** → do pole **Odkaz na GitHub** zadejte `https://github.com/eloupak/homequest-dist` → **Přidat**.
+   Při prvním přidání repozitáře požádá **Marketplace** o propojení s účtem GitHub (kód zadáte na GitHubu a potvrdíte). Typ integrace pozná sám.
 2. Najděte HomeQuest, nainstalujte a restartujte Home Assistant.
-3. **Nastavení**\* → **Zařízení a služby**\* → **Přidat integraci**\* → HomeQuest.
+3. **Nastavení** → **Zařízení a služby** → **Přidat integraci** → HomeQuest.
 4. V levém panelu otevřete HomeQuest a projděte průvodce: děti, jejich účty, rodiče, vaše okolí, notifikace. Pak **Spustit hru**.
 
 Hra běží celá u vás doma, po instalaci nepotřebuje internet. Data dětí zůstávají ve vašem Home Assistantu.
 
 ## Aktualizace
-Novou verzi nabídne Home Assistant v **Nastavení**\* → **Aktualizace**\* (a rodiči i HomeQuest na obrazovce Rodič); po aktualizaci restartujte Home Assistant.
+Novou verzi nabídne Home Assistant v **Nastavení** → **Aktualizace** (a rodiči i HomeQuest na obrazovce Rodič); po aktualizaci restartujte Home Assistant.
 Aktualizace nemění rozehranou hru ani vaše nastavení.
 
-Chcete zkoušet nové verze dřív? **Nastavení**\* → **Zařízení a služby**\* → **Marketplace**\* → zařízení HomeQuest: entita **Předběžné vydání**\* je ve výchozím stavu
+Chcete zkoušet nové verze dřív? **Nastavení** → **Zařízení a služby** → **Marketplace** → zařízení HomeQuest: entita **Předběžné vydání** je ve výchozím stavu
 vypnutá, nejdřív ji povolte a pak přepínač zapněte. Bety mohou obsahovat chyby. Před aktualizací si udělejte zálohu Home Assistantu;
 k předchozí verzi se po aktualizaci vracejte obnovením zálohy, ne instalací starší verze.
 

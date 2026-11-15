@@ -7,12 +7,12 @@ buy gear for their hero and build a fortress together. A parent sets up and appr
 
 ## What you need
 - Home Assistant 2026.11 or newer (the **Marketplace** is built in; the integration itself runs from 2026.8.0).
-- A Home Assistant account for each child (without administrator rights): **Settings** → **People** → **Add person**, turn on **Allow person to login**.
+- A Home Assistant account for each child (without administrator rights): **Settings** → **People** → **Add person**, turn on **Allow login**.
 - The Home Assistant app for playing on a phone and for notifications.
 - The game is in Czech for now.
 
 ## Installation
-1. **Settings** → **Marketplace** → in the upper-right corner **Add from link** → enter `https://github.com/eloupak/homequest-dist` under **GitHub link** → **Add**.
+1. **Settings** → **Marketplace** → in the upper-right corner **Add from a GitHub link** → enter `https://github.com/eloupak/homequest-dist` under **GitHub link** → **Add**.
    The first time you add a repository, the **Marketplace** asks you to connect a GitHub account (you enter a code on GitHub and approve).
    It detects the integration type by itself.
 2. Find HomeQuest, install it and restart Home Assistant.
