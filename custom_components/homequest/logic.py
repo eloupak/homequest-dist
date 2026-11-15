@@ -448,7 +448,8 @@ def tasks_view(state: dict[str, Any], catalog: dict[str, Any], today: date, work
         "oneoffs": [o for o in state.get("oneoffs", {}).values() if o["status"] != "deleted"],
     }
     if is_admin:
-        out["templates"] = list(state.get("task_templates", {}).values())
+        out["templates"] = list(state.get("task_templates", {}).values())     # empty after v1.7-recent-tasks (#129); kept for an old panel
+        out["recent"] = list(state.get("recent_tasks", []))                   # #129: the tasks the parent added lately, newest first
     else:
         out["oneoffs"] = [o for o in out["oneoffs"] if o["status"] == "active"]
     return out
@@ -658,9 +659,7 @@ def add_oneoff(state: dict[str, Any], catalog: dict[str, Any], name: Any, reward
     if only:
         o["kids"] = only
     state.setdefault("oneoffs", {})[oid] = o
-    tpl = state.setdefault("task_templates", {})
-    if not any(t["name"] == name and t["reward"] == reward and t["single"] == single and t.get("kids") == only for t in tpl.values()) and len(tpl) < TEMPLATES_MAX:
-        save_template(state, name, reward, single, catalog, only)
+    remember_task(state, {"name": name, "reward": reward, "period": "oneoff", "single": single, "kids": only}, ts)
     _prune_oneoffs(state)
     _sync_oneoffs(state, date.fromisoformat(ts[:10]), ts)
     return {"task_id": oid, "task": _oneoff_task(o)}
@@ -696,6 +695,170 @@ def delete_template(state: dict[str, Any], template_id: str) -> dict[str, Any]:
         raise HomeQuestError(ERR_NOT_FOUND, f"no template '{template_id}'")
     del state["task_templates"][template_id]
     return {"template_id": template_id}
+
+
+# ------------------------------------------------- parent: the new Rodič screen (#129) --
+
+RECENT_MAX = 12
+MIGRATION_RECENT = "v1.7-recent-tasks"
+CUSTOM_ICON = "mdi:star-circle"
+
+
+def remember_task(state: dict[str, Any], entry: dict[str, Any], ts: str = "") -> None:
+    """The list "naposledy přidané" (#129, replaces the templates): newest first, one entry per same task, at most RECENT_MAX."""
+    e = {"name": entry["name"], "reward": entry["reward"], "period": entry.get("period", "oneoff"), "single": bool(entry.get("single"))}
+    if entry.get("kids"):
+        e["kids"] = list(entry["kids"])
+    if e["period"] == "daily":
+        e["days"] = list(entry.get("days") or DAY_TYPES)
+    rec = [r for r in state.get("recent_tasks", []) if {k: v for k, v in r.items() if k not in ("id", "at")} != e]
+    seq = state["recent_seq"] = int(state.get("recent_seq", 0)) + 1
+    state["recent_tasks"] = ([{"id": f"rec_{seq}", **e, "at": ts}] + rec)[:RECENT_MAX]
+
+
+def migrate_recent_tasks(state: dict[str, Any], ts: str) -> bool:
+    """One-off (v1.7, #129): the templates become the list of recently added tasks (one-off tasks, in their order); nothing else changes."""
+    done = state.setdefault("migrations", [])
+    if MIGRATION_RECENT in done:
+        return False
+    rec = list(state.get("recent_tasks", []))
+    for t in reversed(list((state.get("task_templates") or {}).values())):   # the oldest first, so the list ends newest first
+        e = {"name": t["name"], "reward": t["reward"], "period": "oneoff", "single": bool(t.get("single")), **({"kids": list(t["kids"])} if t.get("kids") else {})}
+        if not any({k: v for k, v in r.items() if k not in ("id", "at")} == e for r in rec):
+            seq = state["recent_seq"] = int(state.get("recent_seq", 0)) + 1
+            rec.insert(0, {"id": f"rec_{seq}", **e, "at": ts})
+    state["recent_tasks"] = rec[:max(RECENT_MAX, len(rec))]
+    state["task_templates"] = {}
+    done.append(MIGRATION_RECENT)
+    return True
+
+
+def with_parent_tasks(catalog: dict[str, Any], state: dict[str, Any]) -> dict[str, Any]:
+    """The catalog with the daily tasks the parent added in the app (state custom_tasks) and the parent's names/rewards of daily tasks
+    (task_settings.<id>.name / reward). Returns a new mapping; the catalog file is never changed."""
+    tasks = dict(catalog["tasks"])
+    kids = list(catalog["kids"])
+    for cid, c in (state.get("custom_tasks") or {}).items():
+        tasks[cid] = {"id": cid, "name": c["name"], "icon": CUSTOM_ICON, "period": "daily", "reward": c["reward"], "enabled": True, "round": None,
+                      "days": list(DAY_TYPES), "note": "", "archived": False, "kids": kids, "kids_set": False, "custom": True}
+    for tid, ov in (state.get("task_settings") or {}).items():
+        if tid in tasks and ("name" in ov or "reward" in ov):
+            tasks[tid] = {**tasks[tid], **{k: ov[k] for k in ("name", "reward") if k in ov}}
+    return {**catalog, "tasks": tasks}
+
+
+def _days_of(days: Any) -> list[str]:
+    if not isinstance(days, list) or not all(d in DAY_TYPES for d in days):
+        raise HomeQuestError(ERR_INVALID_PARAMS, "days: a list of workday / free")
+    return [d for d in DAY_TYPES if d in days]
+
+
+def add_task(state: dict[str, Any], catalog: dict[str, Any], name: Any, reward: Any, period: Any, ts: str, kids: Any = None, single: Any = False,
+             days: Any = None, today: date | None = None) -> dict[str, Any]:
+    """#129 "Přidat úkol": a one-off task (as before) or a new daily task. A new daily task joins today's list at once when today's kind of day
+    is one of its days (adding takes nothing from the children; every other change of the daily tasks counts from the next day).
+    The caller puts the new daily task into its catalog (with_parent_tasks) before the next sync."""
+    if period == "oneoff":
+        return add_oneoff(state, catalog, name, reward, single, ts, kids)
+    if period != "daily":
+        raise HomeQuestError(ERR_INVALID_PARAMS, "period must be daily or oneoff")
+    name, reward, single = _oneoff_fields(name, reward, single)
+    days = _days_of(list(DAY_TYPES) if days is None else days)
+    if not days:
+        raise HomeQuestError(ERR_INVALID_PARAMS, "choose at least one kind of day")
+    only = _stored_kids(catalog, kids)
+    same = next((t for t in catalog["tasks"].values() if t["period"] == "daily" and not t.get("archived") and t["name"].casefold() == name.casefold()), None)
+    if same is not None and effective_task(state, same)["enabled"]:
+        raise HomeQuestError(ERR_INVALID_STATE, f"the daily task '{name}' exists already")
+    if same is not None:                                  # a switched-off daily task of the same name comes back (no second copy)
+        cid = same["id"]
+        if cid in (state.get("custom_tasks") or {}):
+            state["custom_tasks"][cid]["reward"] = reward
+        else:
+            state.setdefault("task_settings", {}).setdefault(cid, {})["reward"] = reward
+        ov = state.setdefault("task_settings", {}).setdefault(cid, {})
+        ov.pop("kids", None)
+        ov.pop("single", None)
+    else:
+        seq = state["custom_seq"] = int(state.get("custom_seq", 0)) + 1
+        cid = f"custom_{seq}"
+        state.setdefault("custom_tasks", {})[cid] = {"id": cid, "name": name, "reward": reward, "created_at": ts}
+        ov = state.setdefault("task_settings", {}).setdefault(cid, {})
+    ov["days"] = days
+    if only:
+        ov["kids"] = only
+    if single:
+        ov["single"] = True
+    plan = state.get("day_plan")
+    if plan and plan.get("date") == (today.isoformat() if today else ts[:10]) and plan.get("type") in days and cid not in plan["tasks"]:
+        plan["tasks"] = [*plan["tasks"], cid]
+        plan.setdefault("kids", {})[cid] = only or [k for k in catalog["kids"]]
+        if single:
+            plan.setdefault("single", []).append(cid)
+    remember_task(state, {"name": name, "reward": reward, "period": "daily", "single": single, "kids": only, "days": days}, ts)
+    return {"task_id": cid}
+
+
+def update_task(state: dict[str, Any], catalog: dict[str, Any], task_id: str, ts: str, name: Any = None, reward: Any = None, kids: Any = None,
+                single: Any = None, days: Any = None) -> dict[str, Any]:
+    """#129 "Upravit úkoly" → Uložit: name, reward, for whom, "Pouze 1" and (daily) the kinds of day. A daily task counts from the next day
+    (the name and the reward at once); an active one-off task at once."""
+    o = (state.get("oneoffs") or {}).get(task_id)
+    if o is not None:
+        if o["status"] != "active":
+            raise HomeQuestError(ERR_NOT_FOUND, f"no active one-off task '{task_id}'")
+        n, r, sg = _oneoff_fields(o["name"] if name is None else name, o["reward"] if reward is None else reward, o["single"] if single is None else single)
+        o.update(name=n, reward=r, single=sg)
+        if kids is not None:
+            only = _stored_kids(catalog, kids)
+            if only:
+                o["kids"] = only
+            else:
+                o.pop("kids", None)
+        _sync_oneoffs(state, date.fromisoformat(ts[:10]), ts)
+        return {"task_id": task_id}
+    task = catalog["tasks"].get(task_id)
+    if task is None or task["period"] != "daily" or task.get("archived"):
+        raise HomeQuestError(ERR_NOT_FOUND, f"no task '{task_id}'")
+    n, r, _ = _oneoff_fields(task["name"] if name is None else name, task["reward"] if reward is None else reward, False)
+    custom = (state.get("custom_tasks") or {}).get(task_id)
+    ov = state.setdefault("task_settings", {}).setdefault(task_id, {})
+    if custom is not None:
+        custom.update(name=n, reward=r)
+    else:
+        base = {"name": n, "reward": r}
+        for k, v in base.items():
+            ov[k] = v
+    if days is not None:
+        d = _days_of(days)
+        set_task(state, catalog, task_id, "workday" in d, "free" in d, kids, single)
+    else:
+        set_task(state, catalog, task_id, None, None, kids, single)
+    return {"task_id": task_id}
+
+
+def remove_task(state: dict[str, Any], catalog: dict[str, Any], task_id: str, ts: str, kid_id: Any = None) -> dict[str, Any]:
+    """#129 Odebrat: a one-off task is deleted (or only one child is taken off it); a daily task is switched off (no kind of day, the
+    history stays) or only one child is taken off it. Taking off the last child = the whole task."""
+    o = (state.get("oneoffs") or {}).get(task_id)
+    if o is not None:
+        mine = [k for k in catalog["kids"] if k in _oneoff_kids(state, o)]
+        if kid_id and len(mine) > 1:
+            if kid_id not in mine:
+                raise HomeQuestError(ERR_INVALID_PARAMS, f"'{kid_id}' does not have this task")
+            o["kids"] = [k for k in mine if k != kid_id]
+            _sync_oneoffs(state, date.fromisoformat(ts[:10]), ts)
+            return {"task_id": task_id, "kid_id": kid_id}
+        return delete_oneoff(state, task_id, ts)
+    task = catalog["tasks"].get(task_id)
+    if task is None or task["period"] != "daily":
+        raise HomeQuestError(ERR_NOT_FOUND, f"no task '{task_id}'")
+    mine = effective_task(state, task)["kids"]
+    if kid_id and len(mine) > 1:
+        if kid_id not in mine:
+            raise HomeQuestError(ERR_INVALID_PARAMS, f"'{kid_id}' does not have this task")
+        return set_task(state, catalog, task_id, kids=[k for k in mine if k != kid_id])
+    return set_task(state, catalog, task_id, False, False)
 
 
 MIGRATION_TASKS = "v1.2-tasks"
@@ -1192,6 +1355,25 @@ def set_notify_targets(state: dict[str, Any], targets: Any) -> dict[str, Any]:
         raise HomeQuestError(ERR_INVALID_PARAMS, f"at most {NOTIFY_MAX} phones")
     state["notify_targets"] = clean
     return {"notify_targets": clean}
+
+
+_REPO_RE = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})/[A-Za-z0-9._-]{1,100}$")
+
+
+def set_report_repo(state: dict[str, Any], repo: Any) -> dict[str, Any]:
+    """#175: where "Nahlásit problém" opens a new issue - a GitHub repository "owner/name"; "" or None = the default (REPORT_REPO_DEFAULT)."""
+    if repo is None or (isinstance(repo, str) and not repo.strip()):
+        state.pop("report_repo", None)
+        return {"report_repo": None}
+    if not isinstance(repo, str):
+        raise HomeQuestError(ERR_INVALID_PARAMS, "repo: owner/name of a GitHub repository")
+    clean = repo.strip().removeprefix("https://").removeprefix("github.com/").strip("/")
+    if clean.endswith("/issues"):
+        clean = clean[: -len("/issues")]
+    if not _REPO_RE.match(clean):
+        raise HomeQuestError(ERR_INVALID_PARAMS, "repo: owner/name of a GitHub repository")
+    state["report_repo"] = clean
+    return {"report_repo": clean}
 
 
 def _coins_word(n: int) -> str:

@@ -39,6 +39,11 @@ export function exampleParts(sentence, key, typed, values, defaults) {
   return parts;
 }
 
+/** A story form no text of the story uses (examples() on the server gives no sentence): its field is hidden, its value kept (#129 add. 2). */
+export function storyVarUsed(sv, key) {
+  return !(sv && sv.examples) || !!sv.examples[key];
+}
+
 /** The fields of the story variables in groups (Obec, Osada / ulice, Hora, Sedlák, Kastelán): a heading that says what it is, per form a
  * small case hint, the input and a sentence of the story that changes as the parent types. Used by the guide (Vaše okolí) and Settings. */
 export function storyVarFields(sv) {
@@ -50,9 +55,15 @@ export function storyVarFields(sv) {
     const box = h("div", { class: "var-group", "data-group": g.id, style: { margin: "14px 0 4px", paddingTop: "8px", borderTop: "1px solid #0002" } },
       g.title ? h("div", { style: { fontWeight: "800", fontSize: "19px" } }, g.title) : null,
       g.text ? h("div", { class: "muted" }, g.text) : null);
+    let shown = 0;
     for (const key of g.keys) {
       const sentence = (sv.examples || {})[key];
       const input = h("input", { class: "field", type: "text", maxlength: "40", value: sv.values[key] || "", placeholder: sv.defaults[key] || "", "data-var": key });
+      if (!storyVarUsed(sv, key)) {            // not in the story (yet): no field, but the value goes back unchanged when saving
+        inputs[key] = input;
+        continue;
+      }
+      shown += 1;
       const ex = h("div", { class: "var-example", "data-example": key, style: { margin: "4px 2px 0", fontStyle: "italic" } });
       const draw = () => {
         const parts = exampleParts(sentence, key, input.value, sv.values, sv.defaults);
@@ -65,7 +76,7 @@ export function storyVarFields(sv) {
       box.append(h("label", { style: { display: "block", margin: "10px 0 2px" } },
         h("span", { class: "muted", style: { fontSize: "14px" } }, (sv.hints || {})[key] || sv.labels[key] || key), input), ex);
     }
-    wrap.append(box);
+    if (shown) wrap.append(box);
   }
   return { el: wrap, inputs };
 }

@@ -22,9 +22,10 @@ from homeassistant.helpers.event import async_track_state_change_event, async_tr
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util, slugify
 
-from . import access, art, bootstrap, logic, setup, story_migrations, story_texts, story_vars
+from . import access, art, bootstrap, logic, setup, story_migrations, story_texts, story_vars, upgrade
 from .catalog import catalog_for_client, parse_catalog, preview_items, with_kids, with_previews
 from .const import (
+    REPORT_REPO_DEFAULT,
     UPDATE_URL,
     ASSETS_DIR,
     CATALOG_FILE,
@@ -45,6 +46,7 @@ from .const import (
     STORAGE_KEY,
     STORAGE_VERSION,
     SETUP_MODE_FLAG,
+    BUILD_FILE,
     TEST_ENV_FLAG,
     CLEAN_ENV_FLAG,
 )
@@ -95,6 +97,7 @@ class HomeQuestManager:
         self._workday_warned = False
         self._user_warned: set[tuple[str, str]] = set()   # (kid, ha_user) already warned about (#137: once, not on every resolve)
         self.version = ""                                  # v1.7 (#141): manifest version (set in async_setup)
+        self.build = ""                                    # TEST only: what deploy.sh test deployed (<data>/build), shown in O hře
         self._gh_latest: str | None = None
         self._yaml_kids: dict[str, Any] = {}        # catalog.yaml `kids:` (v1.6: read only by the migration v1.6-kids-in-state)
         self._ha_users: list[dict[str, Any]] = []   # the HA users (cache of async_resolve_users) for the setup guide
@@ -121,19 +124,38 @@ class HomeQuestManager:
         self.env_test = await self.hass.async_add_executor_job((self.data_dir / TEST_ENV_FLAG).is_file)
         self.env_clean = await self.hass.async_add_executor_job((self.data_dir / CLEAN_ENV_FLAG).is_file)
         self.setup_mode = self.env_test and await self.hass.async_add_executor_job((self.data_dir / SETUP_MODE_FLAG).is_file)
+        self.build = await self.hass.async_add_executor_job(self._read_build) if self.env_test else ""
         await self.async_load_story()                 # optional: a broken story.yaml never stops the game
         saved = await self._store.async_load()
         self.state = saved if isinstance(saved, dict) else logic.new_state()
-        await self._migrate_kids()                                      # v1.6: the children from catalog.yaml into the state (#136)
-        self._apply_kids()
-        logic.migrate(self.state, self.catalog, self._now()[1])        # one-off data fixes (marker in the state)
-        logic.migrate_starters(self.state, self.catalog, self._now()[1])
-        logic.migrate_tasks(self.state, self.catalog, self._now()[1])
-        logic.migrate_seen(self.state, self.story, self._now()[1])
-        logic.migrate_amulet_worn(self.state, self.story, self._now()[1])
-        await self._migrate_story_file()                                # v1.5: real places of the story -> variables (#128)
-        await self._run_file_migrations()                               # v1.7: the data steps of the releases (#140)
-        self._sync()
+        pkg = Path(__file__).parent
+        self.version, has_data = await self.hass.async_add_executor_job(lambda: (bootstrap.package_version(pkg / "manifest.json"), (pkg / "data").is_dir()))
+        for key in ("backup_failed", "migration_failed", "panel_failed", "restart_required"):   # raised again below when still true
+            self.repair(key, None)
+        upgrade_entry = await self._upgrade_backup(isinstance(saved, dict))   # v1.7 (#140 b, c): before any migration
+        if upgrade_entry is False:
+            return False
+        try:
+            await self._migrate_kids()                                      # v1.6: the children from catalog.yaml into the state (#136)
+            self._apply_kids()
+            logic.migrate(self.state, self.catalog, self._now()[1])        # one-off data fixes (marker in the state)
+            logic.migrate_starters(self.state, self.catalog, self._now()[1])
+            logic.migrate_tasks(self.state, self.catalog, self._now()[1])
+            logic.migrate_seen(self.state, self.story, self._now()[1])
+            logic.migrate_amulet_worn(self.state, self.story, self._now()[1])
+            if logic.MIGRATION_RECENT not in self.state.get("migrations", []) and self.state.get("task_templates"):
+                await self.hass.async_add_executor_job(self._backup_state, logic.MIGRATION_RECENT)   # #129: templates -> recently added
+            logic.migrate_recent_tasks(self.state, self._now()[1])
+            await self._migrate_story_file()                                # v1.5: real places of the story -> variables (#128)
+            await self._run_file_migrations()                               # v1.7: the data steps of the releases (#140)
+            self._sync()
+        except Exception as err:  # noqa: BLE001  (any failure: nothing is saved, the family is told in Repairs, the next start tries again)
+            _LOGGER.exception("HomeQuest not started: a data migration failed (the saved state is unchanged)")
+            bdir = upgrade_entry["backup_dir"] if upgrade_entry else "-"
+            self.repair("migration_failed", {"error": f"{type(err).__name__}: {err}"[:300], "backup": bdir})
+            return False
+        if upgrade_entry:
+            self._upgrade_numbers(upgrade_entry)
         await self._store.async_save(self.state)
         if "notify_targets" not in self.state:                         # v1.5: the parents' phones get the task notifications (#128)
             if self.hass.state is CoreState.running:
@@ -150,10 +172,70 @@ class HomeQuestManager:
         self._unsub_workday = async_track_state_change_event(self.hass, [WORKDAY_SENSOR], self._workday_changed)
         await self.hass.async_add_executor_job(self._art_poll, False)
         self._unsub_art = async_track_time_interval(self.hass, self._art_tick, timedelta(seconds=30))
-        pkg = Path(__file__).parent
-        self.version, has_data = await self.hass.async_add_executor_job(lambda: (bootstrap.package_version(pkg / "manifest.json"), (pkg / "data").is_dir()))
         self._setup_update_check(has_data)
+        self._unsub_restart = async_track_time_interval(self.hass, self._restart_check, timedelta(minutes=5))
         return True
+
+    # ------------------------------------------------- a version change (v1.7, #140 b-d) ----
+
+    def repair(self, key: str, placeholders: dict[str, Any] | None, persistent: bool = False, warning: bool = False) -> None:
+        """Settings -> Repairs: raise (placeholders given) or clear (None) the issue `key`; texts in translations (issues.<key>)."""
+        from homeassistant.helpers import issue_registry as ir  # noqa: PLC0415  (HA only; the pure tests stub the manager)
+        if placeholders is None:
+            ir.async_delete_issue(self.hass, DOMAIN, key)
+            return
+        ir.async_create_issue(self.hass, DOMAIN, key, is_fixable=False, is_persistent=persistent,
+                              severity=ir.IssueSeverity.WARNING if warning else ir.IssueSeverity.ERROR, translation_key=key,
+                              translation_placeholders={k: str(v) for k, v in placeholders.items()})
+
+    async def _upgrade_backup(self, had_state: bool) -> dict[str, Any] | bool | None:
+        """Another version than the state's: back up the state, catalog.yaml and story.yaml first and take the numbers before.
+        None = no change (or a new install: nothing to keep), False = the backup failed (do not start), else the upgrade entry."""
+        old = self.state.get("app_version")
+        if not upgrade.changed(old, self.version):
+            return None
+        if not had_state:
+            self.state["app_version"] = self.version
+            return None
+        files = [Path(self.hass.config.path(".storage", STORAGE_KEY)), self.data_dir / CATALOG_FILE, self.data_dir / STORY_FILE]
+        bdir = self.data_dir / upgrade.BACKUP_DIR
+        try:
+            names = await self.hass.async_add_executor_job(upgrade.backup, files, bdir, old, self.version)
+        except OSError as err:
+            _LOGGER.error("HomeQuest not started: the backup before the update %s -> %s failed: %s (no migration ran)", old, self.version, err)
+            self.repair("backup_failed", {"from": old or upgrade.UNKNOWN, "to": self.version, "error": str(err)[:300]})
+            return False
+        before = upgrade.kid_numbers(self.state)
+        _LOGGER.warning("HomeQuest update %s -> %s: backup %s in %s; numbers before (coins/items/tasks): %s",
+                        old or upgrade.UNKNOWN, self.version, ", ".join(names), bdir, upgrade.numbers_text(before))
+        return {"from": old or upgrade.UNKNOWN, "to": self.version, "at": self._now()[1], "backup_dir": str(bdir), "backup": names, "before": before}
+
+    def _upgrade_numbers(self, entry: dict[str, Any]) -> None:
+        after = upgrade.kid_numbers(self.state)
+        changes = upgrade.diff(entry["before"], after)
+        entry.update(after=after, ok=not changes, changes=changes)
+        upgrade.record(self.state, entry)
+        self.state["app_version"] = self.version
+        if changes:
+            _LOGGER.error("HomeQuest update %s -> %s: the children's numbers changed: %s (backup in %s)",
+                          entry["from"], entry["to"], "; ".join(changes), entry["backup_dir"])
+            self.repair("numbers_changed", {"from": entry["from"], "to": entry["to"], "changes": "; ".join(changes),
+                                            "backup": entry["backup_dir"]}, persistent=True, warning=True)
+        else:
+            self.repair("numbers_changed", None)                       # an earlier warning is over with a clean update
+            _LOGGER.warning("HomeQuest update %s -> %s: numbers after = before (%s)", entry["from"], entry["to"], upgrade.numbers_text(after))
+
+    async def _restart_check(self, _now: Any = None) -> None:
+        """New files on disk (an update installed without a restart): ask for a restart in Repairs, unless the Marketplace asks already."""
+        pkg = Path(__file__).parent
+        on_disk = await self.hass.async_add_executor_job(bootstrap.package_version, pkg / "manifest.json")
+        if not on_disk or not self.version or on_disk == self.version:
+            return
+        from homeassistant.helpers import issue_registry as ir  # noqa: PLC0415
+        reg = ir.async_get(self.hass)
+        if any(dom in ("hacs", "marketplace") and "restart" in iid for (dom, iid) in reg.issues):
+            return
+        self.repair("restart_required", {"running": self.version, "installed": on_disk}, warning=True)
 
     # ------------------------------------------------- a new version for the parent (v1.7, #141) ----
 
@@ -190,6 +272,12 @@ class HomeQuestManager:
         except Exception as err:  # noqa: BLE001  (no network = no banner, never an error for the family)
             _LOGGER.debug("HomeQuest update check: %s", err)
 
+    def _read_build(self) -> str:
+        try:
+            return (self.data_dir / BUILD_FILE).read_text(encoding="utf-8").strip()[:80]
+        except OSError:
+            return ""
+
     def _update_view(self) -> dict[str, Any] | None:
         """{installed, latest, available, source} for the parent's banner, or None."""
         st = self._hacs_update()
@@ -213,7 +301,7 @@ class HomeQuestManager:
         if self._unsub_workday:
             self._unsub_workday()
             self._unsub_workday = None
-        for name in ("_unsub_update", "_unsub_gh"):
+        for name in ("_unsub_update", "_unsub_gh", "_unsub_restart"):
             if getattr(self, name, None):
                 getattr(self, name)()
                 setattr(self, name, None)
@@ -258,12 +346,12 @@ class HomeQuestManager:
                 _LOGGER.error("catalog: %s", err)
             return False
         self._yaml_kids = catalog["kids"]
-        self.catalog = with_kids(catalog, setup.kids_catalog(self.state))      # the children of the game come from the state (v1.6)
+        self.catalog = logic.with_parent_tasks(with_kids(catalog, setup.kids_catalog(self.state)), self.state)   # the children (v1.6) and the parent's daily tasks (#129) come from the state
         return True
 
     def _apply_kids(self) -> None:
         """Put the children of the state into the catalog mapping the rules use (after the migration and after every change of a child)."""
-        self.catalog = with_kids(self.catalog, setup.kids_catalog(self.state))
+        self.catalog = logic.with_parent_tasks(with_kids(self.catalog, setup.kids_catalog(self.state)), self.state)   # + the parent's daily tasks (#129)
 
     async def _admin_ids(self) -> list[str]:
         return [u.id for u in await self.hass.auth.async_get_users() if u.is_admin and u.is_active and not u.system_generated]
@@ -441,6 +529,9 @@ class HomeQuestManager:
         except Exception as err:  # noqa: BLE001 - one phone must not stop the game or the other phones
             _LOGGER.warning("task notification to notify.%s failed: %s", target, err)
 
+    async def async_set_report_repo(self, repo: Any) -> dict[str, Any]:
+        return await self._mutate(lambda ts: logic.set_report_repo(self.state, repo))
+
     async def async_set_notify_targets(self, targets: Any) -> dict[str, Any]:
         return await self._mutate(lambda ts: logic.set_notify_targets(self.state, targets))
 
@@ -517,6 +608,7 @@ class HomeQuestManager:
             self.env_test = await self.hass.async_add_executor_job((self.data_dir / TEST_ENV_FLAG).is_file)
             self.env_clean = await self.hass.async_add_executor_job((self.data_dir / CLEAN_ENV_FLAG).is_file)
             self.setup_mode = self.env_test and await self.hass.async_add_executor_job((self.data_dir / SETUP_MODE_FLAG).is_file)
+            self.build = await self.hass.async_add_executor_job(self._read_build) if self.env_test else ""
             if ok:
                 ok = await self.async_load_story()
             if ok:
@@ -652,6 +744,8 @@ class HomeQuestManager:
             "started": bool(self.state.get("started_at")),     # v1.6: before the parent's "Spustit hru" a child sees "Tvrz se staví"
             "setup": self.setup_view() if ident.is_admin else None,
             "update": self._update_view() if ident.is_admin else None,          # v1.7 (#141): a new version, only for the parent
+            "version": self.version or None,                                    # O hře (manifest; on TEST the dev manifest, see build)
+            "build": self.build or None,                                       # TEST only: "<branch> <commit> <time>" from deploy.sh test
             "fortress": {"done": max(0, fortress_done(self.state) - ((self.story or {}).get("fortress") or {}).get("baseline", 0))},
             "siege": logic.siege_info(self.state, self.story),
             "pin": {"enabled": bool(self.state.get("parent_pin"))} if ident.is_admin else None,
@@ -665,6 +759,8 @@ class HomeQuestManager:
         return {
             "story_texts": {"own": len(own), "stale": sum(1 for p in story_texts.settings_view(self.story, own) if p["stale"]), "orphans": len(story_texts.orphans(self.story, own))},
             "notify_targets": list(self.state.get("notify_targets") or []),
+            "report_repo": self.state.get("report_repo") or REPORT_REPO_DEFAULT,      # #175: Nahlásit problém
+            "report_repo_default": REPORT_REPO_DEFAULT,
             "story_vars": {
                 "values": self.story_values(),
                 "defaults": story_defaults,
@@ -907,6 +1003,25 @@ class HomeQuestManager:
         return res
 
     # ---- parent: daily task settings, holidays, one-off tasks, templates
+
+    async def async_add_task(self, name: Any, reward: Any, period: Any, kids: Any = None, single: Any = False, days: Any = None) -> dict[str, Any]:
+        """#129: one-off or daily; a daily task enters the catalog the rules use at once (with_parent_tasks)."""
+        def run(ts: str) -> dict[str, Any]:
+            res = logic.add_task(self.state, self.catalog, name, reward, period, ts, kids, bool(single), days, self._now()[0])
+            self._apply_kids()
+            self._sync()                                    # a new daily task of today reaches the children at once
+            return res
+        return await self._mutate(run)
+
+    async def async_update_task(self, task_id: str, name: Any = None, reward: Any = None, kids: Any = None, single: Any = None, days: Any = None) -> dict[str, Any]:
+        def run(ts: str) -> dict[str, Any]:
+            res = logic.update_task(self.state, self.catalog, task_id, ts, name, reward, kids, single, days)
+            self._apply_kids()
+            return res
+        return await self._mutate(run)
+
+    async def async_remove_task(self, task_id: str, kid_id: Any = None) -> dict[str, Any]:
+        return await self._mutate(lambda ts: logic.remove_task(self.state, self.catalog, task_id, ts, kid_id))
 
     async def async_set_task(self, task_id: str, workday: Any, free: Any, kids: Any = None, single: Any = None) -> dict[str, Any]:
         return await self._mutate(lambda ts: logic.set_task(self.state, self.catalog, task_id, workday, free, kids, single))

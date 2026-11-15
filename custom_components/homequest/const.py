@@ -2,6 +2,8 @@
 
 DOMAIN = "homequest"
 VERSION = "0.1.0"
+# #175: "Nahlásit problém" opens a new issue here unless the parent sets another GitHub repository (Nastavení hry → Kam hlásit problémy)
+REPORT_REPO_DEFAULT = "eloupak/homequest-dist"
 
 STORAGE_KEY = "homequest.state"
 STORAGE_VERSION = 1
@@ -16,6 +18,7 @@ ART_SUBDIR = "art"            # illustrated art (tools/import_art.py): art/manif
 
 TEST_ENV_FLAG = "env_test"          # file in the data dir: this is the TEST instance (only tools/deploy.sh test writes it; production must never have it): red TEST badge
 CLEAN_ENV_FLAG = "env_clean"        # file in the data dir: a trial install (only the trial install script writes it; production must never have it): CLEAN badge, nothing else changes
+BUILD_FILE = "build"            # file in the data dir (TEST only, written by deploy.sh test): "<branch> <commit> <time>" for O hře
 SETUP_MODE_FLAG = "setup_mode"      # file in the data dir (TEST only, with env_test): the setup guide (v1.6) works on a copy of the state, the children's data stay
 DEV_PANELS_FLAG = "dev_panels"      # file in the data dir: register the development panels (3D, motion)
 STATIC_URL = "/homequest_static"

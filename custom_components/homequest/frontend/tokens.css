@@ -24,3 +24,30 @@
   --hq-font-heading: 'Alegreya SC', Georgia, serif;
   --hq-font-body: 'Nunito', system-ui, sans-serif;
 }
+.parent-ui {
+  --hq-p-font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --hq-p-bg: #F4F5F7;
+  --hq-p-surface: #FFFFFF;
+  --hq-p-text: #1F2328;
+  --hq-p-muted: #5B6470;
+  --hq-p-line: #D7DBE0;
+  --hq-p-accent: #2563EB;
+  --hq-p-accent-text: #FFFFFF;
+  --hq-p-ok: #1F8A4C;
+  --hq-p-danger: #C93636;
+  --hq-p-chip: #EEF1F5;
+  --hq-p-selected: #E8B33A;
+}
+.parent-ui.dark {
+  --hq-p-bg: #14161A;
+  --hq-p-surface: #1E2127;
+  --hq-p-text: #E8EAED;
+  --hq-p-muted: #9AA3AE;
+  --hq-p-line: #343941;
+  --hq-p-accent: #5B8DEF;
+  --hq-p-accent-text: #FFFFFF;
+  --hq-p-ok: #3FB673;
+  --hq-p-danger: #E5605E;
+  --hq-p-chip: #2A2E35;
+  --hq-p-selected: #E8B33A;
+}

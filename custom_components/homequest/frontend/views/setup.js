@@ -97,7 +97,7 @@ export function renderSetup(ctx) {
     )
   );
   for (const r of rows) if (ctx.ui.setupOpen === r.id) root.append(stepBody(ctx, st, r));
-  root.append(startCard(ctx, st));
+  if (!st.started) root.append(startCard(ctx, st));     // #129 add. 2: after the start the guide only edits (children, parents, ...)
   return root;
 }
 
@@ -203,7 +203,7 @@ function kidForm(ctx, st, k) {
 function accountsCard(ctx, st) {
   const card = h("div", { class: "card", "data-id": "setup-accounts-card" });
   card.append(h("p", { style: { marginTop: 0 } }, "Každé dítě se přihlašuje vlastním účtem Home Assistantu (bez práv správce). Účty se zakládají v Home Assistantu: ",
-    h("b", {}, "Nastavení → Lidé → Přidat osobu"), " (zapnout „Povolit přihlášení“). Pak tady účet vyberte."));
+    h("b", {}, "Nastavení → Osoby → Přidat osobu"), " (zapnout „Povolit přihlášení“). Pak tady účet vyberte."));
   if (!st.kids.length) {
     card.append(h("p", { class: "muted" }, "Nejdřív přidejte děti (krok 1)."));
     return card;

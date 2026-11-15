@@ -203,6 +203,11 @@ def _admin_cmd(name: str, fields: dict, fn_name: str, *keys: str):
 
 
 ws_set_task = _admin_cmd("set_task", {vol.Required("task_id"): str, vol.Optional("workday"): vol.Any(bool, None), vol.Optional("free"): vol.Any(bool, None), vol.Optional("kids"): [str], vol.Optional("single"): bool}, "async_set_task", "task_id", "workday", "free", "kids", "single")
+ws_add_task = _admin_cmd("add_task", {vol.Required("name"): str, vol.Required("reward"): int, vol.Required("period"): vol.In(["daily", "oneoff"]), vol.Optional("kids"): [str], vol.Optional("single"): bool, vol.Optional("days"): [str]},
+                         "async_add_task", "name", "reward", "period", "kids", "single", "days")
+ws_update_task = _admin_cmd("update_task", {vol.Required("task_id"): str, vol.Optional("name"): str, vol.Optional("reward"): int, vol.Optional("kids"): [str], vol.Optional("single"): bool, vol.Optional("days"): [str]},
+                            "async_update_task", "task_id", "name", "reward", "kids", "single", "days")
+ws_remove_task = _admin_cmd("remove_task", {vol.Required("task_id"): str, vol.Optional("only_kid"): str}, "async_remove_task", "task_id", "only_kid")
 ws_set_holidays = _admin_cmd("set_holidays", {vol.Required("until"): vol.Any(str, None)}, "async_set_holidays", "until")
 ws_add_oneoff = _admin_cmd("add_oneoff", {vol.Required("name"): str, vol.Required("reward"): int, vol.Required("single"): bool, vol.Optional("kids"): [str]}, "async_add_oneoff", "name", "reward", "single", "kids")
 ws_delete_oneoff = _admin_cmd("delete_oneoff", {vol.Required("task_id"): str}, "async_delete_oneoff", "task_id")
@@ -210,6 +215,7 @@ ws_save_template = _admin_cmd("save_template", {vol.Required("name"): str, vol.R
 ws_delete_template = _admin_cmd("delete_template", {vol.Required("template_id"): str}, "async_delete_template", "template_id")
 
 ws_set_notify_targets = _admin_cmd("set_notify_targets", {vol.Required("targets"): [str]}, "async_set_notify_targets", "targets")
+ws_set_report_repo = _admin_cmd("set_report_repo", {vol.Required("repo"): vol.Any(str, None)}, "async_set_report_repo", "repo")
 ws_set_story_vars = _admin_cmd("set_story_vars", {vol.Required("vars"): {str: str}}, "async_set_story_vars", "vars")
 
 
@@ -299,12 +305,16 @@ def async_register(hass: HomeAssistant) -> None:
         ws_reset_hero,
         ws_set_approval,
         ws_set_task,
+        ws_add_task,
+        ws_update_task,
+        ws_remove_task,
         ws_set_holidays,
         ws_add_oneoff,
         ws_delete_oneoff,
         ws_save_template,
         ws_delete_template,
         ws_set_notify_targets,
+        ws_set_report_repo,
         ws_set_story_vars,
         ws_notify_services,
         ws_setup_kid,

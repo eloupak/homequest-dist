@@ -10,5 +10,27 @@
       "single_instance_allowed": "HomeQuest is set up already (one per Home Assistant).",
       "already_configured": "HomeQuest is set up already (one per Home Assistant)."
     }
+  },
+  "issues": {
+    "backup_failed": {
+      "title": "HomeQuest did not start: backup before the update failed",
+      "description": "HomeQuest was updated from {from} to {to}, but it could not back up its data before changing them ({error}). Nothing was changed and HomeQuest is not running.\n\nFree up disk space or fix the folder permissions, then restart Home Assistant. HomeQuest tries again on the next start."
+    },
+    "migration_failed": {
+      "title": "HomeQuest did not start: data update failed",
+      "description": "HomeQuest could not update its data to the new version ({error}). The saved game was not changed and HomeQuest is not running.\n\nBackup from before the update: {backup}. Restart Home Assistant to try again. If it fails again, install the previous version (Settings → Updates) and report the problem."
+    },
+    "numbers_changed": {
+      "title": "HomeQuest: children's numbers changed after the update",
+      "description": "After the update from {from} to {to}, some numbers differ from before: {changes}.\n\nCheck the children's coins and items in HomeQuest. Backup from before the update: {backup}. If everything is fine, you can ignore this message."
+    },
+    "panel_failed": {
+      "title": "HomeQuest: a panel could not be opened",
+      "description": "The HomeQuest panel {panel} could not be added to the sidebar ({error}). Restart Home Assistant. If it happens again, report the problem."
+    },
+    "restart_required": {
+      "title": "HomeQuest: restart needed",
+      "description": "HomeQuest {installed} is installed, but version {running} is still running. Restart Home Assistant to finish the update (HomeQuest backs up its data first)."
+    }
   }
 }

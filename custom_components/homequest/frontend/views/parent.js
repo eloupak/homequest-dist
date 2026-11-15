@@ -1,232 +1,512 @@
+/* The Rodič screen (#129, 2026-11-14): three tabs (Přehled, Nastavení, O hře), a sober technical look (.parent-ui, tokens `parent`
+ * in design/tokens.json, light/dark after the HA theme). The parent gets here with the shield in the header (homequest-panel.js); the game's
+ * bottom bar is hidden meanwhile. Sub-screens (task settings, Upravit aktivní, Historie, Nastavení hry, ...) are kept in ctx.ui.pview.
+ * Addendum 1 (UAT 2026-11-15): days = at most one kind (none = every day), 5 recent + Zobrazit další, Přidat/Odebrat coins, the parent's
+ * own sheets (pSheet / pConfirm / choose), Nastavení hry (Zlaťáky, Schvalování úkolů, Prázdniny).
+ * Addendum 2 (UAT 2026-11-15): Děti a účty gone (the guide edits children and parents), Smazat hrdinu -> Nastavení hry -> Reset hrdiny,
+ * no yellow buttons (styles.js), story forms the story does not use hidden (settings.js). */
 import { coin, h, icon } from "../lib/dom.js";
 import { historyText, when } from "../lib/cs.js";
-import { avatar, classOf, coinCount } from "./common.js";
-import { tasksAdmin } from "./tasks_admin.js";
+import { holidaysCard, whoPicker, whoParams } from "./tasks_admin.js";
 import { settingsSections } from "./settings.js";
+import { renderSetup } from "./setup.js";
+import { reportUrl } from "../lib/report.js";
 
-/** v1.7 (#141): "Je dostupná nová verze" for the parent only (the view has `update` only for a parent). Kept small and standalone, so the
- * Rodič screen of #129 can move it anywhere. Pure DOM from the view; null = nothing to show. */
-export function updateBanner(update) {
-  if (!update || !update.available || !update.latest) return null;
-  const how = update.source === "hacs" ? "Aktualizujete ji v Nastavení → Aktualizace (nebo v HACS) a pak restartujte Home Assistant." : "Aktualizujete ji v HACS a pak restartujte Home Assistant.";
-  return h("div", { class: "card", "data-id": "update-banner", style: { background: "#fff3cf", border: "2px solid var(--gold-dark)", marginBottom: "12px" } },
-    h("div", { class: "row", style: { gap: "10px", alignItems: "flex-start" } }, icon("mdi:update", 26),
-      h("div", { class: "grow" }, h("b", {}, `Je dostupná nová verze HomeQuestu ${update.latest}`), update.installed ? h("span", { class: "muted" }, ` (máte ${update.installed})`) : null,
-        h("div", { class: "muted" }, how, " Rozehraná hra a nastavení zůstanou."))));
-}
+export const PARENT_TABS = [["overview", "Přehled"], ["settings", "Nastavení"], ["about", "O hře"]];
+export const LICENSE_URL = "https://creativecommons.org/licenses/by-nc-nd/4.0/deed.cs";
 
 export function renderParent(ctx) {
-  const { view, cat } = ctx;
-  const root = h("div");
-  const upd = updateBanner(view.update);
-  if (upd) root.append(upd);
-
-  // --- pending approvals
-  const pending = [];
-  for (const k of cat.kids) {
-    const kid = view.kids[k.id];
-    if (!kid) continue;
-    for (const [taskId, st] of Object.entries(kid.tasks)) {
-      const task = cat.tasks.find((t) => t.id === taskId) || ((view.tasks_info || {}).oneoffs || []).find((o) => o.id === taskId);
-      if (st.status === "pending" && task) pending.push({ kid: k, task, st });
-    }
+  const root = h("div", { class: `parent-ui${ctx.dark ? " dark" : ""}`, "data-parent": "" });
+  const pv = ctx.ui.pview;
+  if (pv) {
+    root.append(subScreen(ctx, pv));
+    return root;
   }
-  const sec = h("div", { class: "section" }, h("h2", {}, `Ke schválení (${pending.length})`));
-  if (pending.length) {
-    sec.append(
-      h(
-        "button",
-        {
-          class: "btn gold block",
-          "data-act": "approve-all",
-          onclick: async () => {
-            const yes = await ctx.confirm({ title: "Schválit vše?", text: `Schválí se ${pending.length} úkolů a dětem se přičtou zlaťáky.`, yes: "Schválit vše", no: "Zpět" });
-            if (!yes) return;
-            for (const p of pending) await ctx.act("approve", { kid_id: p.kid.id, task_id: p.task.id }, { quiet: true });
-            ctx.toast("Všechno schváleno.");
-          },
-        },
-        icon("mdi:check-all", 26),
-        "Schválit vše"
-      ),
-      h("div", { style: { height: "10px" } })
-    );
-    for (const p of pending) {
-      sec.append(
-        h(
-          "div",
-          { class: "card pend", "data-pending": `${p.kid.id}:${p.task.id}` },
-          h("div", { class: "grow" }, h("span", { class: "kidtag" }, p.kid.name), h("div", { class: "qname", style: { marginTop: "4px" } }, p.task.name), h("div", { class: "qreward" }, "+", String(p.task.reward), " ", coin())),
-          h("button", { class: "btn", "data-act": "approve", onclick: () => ctx.act("approve", { kid_id: p.kid.id, task_id: p.task.id }) }, icon("mdi:check-bold", 24), "Schválit"),
-          h("button", { class: "btn red", "data-act": "reject", onclick: () => ctx.act("reject", { kid_id: p.kid.id, task_id: p.task.id }) }, icon("mdi:close-thick", 24), "Zamítnout")
-        )
-      );
-    }
-  } else {
-    sec.append(h("div", { class: "empty" }, "Nic nečeká na schválení."));
-  }
-  root.append(sec);
-
-  const sg = siegeSection(ctx);
-  if (sg) root.append(sg);
-
-  root.append(tasksAdmin(ctx));
-
-  // --- kids: coins + hero
-  const kidsSec = h("div", { class: "section" }, h("h2", {}, "Děti"));
-  for (const k of cat.kids) {
-    const kid = view.kids[k.id];
-    if (!kid) continue;
-    const adj = (n) =>
-      h("button", { class: "btn ghost", "data-adj": `${k.id}:${n}`, onclick: () => ctx.act("admin_adjust", { kid_id: k.id, delta: n, note: "rychlá úprava" }) }, n > 0 ? `+${n}` : `−${Math.abs(n)}`);
-    kidsSec.append(
-      h(
-        "div",
-        { class: "card", "data-kid": k.id },
-        h("div", { class: "herohead" }, avatar(ctx, kid, `avatar-p-${k.id}`), h("div", { class: "grow" }, h("h2", {}, k.name), h("div", { class: "muted" }, kid.hero ? `${kid.hero.name} · ${classOf(ctx, kid)?.name || ""}` : "Hrdina ještě není vytvořen"), coinCount(ctx, kid, k.id))),
-        h(
-          "div",
-          { class: "adj" },
-          adj(-5), adj(-1), adj(1), adj(5),
-          h("button", { class: "btn ghost", "data-act": "adjust-custom", onclick: () => adjustSheet(ctx, k) }, "Upravit…")
-        ),
-        h(
-          "div",
-          { class: "row", style: { marginTop: "10px" } },
-          h("div", { class: "grow" }, h("b", {}, "Vyžadovat schválení"), h("div", { class: "muted", style: { fontSize: "14px" } }, kid.require_approval ? "Hotový úkol čeká, až ho schválíš." : "Hotový úkol se hned započítá, jen ti přijde zpráva.")),
-          h("button", { class: "btn ghost", "data-act": "approval", "aria-pressed": String(!!kid.require_approval), onclick: () => ctx.act("set_approval", { kid_id: k.id, value: !kid.require_approval }) }, kid.require_approval ? "Zapnuto" : "Vypnuto")
-        ),
-        kid.hero
-          ? h(
-              "div",
-              { style: { marginTop: "10px" } },
-              h(
-                "button",
-                {
-                  class: "btn ghost",
-                  "data-act": "reset-hero",
-                  onclick: async () => {
-                    const yes = await ctx.confirm({ title: `Smazat hrdinu (${k.name})?`, text: "Zlaťáky a věci zůstanou, hrdina si vybere vzhled a třídu znovu.", yes: "Smazat hrdinu", no: "Zpět", danger: true });
-                    if (yes) await ctx.act("reset_hero", { kid_id: k.id });
-                  },
-                },
-                "Smazat hrdinu"
-              )
-            )
-          : null
-      )
-    );
-  }
-  root.append(kidsSec);
-
-  // --- history
-  const hk = ctx.ui.histKid && view.kids[ctx.ui.histKid] ? ctx.ui.histKid : cat.kids[0] && cat.kids[0].id;
-  const hist = h("div", { class: "section" }, h("h2", {}, "Historie"));
-  hist.append(
-    h("div", { class: "kidswitch", style: { marginBottom: "8px" } }, cat.kids.map((k) => h("button", { class: "chip", "aria-pressed": String(k.id === hk), onclick: () => { ctx.ui.histKid = k.id; ctx.rerender(); } }, k.name)))
-  );
-  const entries = hk && view.kids[hk] ? view.kids[hk].history.slice().reverse().slice(0, 20) : [];
-  const card = h("div", { class: "card" });
-  if (!entries.length) card.append(h("div", { class: "muted" }, "Zatím nic."));
-  for (const e of entries) card.append(h("div", { class: "hist" }, h("span", { class: "t" }, when(e.ts)), h("span", { class: "grow" }, historyText(e, cat))));
-  hist.append(card);
-  root.append(hist);
-
-  // --- settings (v1.5, #128): notifications, story places and characters
-  for (const sec of settingsSections(ctx)) root.append(sec);
-
-  // --- art status / about
-  root.append(artSection(ctx));
-  root.append(aboutSection(ctx));
+  const tab = ctx.ui.ptab || "overview";
+  root.append(seg(PARENT_TABS, tab, (v) => { ctx.ui.ptab = v; ctx.rerender(); }, "ptab"));
+  if (tab === "settings") root.append(...settingsTab(ctx));
+  else if (tab === "about") root.append(aboutTab(ctx));
+  else root.append(...overviewTab(ctx));
   return root;
 }
 
-function adjustSheet(ctx, kidInfo) {
-  ctx.sheet((c, close) => {
-    const kid = c.view.kids[kidInfo.id];
-    const delta = h("input", { class: "field", type: "number", inputmode: "numeric", placeholder: "Změna zlaťáků, např. 3 nebo -2", "data-field": "delta" });
-    const note = h("input", { class: "field", type: "text", maxlength: "100", placeholder: "Poznámka (proč)", "data-field": "note" });
-    return h(
-      "div",
-      {},
-      h("h2", {}, `Upravit zlaťáky: ${kidInfo.name}`),
-      h("div", { class: "muted", style: { marginBottom: "10px" } }, "Teď má: ", coin(), ` ${kid ? kid.coins : 0}`),
-      delta,
-      h("div", { style: { height: "10px" } }),
-      note,
-      h(
-        "div",
-        { class: "actions" },
-        h("button", { class: "btn ghost", onclick: close }, "Zrušit"),
-        h(
-          "button",
-          {
-            class: "btn gold",
-            "data-act": "adjust-save",
-            onclick: async () => {
-              const n = parseInt(delta.value, 10);
-              if (!n) return c.toast("Napiš změnu zlaťáků, např. 3 nebo -2.", "error");
-              close();
-              await c.act("admin_adjust", { kid_id: kidInfo.id, delta: n, note: note.value.trim() });
-            },
-          },
-          "Uložit"
-        )
-      )
-    );
-  });
+/* ------------------------------------------------------------------ pieces */
+
+function seg(options, value, onChange, name) {
+  return h("div", { class: "p-seg", role: "tablist", "data-seg": name },
+    options.map(([id, label]) => h("button", { role: "tab", "data-seg-id": id, "aria-selected": String(id === value), onclick: () => onChange(id) }, label)));
 }
 
-function artSection(ctx) {
-  const art = ctx.view.art;
-  const sec = h("div", { class: "section", "data-art-status": art ? art.effective : "none" }, h("h2", {}, "Grafika"));
-  if (!art) return sec;
-  const card = h("div", { class: "card" });
-  if (art.blocking && art.blocking.length) {     // a hero would miss these drawings (#127: there is no other art to fall back to)
-    card.append(h("div", { style: { color: "#8a2d28", fontWeight: "bold" } }, "Chybí obrázky, které děti potřebují:"));
-    card.append(h("ul", { class: "muted", style: { margin: "4px 0 0 18px", padding: "0" } }, art.blocking.map((t) => h("li", {}, t))));
+function card(...children) {
+  return h("div", { class: "p-card" }, ...children);
+}
+
+function go(ctx, name, data = {}) {
+  ctx.ui.pview = { name, ...data };
+  ctx.rerender();
+}
+
+function back(ctx) {
+  ctx.ui.pview = null;
+  ctx.rerender();
+}
+
+function backBar(ctx, title, to) {
+  return h("div", { class: "p-back" },
+    h("button", { class: "p-btn ghost", "data-act": "p-back", "aria-label": "Zpět", onclick: () => (to ? go(ctx, to) : back(ctx)) }, icon("mdi:chevron-left", 22), "Zpět"),
+    h("h2", {}, title));
+}
+
+const kidName = (ctx, id) => (ctx.cat.kids.find((k) => k.id === id) || { name: id }).name;
+
+/* ------------------------------------------------------------------ Přehled */
+
+/** v1.7 (#141): "Je dostupná nová verze" on top of Přehled (from update.homequest of the Marketplace, or GitHub for a package install). */
+export function updateBanner(update) {
+  if (!update || !update.available || !update.latest) return null;
+  const how = update.source === "hacs" ? "Aktualizujete ji v Nastavení → Aktualizace a pak restartujte Home Assistant." : "Aktualizujete ji v Marketplace a pak restartujte Home Assistant.";
+  return h("div", { class: "p-banner", "data-id": "update-banner" }, icon("mdi:update", 24),
+    h("div", { class: "grow" }, h("b", {}, `Je dostupná nová verze HomeQuestu ${update.latest}`), update.installed ? h("span", { class: "p-muted" }, ` (máte ${update.installed})`) : null,
+      h("div", { class: "p-muted" }, how, " Rozehraná hra a nastavení zůstanou.")));
+}
+
+function pendingList(ctx) {
+  const out = [];
+  for (const k of ctx.cat.kids) {
+    const kid = ctx.view.kids[k.id];
+    if (!kid) continue;
+    for (const [taskId, st] of Object.entries(kid.tasks)) {
+      const task = ctx.cat.tasks.find((t) => t.id === taskId) || ((ctx.view.tasks_info || {}).oneoffs || []).find((o) => o.id === taskId);
+      if (st.status === "pending" && task) out.push({ kid: k, task });
+    }
   }
-  if (!(art.blocking && art.blocking.length) && !(art.missing && art.missing.length)) card.append(h("div", {}, "Všechny obrázky jsou na místě."));
-  if (art.missing && art.missing.length) {
-    card.append(h("details", { style: { marginTop: "8px" } }, h("summary", { style: { minHeight: "44px", lineHeight: "44px", fontWeight: "bold" } }, `Chybějící obrázky (${art.missing.length})`), h("ul", { class: "muted", style: { margin: "4px 0 0 18px", padding: "0" } }, art.missing.map((t) => h("li", {}, t)))));
+  return out;
+}
+
+function overviewTab(ctx) {
+  const out = [];
+  const upd = updateBanner(ctx.view.update);                     // v1.7 (#141): a new version for the parent, only when there is one
+  if (upd) out.push(upd);
+  // --- approvals: hidden when no child needs them (all switches off and nothing waits)
+  const pending = pendingList(ctx);
+  const anyApproval = ctx.cat.kids.some((k) => ctx.view.kids[k.id] && ctx.view.kids[k.id].require_approval);
+  if (anyApproval || pending.length) {
+    const sec = h("div", { class: "p-section", "data-id": "approvals" }, h("h3", {}, `Ke schválení (${pending.length})`));
+    if (pending.length) {
+      sec.append(h("button", {
+        class: "p-btn primary block", "data-act": "approve-all",
+        onclick: async () => {
+          const yes = await pConfirm(ctx, { title: "Schválit vše?", text: `Schválí se ${pending.length} úkolů a dětem se přičtou zlaťáky.`, yes: "Schválit vše", no: "Zpět" });
+          if (!yes) return;
+          for (const p of pending) await ctx.act("approve", { kid_id: p.kid.id, task_id: p.task.id }, { quiet: true });
+          ctx.toast("Všechno schváleno.");
+        },
+      }, icon("mdi:check-all", 22), "Schválit vše"));
+      const list = card();
+      for (const p of pending) {
+        list.append(h("div", { class: "p-row", "data-pending": `${p.kid.id}:${p.task.id}` },
+          h("div", { class: "grow" }, h("div", { class: "p-title" }, p.task.name), h("div", { class: "p-muted" }, `${p.kid.name} · +${p.task.reward} `, coin())),
+          h("button", { class: "p-icon danger", "data-act": "reject", "aria-label": "Zamítnout", onclick: () => ctx.act("reject", { kid_id: p.kid.id, task_id: p.task.id }) }, icon("mdi:close", 24)),
+          h("button", { class: "p-icon ok", "data-act": "approve", "aria-label": "Schválit", onclick: () => ctx.act("approve", { kid_id: p.kid.id, task_id: p.task.id }) }, icon("mdi:check", 24))));
+      }
+      sec.append(list);
+    } else {
+      sec.append(card(h("div", { class: "p-muted" }, "Nic nečeká na schválení.")));
+    }
+    out.push(sec);
   }
-  sec.append(card);
+  out.push(addTaskSection(ctx));
+  out.push(h("div", { class: "p-section" },
+    h("button", { class: "p-btn block", "data-act": "edit-tasks", onclick: () => go(ctx, "edit") }, icon("mdi:pencil", 22), "Upravit aktivní")));
+  return out;
+}
+
+/* ------------------------------------------------------------------ Přidat úkol */
+
+/** Days of a daily task in the UI: at most one kind; none = every day (stored as both kinds, as before - nothing to migrate). */
+export const DAY_ALL = ["workday", "free"];
+export function daysPick(days) {
+  return days && days.length === 1 ? days[0] : "";
+}
+export function daysOf(pick) {
+  return pick ? [pick] : DAY_ALL.slice();
+}
+
+/** The defaults of a new task: one-off, every child, reward 1. */
+export function newTaskConfig(name = "") {
+  return { mode: "add", name, period: "oneoff", who: "", days: ["workday", "free"], reward: 1 };
+}
+
+/** A task of the lists -> the settings screen (who: "" everybody, a child id, "*" Pouze 1). */
+export function configOf(t, allKids) {
+  const only = t.kids && t.kids.length && t.kids.length < allKids.length ? t.kids : null;
+  return {
+    name: t.name, reward: t.reward, period: t.period === "daily" ? "daily" : "oneoff",
+    who: t.single ? "*" : only ? only[0] : "", days: t.period === "daily" ? (t.days || ["workday", "free"]) : ["workday", "free"],
+  };
+}
+
+/** What add_task / update_task get from the settings screen. */
+export function taskParams(cfg, allKids) {
+  const who = whoParams(cfg.who);
+  const out = { name: cfg.name.trim(), reward: cfg.reward, single: who.single, kids: who.kids || allKids.slice() };
+  if (cfg.period === "daily") out.days = cfg.days.slice();
+  return out;
+}
+
+export const RECENT_SHOWN = 5;
+
+function addTaskSection(ctx) {
+  const allKids = ctx.cat.kids.map((k) => k.id);
+  const name = h("input", { class: "p-field", type: "text", maxlength: "60", placeholder: "Nový úkol", "data-field": "new-task", "aria-label": "Nový úkol" });
+  const sec = h("div", { class: "p-section", "data-id": "add-task" }, h("h3", {}, "Přidat úkol"));
+  sec.append(card(
+    h("div", { class: "p-inline" },
+      name,
+      h("button", { class: "p-icon", "data-act": "new-task-settings", "aria-label": "Nastavení úkolu", onclick: () => go(ctx, "config", { cfg: newTaskConfig(name.value) }) }, icon("mdi:cog", 24)),
+      h("button", {
+        class: "p-btn primary", "data-act": "new-task-add",
+        onclick: async () => {
+          const n = name.value.trim();
+          if (!n) return ctx.toast("Napiš název úkolu.", "error");
+          if (await ctx.act("add_task", { name: n, reward: 1, period: "oneoff", single: false })) ctx.toast(`Přidáno: ${n}`);
+        },
+      }, "Přidat")),
+    h("div", { class: "p-muted small" }, "Bez nastavení: jednorázový úkol pro všechny děti za 1 zlaťák.")));
+  const recent = (ctx.view.tasks_info || {}).recent || [];
+  if (recent.length) {
+    const list = card(h("div", { class: "p-label" }, "Naposledy přidané"));
+    const more = !!ctx.ui.precentAll;
+    for (const r of more ? recent : recent.slice(0, RECENT_SHOWN)) {
+      list.append(h("div", { class: "p-row", "data-recent": r.id },
+        h("div", { class: "grow" }, h("div", { class: "p-title" }, r.name), h("div", { class: "p-muted" }, taskMeta(ctx, r))),
+        h("button", { class: "p-icon", "data-act": `recent-settings-${r.id}`, "aria-label": "Nastavení úkolu", onclick: () => go(ctx, "config", { cfg: { mode: "add", ...configOf(r, allKids) } }) }, icon("mdi:cog", 24)),
+        h("button", {
+          class: "p-btn", "data-act": `recent-add-${r.id}`,
+          onclick: async () => { if (await ctx.act("add_task", { period: r.period, ...taskParams(configOf(r, allKids), allKids) })) ctx.toast(`Přidáno: ${r.name}`); },
+        }, "Přidat")));
+    }
+    if (recent.length > RECENT_SHOWN) {
+      list.append(h("div", { class: "p-row" }, h("button", { class: "p-link", "data-act": "recent-more", onclick: () => { ctx.ui.precentAll = !more; ctx.rerender(); } },
+        more ? "Zobrazit méně" : `Zobrazit další (${recent.length - RECENT_SHOWN})`)));
+    }
+    sec.append(list);
+  }
   return sec;
 }
 
-function aboutSection(ctx) {
-  // #127: only our own drawings are shown (the LPC pixel art is gone), so no list of authors is needed
-  return h("div", { class: "section" }, h("h2", {}, "O hře"), h("div", { class: "card" }, h("div", {}, "HomeQuest — domácí úkoly jako dobrodružství.")));
+function taskMeta(ctx, t) {
+  const parts = [t.period === "daily" ? `Denní${t.days && t.days.length === 1 ? (t.days[0] === "workday" ? " · pracovní dny" : " · volné dny") : ""}` : "Jednorázový"];
+  if (t.single) parts.push("Pouze 1");
+  else if (t.kids && t.kids.length && t.kids.length < ctx.cat.kids.length) parts.push(t.kids.map((k) => kidName(ctx, k)).join(", "));
+  parts.push(`+${t.reward}`);
+  return parts.join(" · ");
 }
 
-/** The attack of the goblins (#118, v1.4.0): the siege stage is reached, but the children see it only after a parent starts it. After the win the
- *  parent may start it again (a replay, only a game: nothing is given) and end a replay the children did not finish. */
-export function siegeSection(ctx) {
-  const sg = ctx.view.siege;
-  if (!sg) return null;
-  const start = async (replay) => {
-    const yes = await ctx.confirm(replay
-      ? { title: "Spustit útok znovu?", text: "Dětem naskočí Příprava a hra. Za další výhru už nic nedostanou.", yes: "Spustit", no: "Zpět" }
-      : { title: "Spustit útok skřetů?", text: "Dětem hned naskočí scéna obléhání a hra. Vrátit to nejde.", yes: "Spustit útok", no: "Zpět" });
-    if (yes) await ctx.act("siege_start", {});
+/* ------------------------------------------------------------------ Nastavení úkolu */
+
+function configScreen(ctx, pv) {
+  const cfg = pv.cfg;
+  const allKids = ctx.cat.kids.map((k) => k.id);
+  const editing = cfg.mode === "edit";
+  const root = h("div", { "data-id": "task-config" }, backBar(ctx, editing ? "Upravit úkol" : "Nový úkol", pv.from));
+  const name = h("input", { class: "p-field", type: "text", maxlength: "60", value: cfg.name, placeholder: "Název úkolu", "data-field": "task-name", oninput: () => { cfg.name = name.value; } });
+  const reward = h("input", { class: "p-field num", type: "number", inputmode: "numeric", min: "0", max: "50", value: String(cfg.reward), "data-field": "task-reward", oninput: () => { cfg.reward = parseInt(reward.value, 10); } });
+  const dayBox = h("div", { class: "p-checks", "data-field": "task-days" });
+  const drawDays = () => {
+    const pick = daysPick(cfg.days);                                     // like "Pro koho": at most one; tap the chosen one again = none
+    dayBox.replaceChildren(...[["workday", "Pracovní dny"], ["free", "Volné dny"]].map(([d, label]) => {
+      const on = pick === d;
+      return h("button", { class: `p-chip${on ? " on" : ""}`, "aria-pressed": String(on), "data-day": d, onclick: () => { cfg.days = daysOf(on ? "" : d); drawDays(); } }, on ? icon("mdi:check", 18) : null, label);
+    }), h("div", { class: "p-muted small", "data-id": "days-hint", style: { flexBasis: "100%" } }, pick ? (pick === "workday" ? "Jen pracovní dny." : "Jen volné dny a prázdniny.") : "Každý den"));
   };
-  let state, btn = null;
-  if (sg.waiting) {
-    state = "Tvrz je na stupni s útokem skřetů. Děti ho uvidí, až ho spustíš.";
-    btn = h("button", { class: "btn gold block", "data-act": "siege-start", onclick: () => start(false) }, icon("mdi:sword-cross", 24), "Spustit útok skřetů");
-  } else if (sg.replay) {
-    state = "Útok běží znovu (jen hra, bez odměny).";
-    btn = h("button", { class: "btn red block", "data-act": "siege-stop", onclick: async () => {
-      const yes = await ctx.confirm({ title: "Ukončit útok?", text: "Rozehraná hra skončí a děti se vrátí do běžného panelu.", yes: "Ukončit", no: "Zpět" });
-      if (yes) await ctx.act("siege_stop", {});
-    } }, icon("mdi:stop", 24), "Ukončit útok");
-  } else if (sg.active) {
-    state = "Útok běží.";
+  drawDays();
+  const daysRow = h("div", { class: "p-fieldrow", "data-id": "days-row", style: { display: cfg.period === "daily" ? "" : "none" } }, h("div", { class: "p-label" }, "Dny"), dayBox);
+  const kinds = seg([["daily", "Denní"], ["oneoff", "Jednorázový"]], cfg.period, (v) => {
+    if (editing) return;                                       // a task keeps its kind: a new one is added instead
+    cfg.period = v;
+    for (const b of kinds.querySelectorAll("button")) b.setAttribute("aria-selected", String(b.dataset.segId === v));
+    daysRow.style.display = v === "daily" ? "" : "none";
+  }, "period");
+  if (editing) kinds.classList.add("locked");
+  root.append(card(
+    h("div", { class: "p-fieldrow" }, h("label", { class: "p-label" }, "Název"), name),
+    h("div", { class: "p-fieldrow" }, h("div", { class: "p-label" }, "Typ"), kinds),
+    ctx.cat.kids.length > 1 ? h("div", { class: "p-fieldrow" }, h("div", { class: "p-label" }, "Pro koho"), whoPicker(ctx, cfg.who, "cfg", (v) => { cfg.who = v; }, true),
+      h("div", { class: "p-muted small" }, "Nic nevybráno = všechny děti. Pouze 1 = splní kterékoli dítě, ale jen jedno.")) : null,
+    daysRow,
+    h("div", { class: "p-fieldrow" }, h("label", { class: "p-label" }, "Odměna"), h("div", { class: "p-inline" }, reward, coin()))));
+  const check = () => {
+    if (!cfg.name.trim()) return ctx.toast("Napiš název úkolu.", "error"), false;
+    if (!(cfg.reward >= 0 && cfg.reward <= 50)) return ctx.toast("Odměna musí být číslo 0–50.", "error"), false;
+    return true;
+  };
+  const actions = h("div", { class: "p-actions" });
+  if (!editing) {
+    actions.append(h("button", { class: "p-btn ghost", onclick: () => (pv.from ? go(ctx, pv.from) : back(ctx)) }, "Zpět"),
+      h("button", { class: "p-btn primary", "data-act": "config-add", onclick: async () => {
+        if (!check()) return;
+        if (await ctx.act("add_task", { period: cfg.period, ...taskParams(cfg, allKids) })) { ctx.toast(`Přidáno: ${cfg.name.trim()}`); back(ctx); }
+      } }, "Přidat"));
   } else {
-    state = `Ubráněno.${sg.replay_wins ? ` Znovu ubráněno: ${sg.replay_wins}×.` : ""}`;
-    btn = h("button", { class: "btn gold block", "data-act": "siege-replay", onclick: () => start(true) }, icon("mdi:replay", 24), "Spustit útok znovu");
+    actions.append(h("button", { class: "p-btn danger-ghost", "data-act": "config-remove", onclick: () => removeTask(ctx, pv.task) }, "Odebrat"),
+      h("button", { class: "p-btn primary", "data-act": "config-save", onclick: async () => {
+        if (!check()) return;
+        const p = taskParams(cfg, allKids);
+        if (await ctx.act("update_task", { task_id: pv.task.id, ...p })) { ctx.toast("Uloženo."); go(ctx, "edit"); }
+      } }, "Uložit"));
   }
-  return h("div", { class: "section", "data-id": "siege-admin", "data-state": sg.waiting ? "waiting" : sg.replay ? "replay" : sg.active ? "active" : "won" },
-    h("h2", {}, "Útok skřetů"), h("p", { class: "muted", "data-id": "siege-state" }, state), btn);
+  root.append(actions);
+  if (cfg.period === "daily") root.append(h("p", { class: "p-muted small" }, editing ? "Změna dnů a dětí platí od zítřka, název a odměna hned." : "Nový denní úkol se ukáže hned, když dnes je jeho den."));
+  return root;
 }
 
+async function removeTask(ctx, t) {
+  const mine = t.kids && t.kids.length ? t.kids : ctx.cat.kids.map((k) => k.id);
+  let only = null;
+  if (mine.length > 1) {
+    only = await choose(ctx, `Odebrat „${t.name}“`, "Pro koho?", [["*", mine.length === 2 ? "Oba" : "Všechny děti"], ...mine.map((k) => [k, `Jen ${kidName(ctx, k)}`])]);
+    if (only === null) return;
+  } else if (!(await pConfirm(ctx, { title: `Odebrat „${t.name}“?`, text: t.period === "daily" ? "Denní úkol se vypne, historie zůstane." : "Dětem zmizí.", yes: "Odebrat", no: "Zpět", danger: true }))) return;
+  const data = { task_id: t.id, ...(only && only !== "*" ? { only_kid: only } : {}) };
+  if (await ctx.act("remove_task", data)) { ctx.toast("Odebráno."); go(ctx, "edit"); }
+}
+
+/** A sheet in the look of the Rodič screen (not the game's parchment): build(c, close) -> the content. */
+export function pSheet(ctx, build, onClose = null) {
+  ctx.sheet((c, close) => h("div", { class: `parent-ui${c.dark ? " dark" : ""}`, "data-psheet": "" }, build(c, close)), { parent: true, dark: ctx.dark, onClose });
+}
+
+/** ctx.confirm in the look of Rodič: resolves true / false (false also when dismissed). The buttons keep data-act yes / no. */
+export function pConfirm(ctx, { title, text, yes = "Ano", no = "Zrušit", danger = false }) {
+  return new Promise((resolve) => {
+    let answered = false;
+    const answer = (v, close) => { answered = true; resolve(v); close(); };
+    pSheet(ctx, (c, close) => h("div", { "data-id": "p-confirm" }, h("h2", {}, title), text ? h("p", { class: "p-muted" }, text) : null,
+      h("div", { class: "p-actions" },
+        h("button", { class: "p-btn ghost", "data-act": "no", onclick: () => answer(false, close) }, no),
+        h("button", { class: `p-btn ${danger ? "danger" : "primary"}`, "data-act": "yes", onclick: () => answer(true, close) }, yes))),
+    () => { if (!answered) resolve(false); });
+  });
+}
+
+/** A small choice sheet; resolves the chosen id or null. */
+function choose(ctx, title, text, options) {
+  return new Promise((resolve) => {
+    let done = false;
+    pSheet(ctx, (c, close) => h("div", { "data-id": "choose" },
+      h("h2", {}, title), h("p", { class: "p-muted" }, text),
+      ...options.map(([id, label]) => h("button", { class: "p-btn block", "data-choose": id, onclick: () => { done = true; close(); resolve(id); } }, label)),
+      h("button", { class: "p-btn ghost block", onclick: () => close() }, "Zpět")), () => { if (!done) resolve(null); });
+  });
+}
+
+/* ------------------------------------------------------------------ Upravit úkoly */
+
+/** The tasks a parent can still change: daily tasks that are not archived (on or switched off) and the one-off tasks not done yet.
+ *  A task for more children is one row with the children's chips. filter = "" (all) or a child id. */
+export function editableTasks(view, cat, filter = "") {
+  const info = view.tasks_info || {};
+  const eff = Object.fromEntries((info.tasks || cat.tasks).map((t) => [t.id, t]));
+  const allKids = cat.kids.map((k) => k.id);
+  const daily = cat.tasks.filter((t) => t.period === "daily" && !t.archived).map((t) => ({ ...t, ...(eff[t.id] || {}) }))
+    .filter((t) => t.enabled !== false && (t.days || []).length);
+  const oneoff = (info.oneoffs || []).filter((o) => o.status === "active").map((o) => ({ ...o, period: "oneoff", kids: o.kids && o.kids.length ? o.kids : allKids }));
+  return [...daily.map((t) => ({ ...t, kids: t.kids && t.kids.length ? t.kids : allKids })), ...oneoff].filter((t) => !filter || t.kids.includes(filter));
+}
+
+function editScreen(ctx) {
+  const allKids = ctx.cat.kids.map((k) => k.id);
+  const filter = ctx.ui.pfilter || "";
+  const root = h("div", { "data-id": "edit-tasks" }, backBar(ctx, "Upravit aktivní"));
+  if (ctx.cat.kids.length > 1) root.append(seg([["", "Vše"], ...ctx.cat.kids.map((k) => [k.id, k.name])], filter, (v) => { ctx.ui.pfilter = v; ctx.rerender(); }, "kidfilter"));
+  const list = card();
+  const tasks = editableTasks(ctx.view, ctx.cat, filter);
+  if (!tasks.length) list.append(h("div", { class: "p-muted" }, "Žádné úkoly."));
+  for (const t of tasks) {
+    list.append(h("button", { class: "p-row tap", "data-edit": t.id, onclick: () => go(ctx, "config", { cfg: { mode: "edit", ...configOf(t, allKids) }, task: t, from: "edit" }) },
+      h("div", { class: "grow" }, h("div", { class: "p-title" }, t.name), h("div", { class: "p-muted" }, `${t.period === "daily" ? "Denní" : "Jednorázový"}${t.single ? " · Pouze 1" : ""} · +${t.reward}`),
+        h("div", { class: "p-kids" }, t.kids.map((k) => h("span", { class: "p-kidchip" }, kidName(ctx, k))))),
+      icon("mdi:chevron-right", 22)));
+  }
+  root.append(list);
+  return root;
+}
+
+/* ------------------------------------------------------------------ Nastavení */
+
+function settingsTab(ctx) {
+  const out = [];
+  const kidsSec = h("div", { class: "p-section", "data-id": "kid-cards" }, h("h3", {}, "Děti"));
+  for (const k of ctx.cat.kids) {
+    const kid = ctx.view.kids[k.id];
+    if (!kid) continue;
+    kidsSec.append(h("div", { class: "p-card", "data-kid": k.id },
+      h("div", { class: "p-row" }, h("div", { class: "grow" }, h("div", { class: "p-title" }, k.name), h("div", { class: "p-muted" }, kid.hero ? kid.hero.name : "Hrdina ještě není vytvořen")),
+        h("div", { class: "p-coins", "data-coins": k.id }, coin(), ` ${kid.coins}`))));
+  }
+  out.push(kidsSec);
+  out.push(h("div", { class: "p-section" }, rowList(ctx, SETTINGS_ROWS)));
+  return out;
+}
+
+/* Nastavení: "Nastavení hry" first (addendum 1); its own rows lead to Zlaťáky, Schvalování úkolů, Prázdniny, Reset hrdiny (addendum 2). */
+const SETTINGS_ROWS = [["game", "Nastavení hry", "mdi:cog-outline"], ["history", "Historie", "mdi:history"], ["notify", "Notifikace", "mdi:bell-outline"],
+  ["story", "Příběh (místa a jména)", "mdi:book-open-variant"], ["guide", "Průvodce nastavením", "mdi:map-marker-path"]];
+export const GAME_ROWS = [["coins", "Zlaťáky", "mdi:plus-minus"], ["approvals", "Schvalování úkolů", "mdi:check-decagram-outline"],
+  ["holidays", "Prázdniny", "mdi:beach"], ["reset", "Reset hrdiny", "mdi:account-reactivate-outline"], ["report", "Kam hlásit problémy", "mdi:bug-outline"]];
+
+function rowList(ctx, rows, from = null) {
+  return card(...rows.map(([id, label, ic]) =>
+    h("button", { class: "p-row tap", "data-settings": id, onclick: () => go(ctx, id, from ? { from } : {}) }, icon(ic, 22), h("div", { class: "grow" }, label), icon("mdi:chevron-right", 22))));
+}
+
+function gameScreen(ctx) {
+  return h("div", { "data-screen": "game" }, backBar(ctx, "Nastavení hry"), rowList(ctx, GAME_ROWS, "game"));
+}
+
+function coinsScreen(ctx) {
+  const list = card();
+  for (const k of ctx.cat.kids) {
+    const kid = ctx.view.kids[k.id];
+    if (!kid) continue;
+    list.append(h("div", { class: "p-row", "data-kid": k.id },
+      h("div", { class: "grow" }, h("div", { class: "p-title" }, k.name), h("div", { class: "p-muted", "data-coins": k.id }, coin(), ` ${kid.coins}`)),
+      h("button", { class: "p-btn", "data-act": "adjust-custom", onclick: () => adjustSheet(ctx, k) }, icon("mdi:plus-minus", 20), "Změnit")));
+  }
+  return h("div", { "data-screen": "coins" }, backBar(ctx, "Zlaťáky", "game"), list);
+}
+
+function approvalsScreen(ctx) {
+  const list = card();
+  for (const k of ctx.cat.kids) {
+    const kid = ctx.view.kids[k.id];
+    if (!kid) continue;
+    list.append(h("div", { class: "p-row", "data-kid": k.id },
+      h("div", { class: "grow" }, h("div", { class: "p-title" }, k.name), h("div", { class: "p-muted small" }, kid.require_approval ? "Hotový úkol čeká, až ho schválíš." : "Hotový úkol se hned započítá.")),
+      h("button", { class: `p-switch${kid.require_approval ? " on" : ""}`, role: "switch", "aria-checked": String(!!kid.require_approval), "aria-pressed": String(!!kid.require_approval), "aria-label": `Schvalovat (${k.name})`, "data-act": "approval",
+        onclick: () => ctx.act("set_approval", { kid_id: k.id, value: !kid.require_approval }) }, h("span", {}))));
+  }
+  return h("div", { "data-screen": "approvals" }, backBar(ctx, "Schvalování úkolů", "game"),
+    h("p", { class: "p-muted small" }, "Když je schvalování zapnuté, hotové úkoly čekají v Přehledu v sekci Ke schválení."), list);
+}
+
+/** Reset hrdiny (addendum 2, before: Smazat hrdinu on the child's card): pick a child, the same confirmation and the same reset_hero. */
+function resetScreen(ctx) {
+  const list = card();
+  for (const k of ctx.cat.kids) {
+    const kid = ctx.view.kids[k.id];
+    if (!kid) continue;
+    list.append(h("div", { class: "p-row", "data-kid": k.id },
+      h("div", { class: "grow" }, h("div", { class: "p-title" }, k.name), h("div", { class: "p-muted" }, kid.hero ? kid.hero.name : "Hrdina ještě není vytvořen")),
+      kid.hero ? h("button", { class: "p-btn danger-ghost", "data-act": "reset-hero", onclick: async () => {
+        const yes = await pConfirm(ctx, { title: `Smazat hrdinu (${k.name})?`, text: "Zlaťáky a věci zůstanou, hrdina si vybere vzhled znovu.", yes: "Smazat hrdinu", no: "Zpět", danger: true });
+        if (yes) await ctx.act("reset_hero", { kid_id: k.id });
+      } }, "Resetovat") : null));
+  }
+  return h("div", { "data-screen": "reset" }, backBar(ctx, "Reset hrdiny", "game"),
+    h("p", { class: "p-muted small" }, "Dítě si vytvoří hrdinu znovu (vzhled a jméno) a znovu si nasadí výbavu. Zlaťáky, věci a splněné úkoly zůstanou."), list);
+}
+
+/** #175 Kam hlásit problémy: the GitHub repository "Nahlásit problém" opens (empty = the default of the package). */
+function reportScreen(ctx) {
+  const st = ctx.view.settings || {};
+  const def = st.report_repo_default || "";
+  const own = st.report_repo && st.report_repo !== def ? st.report_repo : "";
+  const field = h("input", { class: "p-field", type: "text", value: own, placeholder: def, "data-field": "report-repo", autocapitalize: "off", autocorrect: "off", spellcheck: "false", "aria-label": "Repozitář na GitHubu" });
+  return h("div", { "data-screen": "report" }, backBar(ctx, "Kam hlásit problémy", "game"),
+    h("p", { class: "p-muted small" }, "Tlačítko „Nahlásit problém“ v O hře otevře nové hlášení na GitHubu v tomto repozitáři. Zadejte vlastník/název, např. ",
+      h("code", {}, "eloupak/homequest-feedback"), ". Prázdné pole = výchozí ", h("code", {}, def), "."),
+    card(h("div", { class: "p-fieldrow" }, h("label", { class: "p-label" }, "Repozitář na GitHubu"), field)),
+    h("div", { class: "p-actions" },
+      h("button", { class: "p-btn primary", "data-act": "report-repo-save", onclick: async () => {
+        if (await ctx.act("set_report_repo", { repo: field.value.trim() || null })) ctx.toast("Uloženo.");
+      } }, "Uložit")));
+}
+
+/** The facts "Nahlásit problém" fills in (technical only). */
+export function reportFacts(ctx) {
+  const v = (ctx.view.update && ctx.view.update.installed) || ctx.view.version || "";
+  const b = ctx.view.build ? String(ctx.view.build).split(" ") : null;
+  return { hq: b ? `${v} (TEST ${b[0]} ${b[1]})` : v, ha: ctx.haVersion, ua: typeof navigator !== "undefined" ? navigator.userAgent : "", lang: ctx.lang };
+}
+
+function adjustSheet(ctx, kidInfo) {
+  let mode = "add";                                                       // iOS has no minus on the number pad: Přidat / Odebrat + a positive number
+  pSheet(ctx, (c, close) => {
+    const kid = c.view.kids[kidInfo.id];
+    const delta = h("input", { class: "p-field num", type: "number", inputmode: "numeric", min: "1", placeholder: "3", "data-field": "delta", "aria-label": "Počet zlaťáků" });
+    const note = h("input", { class: "p-field", type: "text", maxlength: "100", placeholder: "Důvod (nepovinný)", "data-field": "note" });
+    const sign = seg([["add", "Přidat"], ["sub", "Odebrat"]], mode, (v) => {
+      mode = v;
+      for (const b of sign.querySelectorAll("button")) b.setAttribute("aria-selected", String(b.dataset.segId === v));
+    }, "adjust-mode");
+    return h("div", { "data-id": "adjust" },
+      h("h2", {}, `Zlaťáky: ${kidInfo.name}`),
+      h("div", { class: "p-muted" }, "Teď má: ", coin(), ` ${kid ? kid.coins : 0}. Odebrat smí i pod nulu.`),
+      h("div", { class: "p-fieldrow" }, sign),
+      h("div", { class: "p-fieldrow p-inline" }, delta, coin()), h("div", { class: "p-fieldrow" }, note),
+      h("div", { class: "p-actions" },
+        h("button", { class: "p-btn ghost", onclick: close }, "Zrušit"),
+        h("button", { class: "p-btn primary", "data-act": "adjust-save", onclick: async () => {
+          const n = Math.abs(parseInt(delta.value, 10));
+          if (!n) return c.toast("Napiš počet zlaťáků, např. 3.", "error");
+          close();
+          await c.act("admin_adjust", { kid_id: kidInfo.id, delta: mode === "sub" ? -n : n, note: note.value.trim() });
+        } }, "Uložit")));
+  });
+}
+
+function historyScreen(ctx) {
+  const root = h("div", { "data-screen": "history" }, backBar(ctx, "Historie"));
+  const hk = ctx.ui.histKid && ctx.view.kids[ctx.ui.histKid] ? ctx.ui.histKid : ctx.cat.kids[0] && ctx.cat.kids[0].id;
+  if (ctx.cat.kids.length > 1) root.append(seg(ctx.cat.kids.map((k) => [k.id, k.name]), hk, (v) => { ctx.ui.histKid = v; ctx.rerender(); }, "histkid"));
+  const entries = hk && ctx.view.kids[hk] ? ctx.view.kids[hk].history.slice().reverse().slice(0, 30) : [];
+  const list = card();
+  if (!entries.length) list.append(h("div", { class: "p-muted" }, "Zatím nic."));
+  for (const e of entries) list.append(h("div", { class: "p-row hist" }, h("span", { class: "p-muted t" }, when(e.ts)), h("span", { class: "grow" }, historyText(e, ctx.cat))));
+  root.append(list);
+  return root;
+}
+
+function subScreen(ctx, pv) {
+  if (pv.name === "config") return configScreen(ctx, pv);
+  if (pv.name === "edit") return editScreen(ctx);
+  if (pv.name === "history") return historyScreen(ctx);
+  if (pv.name === "game") return gameScreen(ctx);
+  if (pv.name === "coins") return coinsScreen(ctx);
+  if (pv.name === "approvals") return approvalsScreen(ctx);
+  if (pv.name === "reset") return resetScreen(ctx);
+  if (pv.name === "report") return reportScreen(ctx);
+  const titles = { holidays: "Prázdniny", notify: "Notifikace", story: "Příběh", guide: "Průvodce nastavením" };
+  const root = h("div", { "data-screen": pv.name }, backBar(ctx, titles[pv.name] || "", pv.from));
+  const wrap = h("div", { class: "p-legacy" });            // the cards of v1.5/v1.6 (settings.js, setup.js) inside the sober frame
+  if (pv.name === "holidays") wrap.append(h("p", { class: "p-muted", "data-id": "holidays-hint" }, "Během prázdnin se úkoly chovají jako ve volné dny."), holidaysCard(ctx));
+  else if (pv.name === "guide") wrap.append(renderSetup(ctx));
+  else {
+    const want = { notify: ["settings-notify"], story: ["settings-story"] }[pv.name] || [];
+    for (const sec of settingsSections(ctx)) if (want.includes(sec.dataset.id)) wrap.append(sec);
+    if (!wrap.childNodes.length) wrap.append(card(h("div", { class: "p-muted" }, "Zatím tu nic není.")));
+  }
+  root.append(wrap);
+  return root;
+}
+
+/* ------------------------------------------------------------------ O hře */
+
+function aboutTab(ctx) {
+  const v = (ctx.view.update && ctx.view.update.installed) || ctx.view.version || "";
+  const b = ctx.view.build ? String(ctx.view.build).split(" ") : null;          // TEST: "<branch> <commit> <date> <time>" from deploy.sh test
+  return h("div", { class: "p-section", "data-id": "about" },
+    card(
+      h("div", { class: "p-row" }, h("div", { class: "grow" }, h("strong", {}, "HomeQuest")),
+        h("div", { "data-id": "version" }, b ? `TEST · ${b[0]} ${b[1]}` : v ? `verze ${v}` : "verze neznámá")),
+      b ? h("div", { class: "p-muted small", "data-id": "build" }, `nasazeno ${b.slice(2).join(" ")}${v ? ` · manifest ${v}` : ""}`) : null,
+      h("p", {}, "Domácí úkoly jako dobrodružství."),
+      h("div", { class: "p-label" }, "Licence"),
+      h("p", { "data-id": "license" }, "CC BY-NC-ND 4.0: hru můžete zdarma používat doma a dál ji šířit beze změny a s uvedením autora. Nesmí se prodávat ani upravovat a šířit upravená."),
+      h("a", { class: "p-link", href: LICENSE_URL, target: "_blank", rel: "noopener" }, "Plné znění licence")),
+    h("a", { class: "p-btn block", "data-act": "report-problem", href: reportUrl((ctx.view.settings || {}).report_repo || "eloupak/homequest-dist", reportFacts(ctx)), target: "_blank", rel: "noopener" },
+      icon("mdi:bug-outline", 22), "Nahlásit problém"),
+    h("p", { class: "p-muted small", "data-id": "report-hint" }, "Otevře nové hlášení na GitHubu s verzí hry a Home Assistantu, bez jmen. Kam se hlásí, změníte v Nastavení hry."));
+}

@@ -85,24 +85,33 @@ async def _async_sync_kid_panels(hass: HomeAssistant, mgr: HomeQuestManager, reg
         if path in registered:
             continue
         # the server refuses every parent command that comes with a child panel's kid (access.resolve), hiding the tab is not the protection
-        await panel_custom.async_register_panel(
-            hass,
-            frontend_url_path=path,
-            webcomponent_name="homequest-panel",
-            sidebar_title=f"HomeQuest {kid['name']}",
-            sidebar_icon="mdi:sword-cross",
-            module_url=module_url,                    # the same URL as /homequest: another ?v= loads the module twice (define error, #137)
-            config={"kid_id": kid["id"]},
-            require_admin=True,
-            embed_iframe=False,
-        )
+        try:
+            await panel_custom.async_register_panel(
+                hass,
+                frontend_url_path=path,
+                webcomponent_name="homequest-panel",
+                sidebar_title=f"HomeQuest {kid['name']}",
+                sidebar_icon="mdi:sword-cross",
+                module_url=module_url,                # the same URL as /homequest: another ?v= loads the module twice (define error, #137)
+                config={"kid_id": kid["id"]},
+                require_admin=True,
+                embed_iframe=False,
+            )
+        except Exception as err:  # noqa: BLE001  (#140 d: the family sees it in Repairs, the other panels go on)
+            _panel_failed(mgr, path, err)
+            continue
         registered[path] = kid["name"]
+
+
+def _panel_failed(mgr: HomeQuestManager, path: str, err: Exception) -> None:
+    _LOGGER.error("HomeQuest panel /%s could not be registered: %s", path, err)
+    mgr.repair("panel_failed", {"panel": f"/{path}", "error": f"{type(err).__name__}: {err}"[:300]})
 
 
 async def _async_start(hass: HomeAssistant, config: dict[str, Any]) -> bool:
     mgr = HomeQuestManager(hass)
     if not await mgr.async_setup():
-        _LOGGER.error("HomeQuest not started: fix catalog.yaml and restart Home Assistant")
+        _LOGGER.error("HomeQuest not started: see the error above (Settings -> Repairs), then restart Home Assistant")
         return False
     hass.data[DOMAIN] = mgr
 
@@ -119,16 +128,19 @@ async def _async_start(hass: HomeAssistant, config: dict[str, Any]) -> bool:
         [StaticPathConfig(ASSETS_URL, str(mgr.assets_dir), True)]
     )
     panel_url = f"{STATIC_URL}/homequest-panel.js?v={VERSION}-{int(time.time())}"   # one URL for every HomeQuest panel of this HA run
-    await panel_custom.async_register_panel(
-        hass,
-        frontend_url_path="homequest",
-        webcomponent_name="homequest-panel",
-        sidebar_title="HomeQuest",
-        sidebar_icon="mdi:sword",
-        module_url=panel_url,
-        require_admin=False,
-        embed_iframe=False,
-    )
+    try:
+        await panel_custom.async_register_panel(
+            hass,
+            frontend_url_path="homequest",
+            webcomponent_name="homequest-panel",
+            sidebar_title="HomeQuest",
+            sidebar_icon="mdi:castle",
+            module_url=panel_url,
+            require_admin=False,
+            embed_iframe=False,
+        )
+    except Exception as err:  # noqa: BLE001  (#140 d)
+        _panel_failed(mgr, "homequest", err)
     kid_panels: dict[str, str] = {}
 
     async def _kids_changed() -> None:

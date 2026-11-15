@@ -9,6 +9,7 @@ výbavu pro svého hrdinu a společně staví tvrz. Rodič úkoly nastavuje a sc
 - Home Assistant 2026.11 nebo novější (**Marketplace** je v něm zabudovaný; integrace sama běží od 2026.8.0).
 - Pro každé dítě vlastní účet v Home Assistantu (bez práv správce): **Nastavení** → **Osoby** → **Přidat osobu**, zapnout **Povolit přihlášení**.
 - Pro hraní na telefonu a notifikace aplikaci Home Assistant.
+- Telefon nebo tablet s iOS 15 / iPadOS 15 nebo novějším, nebo Android s Chrome / Android System WebView 100 nebo novějším (v prohlížeči i Firefox 100+). Na starším zařízení hra místo hraní ukáže krátkou hlášku.
 
 ## Instalace
 1. **Nastavení** → **Marketplace** → vpravo nahoře **Přidat z odkazu na GitHubu** → do pole **Odkaz na GitHub** zadejte `https://github.com/eloupak/homequest-dist` → **Přidat**.

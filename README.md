@@ -9,6 +9,7 @@ buy gear for their hero and build a fortress together. A parent sets up and appr
 - Home Assistant 2026.11 or newer (the **Marketplace** is built in; the integration itself runs from 2026.8.0).
 - A Home Assistant account for each child (without administrator rights): **Settings** → **People** → **Add person**, turn on **Allow login**.
 - The Home Assistant app for playing on a phone and for notifications.
+- A phone or tablet with iOS 15 / iPadOS 15 or newer, or Android with Chrome / Android System WebView 100 or newer (Firefox 100+ in a browser). On an older device the game shows a short message instead of the game.
 - The game is in Czech for now.
 
 ## Installation

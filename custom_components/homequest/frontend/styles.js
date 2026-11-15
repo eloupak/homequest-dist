@@ -226,6 +226,13 @@ select.field option:hover, select.field option:focus, select.field option:checke
 .scene-bg.fade { opacity: 0; transition: opacity 1.3s ease-in-out; }
 .scene-bg.fade.in { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .scene-bg.fade { transition: none; } }
+/* iOS 15 / Safari 15 has no container units (cqw/cqh, Safari 16+): the width above is dropped and the scene collapses (#174). */
+@supports not (width: 1cqw) {
+  .scene { width: max(100%, 66.667vh); }
+  .scene-box.tab .scene { width: 100%; }
+  .hero-zoom .hq-hero { width: min(100vw, 100vh); }
+  .hero-zoom canvas { width: min(100vw, 100vh); height: min(100vw, 100vh); }
+}
 /* progress of the fortress */
 .prog { height: 10px; border-radius: 6px; background: #0003; overflow: hidden; margin: 8px 0 4px; box-shadow: inset 0 0 0 1px #0002; }
 .prog i { display: block; height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold)); border-radius: 6px; transition: width 0.7s ease-out; }
@@ -403,4 +410,96 @@ nav:empty { display: none; }
 @keyframes hq-amulet-fly { 0% { transform: none; opacity: 1; } 100% { transform: translateY(45vh) scale(.15); opacity: 0; } }
 .amulet-name { font: 700 22px var(--hq-font-heading, Georgia, serif); color: var(--parch); }
 .amulet-x { position: absolute; top: calc(10px + env(safe-area-inset-top)); right: 10px; width: 56px; height: 56px; border-radius: 50%; border: 3px solid var(--parch); background: #2a2742; color: var(--parch); font-size: 28px; line-height: 1; }
+
+/* ---- #129 header: portraits of the heroes + the shield of Rodič ---- */
+.kidswitch { align-items: center; }
+.kidface { position: relative; width: 46px; height: 46px; min-width: 46px; padding: 0; border-radius: 50%; background: #3b3766; border: 2px solid #ffffff33; display: inline-flex; align-items: center; justify-content: center; color: var(--parch); overflow: visible; }
+.kidface .avatar { width: 100%; height: 100%; border-radius: 50%; border: 0; background: var(--stage); }
+.kidface[aria-pressed="true"] { border: 3px solid var(--gold); box-shadow: 0 0 0 2px #e8b33a55; }
+.kidface .badge { top: -4px; right: -6px; }
+.kiddivider { width: 1px; height: 32px; background: #ffffff40; margin: 0 4px; flex: none; }
+.parentbtn ha-icon { --mdc-icon-size: 28px; }
+.parentbtn[aria-pressed="true"] { color: var(--gold); }
+.kidselect { min-height: 44px; border-radius: 22px; padding: 0 12px; background: var(--panel); color: var(--parch); border: 2px solid var(--gold-dark); font: inherit; font-weight: bold; }
+nav:empty { border-top: 0; }
+
+/* ---- #129 the Rodič screen: sober and technical (tokens .parent-ui in tokens.css, light/dark after the HA theme) ---- */
+.parent-ui { font-family: var(--hq-p-font); background: var(--hq-p-bg); color: var(--hq-p-text); margin: -14px -12px -24px; padding: 12px 12px 32px; min-height: calc(100% + 38px); box-sizing: border-box; font-size: 16px; line-height: 1.35; color-scheme: light; }
+.parent-ui.dark { color-scheme: dark; }
+.parent-ui { --hq-p-primary: var(--primary-color, var(--hq-p-accent)); --hq-p-primary-text: var(--text-primary-color, var(--hq-p-accent-text)); }   /* addendum 2: primary actions in the colour of the HA theme */
+.sheet .parent-ui { margin: 0; min-height: 0; padding: 4px 0 0; background: transparent; }
+.sheet.p-sheet.parent-ui { margin: 0; min-height: 0; padding: 18px 16px calc(18px + env(safe-area-inset-bottom)); }
+.sheet.p-sheet { background: var(--hq-p-bg); color: var(--hq-p-text); font-family: var(--hq-p-font); border-top: 0; border-radius: 16px 16px 0 0; box-shadow: 0 -4px 24px #0004; }
+.sheet.p-sheet::before { content: ""; display: block; width: 40px; height: 5px; border-radius: 3px; background: var(--hq-p-line); margin: -8px auto 10px; }
+.sheet.p-sheet h2 { font-size: 19px; margin: 0 0 6px; }
+.parent-ui .p-btn.danger { background: var(--hq-p-danger); color: #fff; border-color: transparent; }
+.parent-ui h2, .parent-ui h3 { font-family: var(--hq-p-font); font-weight: 600; color: var(--hq-p-text); }
+.parent-ui h2 { font-size: 20px; }
+.parent-ui h3 { font-size: 15px; text-transform: uppercase; letter-spacing: .04em; color: var(--hq-p-muted); margin: 0 4px 8px; }
+.parent-ui .p-section { margin-top: 18px; }
+.parent-ui .p-card { background: var(--hq-p-surface); border: 1px solid var(--hq-p-line); border-radius: 12px; padding: 4px 14px; }
+.parent-ui .p-card + .p-card { margin-top: 10px; }
+.parent-ui .p-row { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 6px 0; border-bottom: 1px solid var(--hq-p-line); width: 100%; text-align: left; background: none; color: inherit; }
+.parent-ui .p-card > .p-row:last-child, .parent-ui .p-card > :last-child.p-row { border-bottom: 0; }
+.parent-ui .p-row.tap { cursor: pointer; }
+.parent-ui .p-row.end { justify-content: flex-end; }
+.parent-ui .grow { flex: 1; min-width: 0; }
+.parent-ui .p-title { font-weight: 600; }
+.parent-ui .p-muted { color: var(--hq-p-muted); font-size: 14px; }
+.parent-ui .small { font-size: 13px; }
+.parent-ui .p-label { color: var(--hq-p-muted); font-size: 13px; font-weight: 600; margin: 10px 0 6px; }
+.parent-ui .p-seg { display: flex; gap: 2px; background: var(--hq-p-chip); border-radius: 10px; padding: 3px; margin: 2px 0 6px; }
+.parent-ui .p-seg button { flex: 1; min-height: 44px; border-radius: 8px; background: transparent; color: var(--hq-p-muted); font-weight: 600; font-size: 15px; }
+.parent-ui .p-seg button[aria-selected="true"] { background: var(--hq-p-surface); color: var(--hq-p-text); box-shadow: 0 1px 2px #0003; }
+.parent-ui .p-seg.locked button[aria-selected="false"] { opacity: .4; }
+.parent-ui .p-btn { min-height: 44px; padding: 0 16px; border-radius: 10px; background: var(--hq-p-chip); color: var(--hq-p-text); font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--hq-p-line); }
+.parent-ui .p-btn.primary { background: var(--hq-p-primary); color: var(--hq-p-primary-text); border-color: transparent; }
+.parent-ui .p-btn.ghost { background: transparent; border-color: transparent; }
+.parent-ui .p-btn.danger-ghost { background: transparent; color: var(--hq-p-danger); border-color: var(--hq-p-danger); }
+.parent-ui .p-btn.block { width: 100%; margin: 4px 0 8px; }
+.parent-ui a.p-btn { text-decoration: none; box-sizing: border-box; }
+.parent-ui a.p-btn.block { margin-top: 14px; }   /* #175 Nahlásit problém is a link (a new tab) */
+.parent-ui code { font-size: 13px; background: var(--hq-p-chip); border-radius: 4px; padding: 1px 4px; }
+.parent-ui .p-btn ha-icon, .parent-ui .p-icon ha-icon, .parent-ui .p-row > ha-icon { --mdc-icon-size: 22px; }
+.parent-ui .p-icon { width: 44px; height: 44px; min-width: 44px; border-radius: 22px; background: var(--hq-p-chip); color: var(--hq-p-text); display: inline-flex; align-items: center; justify-content: center; }
+.parent-ui .p-icon.ok { background: var(--hq-p-ok); color: #fff; }
+.parent-ui .p-icon.danger { background: transparent; color: var(--hq-p-danger); border: 1px solid var(--hq-p-danger); }
+.parent-ui .p-link { background: none; color: var(--hq-p-accent); text-decoration: none; font-weight: 600; min-height: 44px; display: inline-flex; align-items: center; }
+.parent-ui .p-link.danger { color: var(--hq-p-danger); font-weight: 500; font-size: 14px; }
+.parent-ui .p-field { min-height: 44px; border-radius: 10px; border: 1px solid var(--hq-p-line); background: var(--hq-p-bg); color: var(--hq-p-text); padding: 0 12px; font: inherit; width: 100%; box-sizing: border-box; }
+.parent-ui .p-field.num { width: 90px; }
+.parent-ui .p-inline { display: flex; gap: 8px; align-items: center; padding: 10px 0 4px; }
+.parent-ui .p-inline .p-field { flex: 1; }
+.parent-ui .p-inline .p-field.num { flex: none; }
+.parent-ui .p-fieldrow { padding: 4px 0 8px; }
+.parent-ui .p-checks, .parent-ui .checks { display: flex; flex-wrap: wrap; gap: 8px; }
+.parent-ui .p-chip, .parent-ui .tgl { min-height: 44px; padding: 0 14px; border-radius: 20px; background: var(--hq-p-chip); color: var(--hq-p-text); border: 1px solid var(--hq-p-line); font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+.parent-ui .p-chip.on, .parent-ui .tgl.on { background: var(--hq-p-accent); color: var(--hq-p-accent-text); border-color: transparent; }
+.parent-ui .p-actions { display: flex; justify-content: space-between; gap: 10px; margin: 14px 0 6px; }
+.parent-ui .p-actions .p-btn { flex: 1; }
+.parent-ui .p-back { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+.parent-ui .p-back .p-btn { padding: 0 8px 0 2px; }
+.parent-ui .p-banner { display: flex; gap: 10px; align-items: center; background: var(--hq-p-surface); border: 1px solid var(--hq-p-accent); border-radius: 12px; padding: 10px 14px; }
+.parent-ui .p-coins { font-weight: 700; font-size: 18px; }
+.parent-ui .p-kids { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+.parent-ui .p-kidchip { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: var(--hq-p-chip); color: var(--hq-p-muted); }
+.parent-ui .p-switch { width: 56px; height: 44px; min-width: 56px; background: none; position: relative; padding: 0; }   /* 44 px tap target, a 52x32 track */
+.parent-ui .p-switch::before { content: ""; position: absolute; left: 2px; right: 2px; top: 6px; bottom: 6px; border-radius: 16px; background: var(--hq-p-line); }
+.parent-ui .p-switch span { position: absolute; top: 9px; left: 5px; width: 26px; height: 26px; border-radius: 50%; background: #fff; transition: left .15s; box-shadow: 0 1px 2px #0005; }
+.parent-ui .p-switch.on::before { background: var(--hq-p-ok); }
+.parent-ui .p-switch.on span { left: 25px; }
+.parent-ui .hist .t { flex: none; width: 92px; }
+/* the cards of the settings and the guide (v1.5/v1.6) inside the sober frame */
+.parent-ui .p-legacy .section { margin-top: 0; }
+.parent-ui .p-legacy .card { background: var(--hq-p-surface); color: var(--hq-p-text); border: 1px solid var(--hq-p-line); box-shadow: none; border-radius: 12px; }
+.parent-ui .p-legacy .muted { color: var(--hq-p-muted); }
+.parent-ui .p-legacy h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .04em; color: var(--hq-p-muted); margin: 14px 4px 8px; }
+.parent-ui .p-legacy .field { background: var(--hq-p-bg); color: var(--hq-p-text); border-color: var(--hq-p-line); }
+/* addendum 2 (#129): the game's buttons (.btn green / gold / red / ghost) of those cards and sheets in the parent's look - never yellow */
+.parent-ui .btn { min-height: 44px; padding: 0 16px; border-radius: 10px; font-family: var(--hq-p-font); font-size: 16px; font-weight: 600; background: var(--hq-p-chip); color: var(--hq-p-text); border: 1px solid var(--hq-p-line); }
+.parent-ui .btn:active { transform: none; border-bottom-width: 1px; }
+.parent-ui .btn.gold { background: var(--hq-p-primary); color: var(--hq-p-primary-text); border-color: transparent; }
+.parent-ui .btn.red { background: var(--hq-p-danger); color: #fff; border-color: transparent; }
+.parent-ui .btn.ghost, .parent-ui .card .btn.ghost { background: transparent; color: var(--hq-p-text); border: 1px solid var(--hq-p-line); }
+.parent-ui .btn ha-icon { --mdc-icon-size: 20px; }
 `;

@@ -10,5 +10,27 @@
       "single_instance_allowed": "HomeQuest už je nastavený (jeden na Home Assistant).",
       "already_configured": "HomeQuest už je nastavený (jeden na Home Assistant)."
     }
+  },
+  "issues": {
+    "backup_failed": {
+      "title": "HomeQuest se nespustil: záloha před aktualizací selhala",
+      "description": "HomeQuest se aktualizoval z {from} na {to}, ale před úpravou dat se mu nepodařilo udělat zálohu ({error}). Nic se nezměnilo a HomeQuest neběží.\n\nUvolněte místo na disku nebo opravte oprávnění složky a restartujte Home Assistant. HomeQuest to při dalším startu zkusí znovu."
+    },
+    "migration_failed": {
+      "title": "HomeQuest se nespustil: úprava dat selhala",
+      "description": "HomeQuest nedokázal upravit data pro novou verzi ({error}). Uložená hra se nezměnila a HomeQuest neběží.\n\nZáloha z doby před aktualizací: {backup}. Restartujte Home Assistant a zkuste to znovu. Když se to zopakuje, nainstalujte předchozí verzi (Nastavení → Aktualizace) a problém nahlaste."
+    },
+    "numbers_changed": {
+      "title": "HomeQuest: po aktualizaci se změnila čísla dětí",
+      "description": "Po aktualizaci z {from} na {to} se některá čísla liší od stavu před ní: {changes}.\n\nZkontrolujte v HomeQuestu zlaťáky a věci dětí. Záloha z doby před aktualizací: {backup}. Pokud je vše v pořádku, můžete hlášení ignorovat."
+    },
+    "panel_failed": {
+      "title": "HomeQuest: panel se nepodařilo otevřít",
+      "description": "Panel HomeQuestu {panel} se nepodařilo přidat do bočního menu ({error}). Restartujte Home Assistant. Když se to zopakuje, problém nahlaste."
+    },
+    "restart_required": {
+      "title": "HomeQuest: je potřeba restart",
+      "description": "Je nainstalovaný HomeQuest {installed}, ale pořád běží verze {running}. Aktualizaci dokončíte restartem Home Assistantu (HomeQuest si před úpravou dat udělá zálohu)."
+    }
   }
 }
