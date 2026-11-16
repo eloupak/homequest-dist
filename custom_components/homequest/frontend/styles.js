@@ -63,6 +63,9 @@ header ha-menu-button { color: var(--parch); }
 /* hidden layout overview (triple tap on the title, or ?debug=layout): a screenshot from the phone tells how the visible area is measured */
 .layoutdebug { position: absolute; left: 6px; right: 6px; top: 70px; z-index: 90; background: #000f; color: #9fff9f; font: 11px/1.35 ui-monospace, Menlo, monospace; padding: 8px 10px; border-radius: 8px; white-space: pre-wrap; word-break: break-all; pointer-events: auto; }
 .layoutdebug b { color: #ffd34d; }
+.layoutdebug .dbg-btns { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; font-family: system-ui, -apple-system, sans-serif; }
+.layoutdebug .dbg-btns .btn { min-height: 38px; padding: 4px 12px; font-size: 14px; text-decoration: none; }
+.layoutdebug { max-height: calc(100% - 80px); overflow: auto; }
 .chip {
   min-height: 44px; padding: 6px 14px; border-radius: 22px; background: var(--panel);
   border: 2px solid var(--gold-dark); color: var(--parch); font-weight: bold;
@@ -171,9 +174,15 @@ nav button ha-icon { --mdc-icon-size: 28px; }
   border: 4px solid var(--common); display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 148px;
 }
 .icard.r-common { border-color: var(--hq-rarity-common, #9A8F7E); }
-.icard.r-rare { border-color: var(--hq-rarity-rare, #3E8EDB); box-shadow: 0 0 10px color-mix(in srgb, var(--hq-rarity-rare, #3E8EDB) 65%, transparent); }
-.icard.r-epic { border-color: var(--hq-rarity-epic, #9B59D6); box-shadow: 0 0 12px color-mix(in srgb, var(--hq-rarity-epic, #9B59D6) 75%, transparent), inset 0 0 0 2px var(--gold); }
-.icard.r-legendary { border-color: var(--hq-rarity-legendary, #F0A93A); box-shadow: 0 0 16px color-mix(in srgb, var(--hq-rarity-legendary, #F0A93A) 85%, transparent), inset 0 0 0 3px #fff4; }
+.icard.r-rare { border-color: var(--hq-rarity-rare, #3E8EDB); box-shadow: 0 0 10px rgba(62, 142, 219, .65); }
+.icard.r-epic { border-color: var(--hq-rarity-epic, #9B59D6); box-shadow: 0 0 12px rgba(155, 89, 214, .75), inset 0 0 0 2px var(--gold); }
+.icard.r-legendary { border-color: var(--hq-rarity-legendary, #F0A93A); box-shadow: 0 0 16px rgba(240, 169, 58, .85), inset 0 0 0 3px #fff4; }
+/* color-mix: Safari 16.2+; older phones keep the fixed rgba glow above (a var() inside would void a plain fallback, #174) */
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+  .icard.r-rare { box-shadow: 0 0 10px color-mix(in srgb, var(--hq-rarity-rare, #3E8EDB) 65%, transparent); }
+  .icard.r-epic { box-shadow: 0 0 12px color-mix(in srgb, var(--hq-rarity-epic, #9B59D6) 75%, transparent), inset 0 0 0 2px var(--gold); }
+  .icard.r-legendary { box-shadow: 0 0 16px color-mix(in srgb, var(--hq-rarity-legendary, #F0A93A) 85%, transparent), inset 0 0 0 3px #fff4; }
+}
 .icard .thumb { width: 64px; height: 64px; image-rendering: pixelated; background: #0001; border-radius: 10px; }
 .icard .iname { font-weight: bold; font-size: 16px; }
 .icard .iprice { font-weight: bold; color: var(--ink-soft); }

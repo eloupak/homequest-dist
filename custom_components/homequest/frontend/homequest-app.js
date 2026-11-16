@@ -21,6 +21,9 @@ import { renderPinPad } from "./views/pin.js";            // #129 (15): the PIN 
 import { bgExists, introDialog, renderQuest, stageDialog } from "./views/quest.js";
 import { renderPrep, siegeMode, victoryFlow } from "./views/siege.js";
 import { layoutReport, reportLines, viewportHeight } from "./lib/layout.js";
+import { compatInfo, compatLines } from "./lib/compat.js";
+import { reportUrl } from "./lib/report.js";
+import { reportFacts } from "./views/parent.js";
 import { UPRIGHT_CSS, uprightGuard } from "./lib/upright.js";
 import { barGain, introSeen, markIntroSeen, markStageSeen, serverSeen, shouldAutoIntro, stageAt, stageSeen, stageToCelebrate } from "./lib/story.js";
 
@@ -174,7 +177,8 @@ class HomeQuestPanel extends HTMLElement {
     return { top: parseFloat(cs.paddingTop) || 0, right: parseFloat(cs.paddingRight) || 0, bottom: parseFloat(cs.paddingBottom) || 0, left: parseFloat(cs.paddingLeft) || 0 };
   }
 
-  /** The hidden overview (triple tap on the title): what the phone really measures. A tap on it closes it. */
+  /** The hidden overview (triple tap on the title): the diagnostics of the phone (lib/compat.js, #174) and what it really measures.
+   *  Buttons: Test výkonu, Kopírovat, Poslat (Nahlásit problém with the diagnostics), Zavřít; a tap on the text closes it. */
   _toggleDebug(on) {
     const want = on == null ? !this._dbg : on;
     if (!want) {
@@ -183,8 +187,13 @@ class HomeQuestPanel extends HTMLElement {
       return;
     }
     if (this._dbg) return;
-    this._dbg = document.createElement("div");
-    this._dbg.className = "layoutdebug";
+    const stop = (fn) => (ev) => { ev.stopPropagation(); fn(ev); };
+    this._dbgText = h("div", { class: "dbg-text", "data-id": "diag" });
+    const copy = h("button", { class: "btn small", "data-act": "diag-copy", onclick: stop((ev) => this._copyDiag(ev.currentTarget)) }, "Kopírovat");
+    const send = h("a", { class: "btn small", "data-act": "diag-send", target: "_blank", rel: "noopener", onclick: (ev) => { ev.stopPropagation(); ev.currentTarget.href = this._diagReportUrl(); } , href: "#" }, "Poslat");
+    const bench = h("button", { class: "btn small", "data-act": "diag-bench", onclick: stop(() => { this._toggleDebug(false); this._openBench(); }) }, "Test výkonu");
+    const shut = h("button", { class: "btn small ghost", "data-act": "diag-close", onclick: stop(() => this._toggleDebug(false)) }, "Zavřít");
+    this._dbg = h("div", { class: "layoutdebug" }, h("div", { class: "dbg-btns" }, bench, copy, send, shut), this._dbgText);
     this._dbg.addEventListener("click", () => this._toggleDebug(false));
     this.shadowRoot.append(this._dbg);
     this._updateDebug();
@@ -197,7 +206,42 @@ class HomeQuestPanel extends HTMLElement {
     const r = this.shadowRoot;
     const report = layoutReport({ win: window, doc: document, host: this, main: r.querySelector("main"), nav: r.querySelector("nav"), insets: this._insets(), narrow: this._narrow, fixed: this.hasAttribute("fixed") });
     this._lastLayout = report;
-    this._dbg.textContent = ["HomeQuest layout (klepnutím zavřeš)", ...reportLines(report)].join("\n");
+    this._dbgText.textContent = [...this._diagLines(), "", "HomeQuest layout (klepnutím zavřeš)", ...reportLines(report)].join("\n");
+  }
+
+  /** The diagnostics as lines (with the last performance test of this page). */
+  _diagLines() {
+    return compatLines(compatInfo(window), this._bench || null);
+  }
+
+  _diagReportUrl(lines = this._diagLines()) {
+    const ctx = this.view ? this._ctx() : { view: {}, haVersion: "", lang: "" };
+    const repo = (ctx.view.settings || {}).report_repo || "eloupak/homequest-dist";      // a child's view has no settings: the default
+    return reportUrl(repo, reportFacts(ctx), lines);
+  }
+
+  async _copyDiag(btn) {
+    const { copyText } = await import("./games/bench.js");
+    copyText(this._diagLines().join("\n"), btn);
+  }
+
+  /** Test výkonu (#174): games/bench.js over the panel; nothing is stored. The result stays in the page for the diagnostics. */
+  async _openBench() {
+    if (this._benchOpen || !this.view || !this.stage) return;
+    this._benchOpen = true;
+    try {
+      const m = await import("./games/bench.js");
+      m.openBench(this.shadowRoot, {
+        layer: this._layer, appCtx: this._ctx(), view: this.view, stage: this.stage, kidId: this.kidId,
+        lines: (res) => compatLines(compatInfo(window), res),
+        reportUrl: (lines) => this._diagReportUrl(lines),          // the lines with the result (onResult comes after the link is built)
+        onResult: (res) => { this._bench = res; },
+        onClose: () => { this._benchOpen = false; this.render(); },
+      });
+    } catch (e) {
+      this._benchOpen = false;
+      this.toast("Test výkonu se nespustil: " + (e.message || e), "error");
+    }
   }
 
   disconnectedCallback() {
@@ -339,6 +383,7 @@ class HomeQuestPanel extends HTMLElement {
       playStage: (at) => this._playStage(at, false),
       playSiegeWon: (stage) => this._playSiegeWon(stage, false),
       siegeBack: () => this._siegeBack(),
+      bench: () => this._openBench(),                                    // #174: Test výkonu (Rodič -> O hře)
       toast: (t, k) => this.toast(t, k),
       sheet: (build, opts = {}) => this._openSheet(build, opts.onClose || null, opts),   // opts.parent: the look of the Rodič screen (#129 addendum 1)
       zoom: (spec, ev) => this._openZoom(spec, ev),

@@ -508,5 +508,7 @@ function aboutTab(ctx) {
       h("a", { class: "p-link", href: LICENSE_URL, target: "_blank", rel: "noopener" }, "Plné znění licence")),
     h("a", { class: "p-btn block", "data-act": "report-problem", href: reportUrl((ctx.view.settings || {}).report_repo || "eloupak/homequest-dist", reportFacts(ctx)), target: "_blank", rel: "noopener" },
       icon("mdi:bug-outline", 22), "Nahlásit problém"),
-    h("p", { class: "p-muted small", "data-id": "report-hint" }, "Otevře nové hlášení na GitHubu s verzí hry a Home Assistantu, bez jmen. Kam se hlásí, změníte v Nastavení hry."));
+    h("p", { class: "p-muted small", "data-id": "report-hint" }, "Otevře nové hlášení na GitHubu s verzí hry a Home Assistantu, bez jmen. Kam se hlásí, změníte v Nastavení hry."),
+    h("button", { class: "p-btn block", "data-act": "bench", onclick: () => ctx.bench && ctx.bench() }, icon("mdi:speedometer", 22), "Test výkonu telefonu"),
+    h("p", { class: "p-muted small", "data-id": "bench-hint" }, "Přehraje přerod tvrze a chvíli bitvy naprázdno a změří, jak plynule to tento telefon zvládá. Nic se neukládá. Na telefonu dítěte: třikrát klepnout na nápis HomeQuest nahoře."));
 }

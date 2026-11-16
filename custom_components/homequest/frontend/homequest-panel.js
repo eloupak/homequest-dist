@@ -1,8 +1,10 @@
 /* HomeQuest panel — the entry Home Assistant loads (module_url of every HomeQuest panel). #174
  *
- * It checks that the browser has what the game needs (feature detection, never the user agent) and then loads the game
- * (homequest-app.js). On a browser that is too old it shows a short message for the child instead of a broken screen.
- * Minimum: iOS 15 / Safari 15, Chrome and Android WebView 100+, Firefox 100+ (README, tests/js/compat.test.mjs).
+ * It loads the game (homequest-app.js). Only when that really fails (a browser too old to parse the game, or a broken file) it shows a short
+ * message for the child with the reason instead of an empty screen. No feature checks up front any more: in beta 3 a check gave a false
+ * "too old" on iOS 15.8 (Safari 15 answers no to the test of CSS variables, #174 2026-11-16) although the game runs there.
+ * Minimum: iOS 15 / Safari 15, Chrome and Android WebView 100+, Firefox 100+ (README); tests/js/compat.test.mjs keeps the game's code
+ * inside it, so a new phone feature never reaches a child's old phone unnoticed. Diagnostics: triple tap on the title (lib/compat.js).
  *
  * Keep this file in old, plain JavaScript (ES2017 + import() and import.meta): it must run where the game itself cannot.
  * tests/js/compat.test.mjs checks that. No static imports: one module the old browser cannot parse would stop this file too. */
@@ -11,34 +13,22 @@ var TEXTS = {
   cs: {
     title: "Tenhle telefon je na hru moc starý.",
     text: "Zkus jiný, nebo řekni rodičům.",
-    parent: "Pro rodiče: HomeQuest potřebuje iOS 15 (Safari 15) nebo novější, Chrome 100 nebo novější. Chybí: ",
+    parent: "Pro rodiče: HomeQuest potřebuje iOS 15 (Safari 15) nebo novější, Chrome 100 nebo novější. Chyba: ",
   },
   en: {
     title: "This phone is too old for the game.",
     text: "Try another one, or tell your parents.",
-    parent: "For parents: HomeQuest needs iOS 15 (Safari 15) or newer, Chrome 100 or newer. Missing: ",
+    parent: "For parents: HomeQuest needs iOS 15 (Safari 15) or newer, Chrome 100 or newer. Error: ",
   },
 };
 
-/** What the game needs and the browser lacks (an empty list = supported). Exported for the tests. */
-export function missingFeatures(win) {
-  var miss = [];
-  var css = win.CSS && typeof win.CSS.supports === "function" ? win.CSS : null;
-  if (!css) miss.push("CSS.supports");
-  else {
-    if (!css.supports("aspect-ratio", "1 / 1")) miss.push("aspect-ratio");          // the hero, portraits, the scenes (Safari 15)
-    if (!css.supports("inset", "0")) miss.push("inset");
-    if (!css.supports("--hq-probe", "0")) miss.push("CSS variables");
-  }
-  if (!win.customElements || typeof win.customElements.define !== "function") miss.push("customElements");
-  if (!win.Element || !win.Element.prototype.attachShadow) miss.push("Shadow DOM");
-  if (typeof win.ResizeObserver !== "function") miss.push("ResizeObserver");
-  try {
-    new win.Function("a", "return a?.b ?? 1")({});                                   // optional chaining and ?? (ES2020) in the game's code
-  } catch (e) {
-    miss.push("ES2020");
-  }
-  return miss;
+/** The errors of the page (the last 10), for the diagnostics of the game (triple tap on the title, lib/compat.js). */
+function keepErrors(win) {
+  var list = win.__hqErrors || (win.__hqErrors = []);
+  var add = function (what) { list.push(String(what).slice(0, 300)); if (list.length > 10) list.shift(); };
+  win.addEventListener("error", function (e) { add((e && e.message) || "error"); });
+  win.addEventListener("unhandledrejection", function (e) { add("promise: " + ((e && e.reason && e.reason.message) || (e && e.reason))); });
+  return add;
 }
 
 /** The language of the message: the HA language when it is Czech, else English. Exported for the tests. */
@@ -85,15 +75,15 @@ function defineUnsupported(miss) {
   window.customElements.define("homequest-panel", Unsupported);
 }
 
-var MISSING = typeof window !== "undefined" ? missingFeatures(window) : [];
-if (typeof window !== "undefined" && window.customElements) {
-  if (MISSING.length) defineUnsupported(MISSING);
-  else {
-    var here = new URL(import.meta.url);
-    import(new URL("homequest-app.js" + here.search, here).href).catch(function (e) {
-      // a browser that passed the checks but still cannot load the game: the message instead of an empty screen
-      console.error("HomeQuest: the game could not be loaded", e);
-      defineUnsupported(["homequest-app.js: " + (e && e.message ? e.message : e)]);
-    });
-  }
+if (typeof window !== "undefined" && window.customElements && !window.__hqEntry) {
+  window.__hqEntry = true;
+  var addError = keepErrors(window);
+  var here = new URL(import.meta.url);
+  import(new URL("homequest-app.js" + here.search, here).href).catch(function (e) {
+    // the browser cannot load the game (too old, or a broken file): the message with the real reason instead of an empty screen
+    console.error("HomeQuest: the game could not be loaded", e);
+    var why = "homequest-app.js: " + (e && e.message ? e.message : e);
+    addError(why);
+    defineUnsupported([why]);
+  });
 }

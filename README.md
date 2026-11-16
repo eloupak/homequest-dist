@@ -9,7 +9,7 @@ buy gear for their hero and build a fortress together. A parent sets up and appr
 - Home Assistant 2026.11 or newer (the **Marketplace** is built in; the integration itself runs from 2026.8.0).
 - A Home Assistant account for each child (without administrator rights): **Settings** → **People** → **Add person**, turn on **Allow login**.
 - The Home Assistant app for playing on a phone and for notifications.
-- A phone or tablet with iOS 15 / iPadOS 15 or newer, or Android with Chrome / Android System WebView 100 or newer (Firefox 100+ in a browser). On an older device the game shows a short message instead of the game.
+- A phone or tablet with iOS 15 / iPadOS 15 or newer, or Android with Chrome / Android System WebView 100 or newer (Firefox 100+ in a browser). On an older device the game shows a short message instead of the game. An older phone that meets the minimum may show some effects plainer (e.g. no glow around rare items). How smoothly a phone plays: tap the HomeQuest title three times (also on a child's phone) → **Test výkonu** (performance test: the fortress rebuild and 20 s of a battle, nothing is saved), or Rodič (Parent) → O hře (About) → **Test výkonu telefonu**; **Poslat** (Send) sends the numbers with a problem report.
 - The game is in Czech for now.
 
 ## Installation

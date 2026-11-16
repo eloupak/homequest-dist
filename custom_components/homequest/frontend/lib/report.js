@@ -21,11 +21,12 @@ export function reportLang(lang) {
   return String(lang || "").toLowerCase().startsWith("cs") ? "cs" : "en";
 }
 
-/** repo "owner/name"; facts: { hq, ha, ua, lang } (missing = "?"). */
-export function reportUrl(repo, facts) {
+/** repo "owner/name"; facts: { hq, ha, ua, lang } (missing = "?"); extra: lines of the diagnostics (lib/compat.js, #174), in a code block. */
+export function reportUrl(repo, facts, extra = null) {
   const t = REPORT_TEXTS[reportLang(facts.lang)];
   const tech = Object.entries(t.labels).map(([k, label]) => `- ${label}: ${String(facts[k] || "?").replace(/\s+/g, " ").trim()}`);
-  const body = [...t.body, ...tech].join("\n");
+  const diag = extra && extra.length ? ["", "```", ...extra.map((l) => String(l).slice(0, 400)), "```"] : [];
+  const body = [...t.body, ...tech, ...diag].join("\n");
   const q = new URLSearchParams({ title: t.title, body });
   return `https://github.com/${repo}/issues/new?${q.toString()}`;
 }
