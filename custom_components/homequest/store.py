@@ -22,7 +22,7 @@ from homeassistant.helpers.event import async_track_state_change_event, async_tr
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util, slugify
 
-from . import access, art, bootstrap, logic, setup, story_migrations, story_texts, story_vars, upgrade
+from . import access, art, bootstrap, logic, setup, story_migrations, story_texts, story_vars, todo_items, upgrade
 from .catalog import catalog_for_client, parse_catalog, preview_items, with_kids, with_previews
 from .const import (
     REPORT_REPO_DEFAULT,
@@ -104,6 +104,8 @@ class HomeQuestManager:
         self.setup_mode = False                     # the flag file <data>/setup_mode (TEST only): the guide works on a copy of the state
         self._sandbox: dict[str, Any] | None = None # that copy (memory only)
         self.add_kid_sensors: Callable[[], None] | None = None   # sensor.py: the sensors of a child added while HA runs
+        self.add_kid_todo: Callable[[], None] | None = None      # todo.py (v1.8): the To-do list of a child added / removed while HA runs
+        self.todo_lists: dict[str, Any] = {}                    # todo.py: kid_id -> its To-do list entity (homequest.add_task targets)
         self.kids_changed: Callable[[], Any] | None = None   # __init__: (un)register the child panels after a child was added / renamed / removed
 
     # ------------------------------------------------------------ setup ----
@@ -761,6 +763,7 @@ class HomeQuestManager:
             "notify_targets": list(self.state.get("notify_targets") or []),
             "report_repo": self.state.get("report_repo") or REPORT_REPO_DEFAULT,      # #175: Nahlásit problém
             "report_repo_default": REPORT_REPO_DEFAULT,
+            "ha_task_reward": todo_items.ha_reward(self.state),                 # v1.8 (#166): a task added in a child's HA list
             "story_vars": {
                 "values": self.story_values(),
                 "defaults": story_defaults,
@@ -1071,6 +1074,69 @@ class HomeQuestManager:
         return await self._mutate(
             lambda ts: logic.reject(self.state, self.catalog, kid_id, task_id, ts)
         )
+
+    # ---- v1.8 (#173): the children's To-do lists in HA (todo.py) and homequest.add_task
+
+    def todo_items(self, kid_id: str) -> list[dict[str, Any]]:
+        return todo_items.kid_items(self.state, self.catalog, kid_id, dt_util.now().date())
+
+    async def async_actor(self, user_id: str | None, kid_id: str | None) -> str:
+        """Who changes a child's list in HA: kid (the list's own child), parent, automation (no user: automations, scripts started by HA), other."""
+        if user_id is None:
+            return "automation"
+        user = await self.hass.auth.async_get_user(user_id)
+        if user is None:
+            return "other"
+        if self._is_parent(user):
+            return "parent"
+        if user.id not in self._user_to_kid:
+            await self.async_resolve_users()                 # a child's account made later
+        return "kid" if kid_id is not None and self._user_to_kid.get(user.id) == kid_id else "other"
+
+    async def async_todo_update(self, kid_id: str, uid: str, new_status: str, renamed: bool, user_id: str | None) -> str:
+        """An item of a child's list changed in HA: ticked = Hotovo in the game (async_complete: coins, or waiting for approval), a parent's
+        untick of a waiting task = Zamítnout. Returns what was done (complete | reject | none); errors carry the translation key as the code."""
+        actor = await self.async_actor(user_id, kid_id)
+        cur = todo_items.find(self.todo_items(kid_id), uid)
+        if cur is None:
+            raise HomeQuestError("item_gone")
+        what = todo_items.decide_update(cur, new_status, renamed, actor)
+        token = VIA.set("ha" if actor != "parent" else "ha_parent")      # traceability in the history: done from an HA list (by a parent)
+        try:
+            if what == "complete":
+                try:
+                    await self.async_complete(kid_id, cur["task_id"])
+                except HomeQuestError as err:
+                    if err.code != "invalid_state":                  # the game or another phone was faster: done already, nothing twice
+                        raise
+                    what = "none"
+            elif what == "reject":
+                await self.async_reject(kid_id, cur["task_id"])
+        finally:
+            VIA.reset(token)
+        return what
+
+    async def async_todo_create(self, kid_id: str, name: str, user_id: str | None) -> dict[str, Any]:
+        """A new item in a child's list in HA: a one-off task for that child with the reward from Nastavení hry (a parent or an automation only)."""
+        todo_items.may_add(await self.async_actor(user_id, kid_id))
+        return await self.async_add_oneoff(name, todo_items.ha_reward(self.state), False, [kid_id])
+
+    async def async_service_add_task(self, name: Any, kids: list[str] | None, reward: Any, single: bool, skip_if_open: bool, user_id: str | None) -> dict[str, Any]:
+        """homequest.add_task (#166): a one-off task for the chosen children (None = all) from an automation; skip_if_open = no second one."""
+        todo_items.may_add(await self.async_actor(user_id, None))
+        if reward is None:
+            reward = todo_items.ha_reward(self.state)
+        if kids is not None and len(kids) >= len(self.catalog["kids"]):
+            kids = None                                          # every child = no restriction (as the game stores it)
+        if skip_if_open:
+            same = todo_items.same_open_oneoff(self.state, str(name or ""), kids, single)
+            if same is not None:
+                return {"task_id": same, "skipped": True}
+        res = await self.async_add_oneoff(name, reward, single, kids)
+        return {"task_id": res["task_id"], "skipped": False}
+
+    async def async_set_ha_reward(self, reward: Any) -> dict[str, Any]:
+        return await self._mutate(lambda ts: todo_items.set_ha_reward(self.state, reward))
 
     async def async_onboard(self, kid_id: str, hero: dict[str, Any]) -> dict[str, Any]:
         return await self._mutate(

@@ -216,6 +216,7 @@ ws_delete_template = _admin_cmd("delete_template", {vol.Required("template_id"):
 
 ws_set_notify_targets = _admin_cmd("set_notify_targets", {vol.Required("targets"): [str]}, "async_set_notify_targets", "targets")
 ws_set_report_repo = _admin_cmd("set_report_repo", {vol.Required("repo"): vol.Any(str, None)}, "async_set_report_repo", "repo")
+ws_set_ha_reward = _admin_cmd("set_ha_reward", {vol.Required("reward"): int}, "async_set_ha_reward", "reward")
 ws_set_story_vars = _admin_cmd("set_story_vars", {vol.Required("vars"): {str: str}}, "async_set_story_vars", "vars")
 
 
@@ -315,6 +316,7 @@ def async_register(hass: HomeAssistant) -> None:
         ws_delete_template,
         ws_set_notify_targets,
         ws_set_report_repo,
+        ws_set_ha_reward,
         ws_set_story_vars,
         ws_notify_services,
         ws_setup_kid,

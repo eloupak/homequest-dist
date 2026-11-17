@@ -32,5 +32,114 @@
       "title": "HomeQuest: je potřeba restart",
       "description": "Je nainstalovaný HomeQuest {installed}, ale pořád běží verze {running}. Aktualizaci dokončíte restartem Home Assistantu (HomeQuest si před úpravou dat udělá zálohu)."
     }
+  },
+  "entity": {
+    "todo": {
+      "kid_tasks": {
+        "name": "HomeQuest – {kid}",
+        "state_attributes": {
+          "item": {
+            "state": {
+              "reward_one": "+{reward} zlaťák",
+              "reward_few": "+{reward} zlaťáky",
+              "reward_many": "+{reward} zlaťáků",
+              "pending": "⏳ Čeká na schválení rodičem",
+              "approved": "✓ Splněno",
+              "rejected": "Rodič vrátil, zkus to znovu",
+              "single": "udělá jen jeden"
+            }
+          }
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "not_your_list": {
+      "message": "Tohle je seznam jiného dítěte. Děti odškrtávají jen svoje úkoly, rodiče a automatizace jakékoli."
+    },
+    "edit_in_game": {
+      "message": "Úkoly HomeQuestu se upravují ve hře (HomeQuest → Rodič). Tady je jde jen odškrtnout."
+    },
+    "cannot_undo_approved": {
+      "message": "Úkol je splněný a zlaťáky jsou vyplacené. Odškrtnutí nejde zrušit."
+    },
+    "only_parent_can_undo": {
+      "message": "Úkol čeká na schválení. Vrátit ho může jen rodič (zrušení odškrtnutí = zamítnutí)."
+    },
+    "only_parent_can_add": {
+      "message": "Úkol může přidat jen rodič nebo automatizace. Děti si úkoly samy nezadávají."
+    },
+    "item_gone": {
+      "message": "Tento úkol už v dnešním seznamu není. Seznam je obnovený."
+    },
+    "not_supported": {
+      "message": "Úkoly HomeQuestu tu nejde mazat ani přesouvat. Upravují se ve hře (HomeQuest → Rodič)."
+    },
+    "not_a_kid_list": {
+      "message": "Vyberte seznamy úkolů dětí z HomeQuestu (todo.homequest_…), nebo žádný pro všechny děti."
+    },
+    "game_refused": {
+      "message": "HomeQuest změnu odmítl: {error}"
+    }
+  },
+  "services": {
+    "approve": {
+      "name": "Schválit úkol",
+      "description": "Schválí úkol, který dítě splnilo (vyplatí zlaťáky).",
+      "fields": {
+        "kid_id": {
+          "name": "Dítě",
+          "description": "Id dítěte (slug)."
+        },
+        "task_id": {
+          "name": "Úkol",
+          "description": "Id úkolu."
+        }
+      }
+    },
+    "reject": {
+      "name": "Zamítnout úkol",
+      "description": "Vrátí splněný úkol dítěti (bez zlaťáků).",
+      "fields": {
+        "kid_id": {
+          "name": "Dítě",
+          "description": "Id dítěte (slug)."
+        },
+        "task_id": {
+          "name": "Úkol",
+          "description": "Id úkolu."
+        }
+      }
+    },
+    "reload_catalog": {
+      "name": "Znovu načíst katalog",
+      "description": "Znovu načte catalog.yaml a story.yaml."
+    },
+    "start_siege": {
+      "name": "Spustit útok skřetů",
+      "description": "Spustí obléhání tvrze (po výhře opakování)."
+    },
+    "add_task": {
+      "name": "Přidat úkol",
+      "description": "Zadá dětem jednorázový úkol, třeba když dopere pračka.",
+      "fields": {
+        "name": {
+          "name": "Úkol",
+          "description": "Co udělat, jak to uvidí děti (1–60 znaků)."
+        },
+        "reward": {
+          "name": "Odměna",
+          "description": "Zlaťáky za úkol (0–50). Prázdné = odměna z HomeQuest → Rodič → Nastavení hry."
+        },
+        "single": {
+          "name": "Udělá jen jeden",
+          "description": "Úkol může udělat kterékoli z vybraných dětí, zlaťáky ale dostane jen jedno."
+        },
+        "skip_if_open": {
+          "name": "Nepřidávat, když už je otevřený",
+          "description": "Stejný úkol pro stejné děti se nepřidá znovu, dokud není hotový."
+        }
+      }
+    }
   }
 }

@@ -15,7 +15,7 @@ from homeassistant.components import frontend, panel_custom
 from homeassistant.components.http import HomeAssistantView, StaticPathConfig
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.core import HomeAssistant, ServiceCall, ServiceResponse, SupportsResponse
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.discovery import async_load_platform
 
@@ -47,6 +47,13 @@ class FrontendView(HomeAssistantView):
 
 
 KID_TASK_SCHEMA = vol.Schema({vol.Required("kid_id"): str, vol.Required("task_id"): str})
+ADD_TASK_SCHEMA = vol.Schema({                          # v1.8 (#166): homequest.add_task for automations
+    vol.Optional("entity_id"): cv.comp_entity_ids,      # the children's To-do lists; none = every child
+    vol.Required("name"): vol.All(cv.string, vol.Length(min=1, max=60)),
+    vol.Optional("reward"): vol.All(vol.Coerce(int), vol.Range(min=0, max=50)),
+    vol.Optional("single", default=False): cv.boolean,
+    vol.Optional("skip_if_open", default=True): cv.boolean,
+}, extra=vol.ALLOW_EXTRA)                               # target: device_id / area_id are ignored, the lists have neither
 
 
 async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
@@ -147,6 +154,8 @@ async def _async_start(hass: HomeAssistant, config: dict[str, Any]) -> bool:
         await _async_sync_kid_panels(hass, mgr, kid_panels, panel_url)
         if mgr.add_kid_sensors:
             mgr.add_kid_sensors()                     # the sensors of a new child (sensor.py), without a restart
+        if mgr.add_kid_todo:
+            mgr.add_kid_todo()                        # v1.8: the To-do list of a new child, away with a removed one (todo.py)
 
     mgr.kids_changed = _kids_changed
     await _kids_changed()
@@ -222,6 +231,7 @@ async def _async_start(hass: HomeAssistant, config: dict[str, Any]) -> bool:
             embed_iframe=False,
         )
     hass.async_create_task(async_load_platform(hass, "sensor", DOMAIN, {}, config))
+    hass.async_create_task(async_load_platform(hass, "todo", DOMAIN, {}, config))      # v1.8 (#173): a To-do list per child
     return True
 
 
@@ -251,5 +261,23 @@ def _register_services(hass: HomeAssistant, mgr: HomeQuestManager) -> None:
         except HomeQuestError as err:
             raise vol.Invalid(f"{err.code}: {err.message}") from err
 
+    async def add_task(call: ServiceCall) -> ServiceResponse:
+        """A one-off task for the children of the chosen To-do lists (none = all): the parent's "Přidat úkol" for automations (#166)."""
+        from .todo import error                          # noqa: PLC0415  (todo.py imports HA's todo component)
+        kids = None
+        if call.data.get("entity_id"):
+            by_entity = {ent.entity_id: kid_id for kid_id, ent in mgr.todo_lists.items()}
+            unknown = [e for e in call.data["entity_id"] if e not in by_entity]
+            if unknown:
+                raise error(HomeQuestError("not_a_kid_list"))
+            kids = list(dict.fromkeys(by_entity[e] for e in call.data["entity_id"]))
+        try:
+            res = await mgr.async_service_add_task(call.data["name"], kids, call.data.get("reward"), call.data["single"],
+                                                   call.data["skip_if_open"], call.context.user_id)
+        except HomeQuestError as err:
+            raise error(err) from err
+        return res
+
     hass.services.async_register(DOMAIN, "reload_catalog", reload_catalog)
+    hass.services.async_register(DOMAIN, "add_task", add_task, ADD_TASK_SCHEMA, supports_response=SupportsResponse.OPTIONAL)
     hass.services.async_register(DOMAIN, "start_siege", start_siege)

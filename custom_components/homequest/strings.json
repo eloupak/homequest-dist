@@ -32,5 +32,114 @@
       "title": "HomeQuest: restart needed",
       "description": "HomeQuest {installed} is installed, but version {running} is still running. Restart Home Assistant to finish the update (HomeQuest backs up its data first)."
     }
+  },
+  "entity": {
+    "todo": {
+      "kid_tasks": {
+        "name": "HomeQuest – {kid}",
+        "state_attributes": {
+          "item": {
+            "state": {
+              "reward_one": "+{reward} coin",
+              "reward_few": "+{reward} coins",
+              "reward_many": "+{reward} coins",
+              "pending": "⏳ Waiting for a parent's approval",
+              "approved": "✓ Done",
+              "rejected": "A parent sent it back, try again",
+              "single": "only one child does it"
+            }
+          }
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "not_your_list": {
+      "message": "This is another child's list. Children tick only their own tasks; parents and automations may tick any."
+    },
+    "edit_in_game": {
+      "message": "HomeQuest tasks are changed in the game (HomeQuest → Rodič). Here you can only tick them off."
+    },
+    "cannot_undo_approved": {
+      "message": "This task is done and the coins are paid. It cannot be unticked."
+    },
+    "only_parent_can_undo": {
+      "message": "The task is waiting for approval. Only a parent can send it back (untick = reject)."
+    },
+    "only_parent_can_add": {
+      "message": "Only a parent or an automation can add a task. Children cannot give themselves tasks."
+    },
+    "item_gone": {
+      "message": "This task is not in today's list any more. The list has been refreshed."
+    },
+    "not_supported": {
+      "message": "HomeQuest tasks cannot be deleted or moved here. Change them in the game (HomeQuest → Rodič)."
+    },
+    "not_a_kid_list": {
+      "message": "Choose the To-do lists of HomeQuest children (todo.homequest_…), or none for all children."
+    },
+    "game_refused": {
+      "message": "HomeQuest refused the change: {error}"
+    }
+  },
+  "services": {
+    "approve": {
+      "name": "Approve task",
+      "description": "Approve a task a child finished (pays the coins).",
+      "fields": {
+        "kid_id": {
+          "name": "Child",
+          "description": "The child's id (slug)."
+        },
+        "task_id": {
+          "name": "Task",
+          "description": "The task id."
+        }
+      }
+    },
+    "reject": {
+      "name": "Reject task",
+      "description": "Send a finished task back to the child (no coins).",
+      "fields": {
+        "kid_id": {
+          "name": "Child",
+          "description": "The child's id (slug)."
+        },
+        "task_id": {
+          "name": "Task",
+          "description": "The task id."
+        }
+      }
+    },
+    "reload_catalog": {
+      "name": "Reload catalog",
+      "description": "Read catalog.yaml and story.yaml again."
+    },
+    "start_siege": {
+      "name": "Start the goblin attack",
+      "description": "Start the siege of the fortress (or a replay after a win)."
+    },
+    "add_task": {
+      "name": "Add task",
+      "description": "Give the children a one-off task, e.g. when the washing machine finishes.",
+      "fields": {
+        "name": {
+          "name": "Task",
+          "description": "What to do, as the children will see it (1–60 characters)."
+        },
+        "reward": {
+          "name": "Reward",
+          "description": "Coins for the task (0–50). Empty = the reward set in HomeQuest → Rodič → Nastavení hry."
+        },
+        "single": {
+          "name": "Only one child",
+          "description": "Any of the chosen children may do it, but only one of them gets the coins."
+        },
+        "skip_if_open": {
+          "name": "Skip if already open",
+          "description": "Do not add the task again while the same task for the same children is not done yet."
+        }
+      }
+    }
   }
 }

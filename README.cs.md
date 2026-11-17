@@ -20,6 +20,28 @@ výbavu pro svého hrdinu a společně staví tvrz. Rodič úkoly nastavuje a sc
 
 Hra běží celá u vás doma, po instalaci nepotřebuje internet. Data dětí zůstávají ve vašem Home Assistantu.
 
+## Úkoly v Home Assistantu (v1.8)
+Každé dítě má v Home Assistantu svůj seznam úkolů (Seznamy úkolů v bočním panelu, `todo.homequest_<dítě>`) se stejnými dnešními úkoly
+jako ve hře a s odměnou. Odškrtnutí tam = „Hotovo“ ve hře (zlaťáky, nebo čekání na vaše schválení). Dítě odškrtává jen svůj seznam,
+rodiče a automatizace jakýkoli. Když rodič zruší odškrtnutí úkolu, který čeká na schválení, úkol zamítne. Úkol, který do seznamu dítěte
+přidá rodič nebo automatizace, se stane jednorázovým úkolem pro toto dítě (odměnu nastavíte v Rodič → Nastavení hry).
+
+Automatizace mohou přidat úkol akcí `homequest.add_task` (úkol, děti, odměna, „udělá jen jeden“; stejný úkol se nepřidá znovu, dokud
+není hotový). Příklad, pračka doprala (použijte vlastní senzor):
+
+```yaml
+triggers:
+  - trigger: state
+    entity_id: sensor.moje_pracka_stav
+    to: finished
+actions:
+  - action: homequest.add_task
+    data:
+      name: Pověsit prádlo
+      reward: 2
+      single: true
+```
+
 ## Aktualizace
 Novou verzi nabídne Home Assistant v **Nastavení** → **Aktualizace** (a rodiči i HomeQuest na obrazovce Rodič); po aktualizaci restartujte Home Assistant.
 Aktualizace nemění rozehranou hru ani vaše nastavení.

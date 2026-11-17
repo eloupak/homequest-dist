@@ -354,7 +354,8 @@ function settingsTab(ctx) {
 const SETTINGS_ROWS = [["game", "Nastavení hry", "mdi:cog-outline"], ["history", "Historie", "mdi:history"], ["notify", "Notifikace", "mdi:bell-outline"],
   ["story", "Příběh (místa a jména)", "mdi:book-open-variant"], ["guide", "Průvodce nastavením", "mdi:map-marker-path"]];
 export const GAME_ROWS = [["coins", "Zlaťáky", "mdi:plus-minus"], ["approvals", "Schvalování úkolů", "mdi:check-decagram-outline"],
-  ["holidays", "Prázdniny", "mdi:beach"], ["reset", "Reset hrdiny", "mdi:account-reactivate-outline"], ["report", "Kam hlásit problémy", "mdi:bug-outline"]];
+  ["holidays", "Prázdniny", "mdi:beach"], ["reset", "Reset hrdiny", "mdi:account-reactivate-outline"], ["report", "Kam hlásit problémy", "mdi:bug-outline"],
+  ["ha", "Úkoly z Home Assistantu", "mdi:home-assistant"]];
 
 function rowList(ctx, rows, from = null) {
   return card(...rows.map(([id, label, ic]) =>
@@ -424,6 +425,24 @@ function reportScreen(ctx) {
       } }, "Uložit")));
 }
 
+/** v1.8 (#173, #166): the children's To-do lists in HA; the reward of a task a parent or an automation adds straight into a child's list. */
+function haTasksScreen(ctx) {
+  const st = ctx.view.settings || {};
+  const val = st.ha_task_reward == null ? 1 : st.ha_task_reward;
+  const field = h("input", { class: "p-field num", type: "number", inputmode: "numeric", min: "0", max: "50", value: String(val), "data-field": "ha-reward", "aria-label": "Odměna za úkol přidaný v HA" });
+  return h("div", { "data-screen": "ha" }, backBar(ctx, "Úkoly z Home Assistantu", "game"),
+    h("p", { class: "p-muted small" }, "Každé dítě má v Home Assistantu svůj seznam úkolů (To-do lists, ", h("code", {}, "todo.homequest_…"),
+      "). Odškrtnutí tam = Hotovo ve hře. Rodič nebo automatizace tam může přidat úkol, dítě dostane jednorázový úkol s touto odměnou. Automatizace mohou použít i akci ",
+      h("code", {}, "homequest.add_task"), " s vlastní odměnou."),
+    card(h("div", { class: "p-fieldrow" }, h("label", { class: "p-label" }, "Odměna za úkol přidaný v HA"), field)),
+    h("div", { class: "p-actions" },
+      h("button", { class: "p-btn primary", "data-act": "ha-reward-save", onclick: async () => {
+        const n = parseInt(field.value, 10);
+        if (!Number.isInteger(n) || n < 0 || n > 50) { ctx.toast("Zadej celé číslo 0–50."); return; }
+        if (await ctx.act("set_ha_reward", { reward: n })) ctx.toast("Uloženo.");
+      } }, "Uložit")));
+}
+
 /** The facts "Nahlásit problém" fills in (technical only). */
 export function reportFacts(ctx) {
   const v = (ctx.view.update && ctx.view.update.installed) || ctx.view.version || "";
@@ -478,6 +497,7 @@ function subScreen(ctx, pv) {
   if (pv.name === "approvals") return approvalsScreen(ctx);
   if (pv.name === "reset") return resetScreen(ctx);
   if (pv.name === "report") return reportScreen(ctx);
+  if (pv.name === "ha") return haTasksScreen(ctx);
   const titles = { holidays: "Prázdniny", notify: "Notifikace", story: "Příběh", guide: "Průvodce nastavením" };
   const root = h("div", { "data-screen": pv.name }, backBar(ctx, titles[pv.name] || "", pv.from));
   const wrap = h("div", { class: "p-legacy" });            // the cards of v1.5/v1.6 (settings.js, setup.js) inside the sober frame
@@ -503,6 +523,8 @@ function aboutTab(ctx) {
         h("div", { "data-id": "version" }, b ? `TEST · ${b[0]} ${b[1]}` : v ? `verze ${v}` : "verze neznámá")),
       b ? h("div", { class: "p-muted small", "data-id": "build" }, `nasazeno ${b.slice(2).join(" ")}${v ? ` · manifest ${v}` : ""}`) : null,
       h("p", {}, "Domácí úkoly jako dobrodružství."),
+      h("div", { class: "p-label" }, "Úkoly v Home Assistantu"),
+      h("p", { "data-id": "ha-todo" }, "Každé dítě má v Home Assistantu seznam úkolů (Seznamy úkolů, todo.homequest_…). Odškrtnutí tam = Hotovo ve hře. Automatizace přidá úkol akcí homequest.add_task, např. když dopere pračka. Podrobnosti v Nastavení hry → Úkoly z Home Assistantu."),
       h("div", { class: "p-label" }, "Licence"),
       h("p", { "data-id": "license" }, "CC BY-NC-ND 4.0: hru můžete zdarma používat doma a dál ji šířit beze změny a s uvedením autora. Nesmí se prodávat ani upravovat a šířit upravená."),
       h("a", { class: "p-link", href: LICENSE_URL, target: "_blank", rel: "noopener" }, "Plné znění licence")),

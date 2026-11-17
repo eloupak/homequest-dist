@@ -22,6 +22,28 @@ buy gear for their hero and build a fortress together. A parent sets up and appr
 
 The whole game runs in your home and needs no internet after the installation. The children's data stays in your Home Assistant.
 
+## Tasks in Home Assistant (v1.8)
+Every child has a To-do list in Home Assistant (To-do lists in the sidebar, `todo.homequest_<child>`) with the same tasks as the game
+today and their rewards. Ticking a task there is the same as "Done" in the game (coins, or waiting for your approval). A child may tick
+only their own list; parents and automations may tick any. A parent unticking a task that waits for approval rejects it. A task a parent
+or an automation adds to a child's list becomes a one-off task for that child (the reward is set on the parent screen, Game settings).
+
+Automations can add a task with the action `homequest.add_task` (task, children, reward, "only one child"; the same task is not added
+again while it is not done). Example, the washing machine has finished (use your own sensor):
+
+```yaml
+triggers:
+  - trigger: state
+    entity_id: sensor.my_washer_status
+    to: finished
+actions:
+  - action: homequest.add_task
+    data:
+      name: Hang up the laundry
+      reward: 2
+      single: true
+```
+
 ## Updates
 Home Assistant offers a new version under **Settings** → **Updates** (and HomeQuest shows it to parents on the parent screen); restart
 Home Assistant after the update. An update does not change the game in progress or your settings.

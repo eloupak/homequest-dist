@@ -24,3 +24,32 @@ reject:
         text:
 reload_catalog:
 start_siege:
+add_task:
+  target:
+    entity:
+      integration: homequest
+      domain: todo
+  fields:
+    name:
+      required: true
+      example: Vyndat prádlo
+      selector:
+        text:
+    reward:
+      required: false
+      example: 2
+      selector:
+        number:
+          min: 0
+          max: 50
+          mode: box
+    single:
+      required: false
+      default: false
+      selector:
+        boolean:
+    skip_if_open:
+      required: false
+      default: true
+      selector:
+        boolean:
