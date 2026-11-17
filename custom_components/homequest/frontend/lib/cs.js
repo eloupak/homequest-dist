@@ -98,7 +98,8 @@ export function historyText(e, cat) {
     case "approval_setting": return e.value ? "Schvalování úkolů zapnuto" : "Schvalování úkolů vypnuto";
     case "rejected": return `Zamítnuto: ${task ? task.name : e.task}`;
     case "expired": return `Nesplněno včas: ${task ? task.name : e.task}`;
-    case "bought": return `Koupeno: ${item ? item.name : e.item} (${sign})`;
+    case "bought": return `Koupeno: ${item ? item.name : e.item} (${sign})${e.refunded ? " · Vráceno" : ""}`;
+    case "refunded": return `Vráceno: ${item ? item.name : e.item} (${sign})`;
     case "adjusted": return `Úprava zlaťáků${e.note ? ": " + e.note : ""} (${sign})`;
     case "gift": return e.item ? `${e.note || "Dar"}: ${AMULET_NAMES[e.color] || "amulet"}` : `${e.note || "Dar"} (${sign})`;
     case "onboarded": return "Hrdina vytvořen";

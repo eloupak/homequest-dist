@@ -6,7 +6,7 @@
  * Addendum 2 (UAT 2026-11-15): Děti a účty gone (the guide edits children and parents), Smazat hrdinu -> Nastavení hry -> Reset hrdiny,
  * no yellow buttons (styles.js), story forms the story does not use hidden (settings.js). */
 import { coin, h, icon } from "../lib/dom.js";
-import { historyText, when } from "../lib/cs.js";
+import { coinsWord, historyText, when } from "../lib/cs.js";
 import { holidaysCard, whoPicker, whoParams } from "./tasks_admin.js";
 import { settingsSections } from "./settings.js";
 import { renderSetup } from "./setup.js";
@@ -476,6 +476,17 @@ function adjustSheet(ctx, kidInfo) {
   });
 }
 
+/** #182: a purchase of the last 24 hours goes back (the server says which: e.refundable, and checks it again). */
+function refundButton(ctx, kidId, e) {
+  const item = ctx.cat.items.find((i) => i.id === e.item);
+  const name = item ? item.name : e.item;
+  const coins = -e.coins;
+  return h("button", { class: "p-btn", "data-act": "refund", "data-item": e.item, onclick: async () => {
+    const yes = await pConfirm(ctx, { title: `Vrátit ${name} a připsat ${coins} ${coinsWord(coins)}?`, yes: "Vrátit", no: "Zpět" });
+    if (yes) await ctx.act("refund_purchase", { kid_id: kidId, ts: e.ts, item_id: e.item });
+  } }, "Vrátit");
+}
+
 function historyScreen(ctx) {
   const root = h("div", { "data-screen": "history" }, backBar(ctx, "Historie"));
   const hk = ctx.ui.histKid && ctx.view.kids[ctx.ui.histKid] ? ctx.ui.histKid : ctx.cat.kids[0] && ctx.cat.kids[0].id;
@@ -483,7 +494,8 @@ function historyScreen(ctx) {
   const entries = hk && ctx.view.kids[hk] ? ctx.view.kids[hk].history.slice().reverse().slice(0, 30) : [];
   const list = card();
   if (!entries.length) list.append(h("div", { class: "p-muted" }, "Zatím nic."));
-  for (const e of entries) list.append(h("div", { class: "p-row hist" }, h("span", { class: "p-muted t" }, when(e.ts)), h("span", { class: "grow" }, historyText(e, ctx.cat))));
+  for (const e of entries) list.append(h("div", { class: "p-row hist" }, h("span", { class: "p-muted t" }, when(e.ts)), h("span", { class: "grow" }, historyText(e, ctx.cat)),
+    e.refundable ? refundButton(ctx, hk, e) : null));
   root.append(list);
   return root;
 }

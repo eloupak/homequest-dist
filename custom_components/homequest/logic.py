@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import re
 import uuid
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
 
 from . import story_vars as _story_vars
@@ -969,6 +969,95 @@ def buy(
         kid["inventory"].append(item_id)
     _history(kid, ts, type="bought", item=item_id, coins=-item["price"])
     return {"kid_id": kid_id, "item_id": item_id, "item": item}
+
+
+# --------------------------------------------------------------- refund -----
+# #182: the parent gives back a purchase of the shop within 24 hours, for the price paid (the purchase entry keeps both: ts and coins).
+
+REFUND_WINDOW = timedelta(hours=24)
+
+
+def _parse_ts(ts: Any) -> datetime | None:
+    try:
+        return datetime.fromisoformat(ts) if isinstance(ts, str) else None
+    except ValueError:
+        return None
+
+
+def refund_block(kid: dict[str, Any], catalog: dict[str, Any], entry: dict[str, Any], now: datetime) -> str | None:
+    """Why this history entry cannot be refunded now (None = it can). Only a purchase (`bought`) of an item the kid still owns, not a hair dye
+    (used up at once), not refunded yet, younger than 24 h by its own ts (no or a broken ts = not refundable). Gifts and trophies are not purchases."""
+    if entry.get("type") != "bought":
+        return "not a purchase"
+    if entry.get("refunded"):
+        return "already refunded"
+    item = catalog["items"].get(entry.get("item"))
+    if item is None or item["slot"] == DYE_SLOT:
+        return "this item cannot be returned"
+    if not isinstance(entry.get("coins"), int) or entry["coins"] > 0:
+        return "no price in the purchase"
+    bought = _parse_ts(entry.get("ts"))
+    if bought is None or bought.tzinfo is None or now.tzinfo is None:
+        return "no time of the purchase"
+    age = now - bought
+    if age < timedelta(0) or age >= REFUND_WINDOW:
+        return "older than 24 hours"
+    if entry["item"] not in kid["inventory"]:
+        return "the kid does not have the item any more"
+    return None
+
+
+def _starter_for(catalog: dict[str, Any], kid: dict[str, Any], slot: str) -> str | None:
+    """The starter item of the hero's body for `slot` (the basic outfit, the starter hairstyle), as given at the hero's creation."""
+    hero = kid.get("hero")
+    if not hero:
+        return None
+    cls = catalog["classes"].get(hero.get("class")) or next(iter(catalog["classes"].values()), None)
+    if cls is None:
+        return None
+    for iid in cls["starter_items_by_body"].get(hero.get("body"), cls["starter_items"]):
+        item = catalog["items"].get(iid)
+        if item and item["slot"] == slot and _body_ok(item, kid):
+            return iid
+    return None
+
+
+def refund(
+    state: dict[str, Any], catalog: dict[str, Any], kid_id: str, bought_ts: str, item_id: str, ts: str
+) -> dict[str, Any]:
+    """The parent returns a purchase (#182): the item leaves the inventory, the coins paid come back, the purchase is marked `refunded`
+    and a `refunded` entry is added. Worn: the clothes and the hairstyle go back to the starter of the hero's body (never without an outfit),
+    anything else just comes off. Not a task: the fortress and the tasks are not touched."""
+    kid = _kid(state, kid_id)
+    entry = next((e for e in reversed(kid["history"]) if e.get("type") == "bought" and e.get("ts") == bought_ts and e.get("item") == item_id), None)
+    if entry is None:
+        raise HomeQuestError(ERR_NOT_FOUND, "purchase not found")
+    now = _parse_ts(ts)
+    why = refund_block(kid, catalog, entry, now) if now is not None else "no time"
+    if why:
+        raise HomeQuestError(ERR_INVALID_STATE, why)
+    item = catalog["items"][item_id]
+    price = -entry["coins"]
+    kid["inventory"].remove(item_id)
+    slot = item["slot"]
+    if kid["equipped"].get(slot) == item_id:
+        repl = _starter_for(catalog, kid, slot) if slot in ("outfit", "hair") else None
+        if repl and repl != item_id:
+            if repl not in kid["inventory"]:
+                kid["inventory"].append(repl)
+            kid["equipped"][slot] = repl
+        elif slot == "outfit":
+            own = [i for i in kid["inventory"] if (catalog["items"].get(i) or {}).get("slot") == "outfit" and _body_ok(catalog["items"][i], kid)]
+            if own:
+                kid["equipped"]["outfit"] = own[-1]
+            else:
+                kid["equipped"].pop("outfit", None)
+        else:
+            kid["equipped"].pop(slot, None)
+    kid["coins"] += price
+    entry["refunded"] = ts
+    _history(kid, ts, type="refunded", item=item_id, coins=price, bought_ts=bought_ts)
+    return {"kid_id": kid_id, "item_id": item_id, "coins": price}
 
 
 def equip(

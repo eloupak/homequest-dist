@@ -170,6 +170,21 @@ async def ws_adjust(mgr: HomeQuestManager, ident: Identity, connection: Any, msg
 
 
 @websocket_api.websocket_command(
+    {
+        vol.Required("type"): "homequest/refund_purchase",
+        vol.Optional("panel_kid"): str,
+        vol.Required("kid_id"): str,
+        vol.Required("ts"): str,
+        vol.Required("item_id"): str,
+    }
+)
+@_handler(admin_only=True)
+async def ws_refund(mgr: HomeQuestManager, ident: Identity, connection: Any, msg: dict) -> Any:
+    """#182: only a parent, never from a child panel (admin_only); the 24 h and the rest are checked in logic.refund."""
+    return await mgr.async_refund(msg["kid_id"], msg["ts"], msg["item_id"])
+
+
+@websocket_api.websocket_command(
     {vol.Required("type"): "homequest/reset_hero", vol.Optional("panel_kid"): str, vol.Required("kid_id"): str}
 )
 @_handler(admin_only=True)
@@ -303,6 +318,7 @@ def async_register(hass: HomeAssistant) -> None:
         ws_claim_gift,
         ws_equip,
         ws_adjust,
+        ws_refund,
         ws_reset_hero,
         ws_set_approval,
         ws_set_task,

@@ -730,6 +730,10 @@ class HomeQuestManager:
                 continue
             copy = dict(kid)
             copy["history"] = kid["history"][-HISTORY_VIEW:]
+            if ident.is_admin:                           # #182: which purchases the parent may still return (the server decides, the UI only shows it)
+                now = dt_util.now()
+                copy["history"] = [dict(e, refundable=True) if e.get("type") == "bought" and logic.refund_block(kid, self.catalog, e, now) is None else e
+                                   for e in copy["history"]]
             copy["inventory"] = list(kid["inventory"]) + logic.trophy_ids(kid, self.story)   # an amulet won in the siege is in the inventory (#118)
             copy.update(logic.kid_split(kid_id, kid, self._kid_name(kid_id), self.state.get("install_id")))   # kid.public / kid.private (#128)
             out[kid_id] = copy
@@ -1249,6 +1253,10 @@ class HomeQuestManager:
 
         await self._mutate(fn)
         return self.pin_status(session)
+
+    async def async_refund(self, kid_id: str, bought_ts: str, item_id: str) -> dict[str, Any]:
+        """#182: the parent returns a purchase (24 h, the price paid); the rules are in logic.refund."""
+        return await self._mutate(lambda ts: logic.refund(self.state, self.catalog, kid_id, bought_ts, item_id, ts))
 
     async def async_adjust(self, kid_id: str, delta: int, note: str) -> dict[str, Any]:
         return await self._mutate(
