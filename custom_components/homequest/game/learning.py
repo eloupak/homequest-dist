@@ -151,17 +151,20 @@ def ham_state(kd: dict, cfg: dict) -> dict:
     return {"balance": bal, "per_coin": per, "to_next": per - bal % per if per else 0}
 
 
-def reward_open(kd: dict, op: str, day: str) -> bool:
-    """Hams are paid only for the first finished set of an operation per day."""
-    return not any(x["op"] == op and x["day"] == day for x in kd["sets"])
+def reward_open(kd: dict, op: str, day: str, ground: str | None = None) -> bool:
+    """Hams are paid only for the first finished set of an operation per day, and (addendum 7, #189) of a hunting ground per day: a set of today
+    on the same ground closes it too (while every operation has its own ground today the two rules are the same; they differ only when hunt.yaml
+    has fewer grounds than operations). A set ended early with the cross counts like a finished one."""
+    return not any(x["day"] == day and (x["op"] == op or (ground and x.get("ground") == ground)) for x in kd["sets"])
 
 
-def reward(kd: dict, op: str, day: str, hits: int, cfg: dict) -> dict:
+def reward(kd: dict, op: str, day: str, hits: int, cfg: dict, won: int | None = None, ground: str | None = None) -> dict:
     """Finished set -> hams (1 per right answer, only if the day's reward of this operation is still open) into the child's balance; every `hams_per_coin` hams
-    become a coin (kd["pending_coins"], paid by the caller through the HomeQuest store and then settled). Returns what the child sees."""
+    become a coin (kd["pending_coins"], paid by the caller through the HomeQuest store and then settled). Returns what the child sees.
+    won: the aiming hunt (#188): the hams of the animals hit instead of hits x hams_per_hit (the same daily rule)."""
     rc = cfg["learning"]["reward"]
-    eligible = reward_open(kd, op, day)
-    hams = int(hits) * int(rc["hams_per_hit"]) if eligible else 0
+    eligible = reward_open(kd, op, day, ground)
+    hams = (int(won) if won is not None else int(hits) * int(rc["hams_per_hit"])) if eligible else 0
     per = int(rc["hams_per_coin"])
     bal = int(kd.get("hams", 0)) + hams
     coins = bal // per
@@ -205,11 +208,102 @@ def draw_problems(data: dict, kid: str, op: str, cfg: dict, rng: random.Random, 
     return picked
 
 
+# ---- the aiming hunt (#188, addenda 1 and 3): after a right answer an animal peeks out, the child shoots with a finger ----------------------
+MODES = ("aim", "auto")        # aim: the animal shows only after a right answer, the child shoots (learn_shot); auto: the old turn (the hero shoots by himself)
+
+
+def animals(cfg: dict) -> list[dict]:
+    """The animals of the hunt (hunt.yaml `animals`): id, name, weight (how often), hams (for a hit), size, hit (the hit zone as a share of the size)."""
+    return [a for a in (cfg.get("animals") or []) if isinstance(a, dict) and a.get("id") and float(a.get("weight", 0)) > 0]
+
+
+def pick_animal(cfg: dict, rng: random.Random, ground: dict | None = None) -> dict | None:
+    """ground (#191): a hunting ground with its own `animals` {id: weight} overrides the weights (0 = not there; an unknown id is ignored)."""
+    pool = animals(cfg)
+    over = (ground or {}).get("animals") if isinstance((ground or {}).get("animals"), dict) else None
+    weights = [float(over.get(x["id"], x["weight"])) if over else float(x["weight"]) for x in pool]
+    pool = [x for x, w in zip(pool, weights) if w > 0]
+    weights = [w for w in weights if w > 0]
+    if not pool:
+        return None
+    a = rng.choices(pool, weights=weights)[0]
+    return {"id": a["id"], "name": str(a.get("name") or a["id"]), "hams": int(a.get("hams", 1))}
+
+
+# ---- the hunting grounds (#191, addendum 5 point 7): every kind of problems is one ground today, drawn anew every day ---------------------
+def grounds(cfg: dict) -> list[dict]:
+    """hunt.yaml `grounds`: id, name, background (portrait), background_wide (landscape), animals {id: weight} (optional)."""
+    return [g for g in (cfg.get("grounds") or []) if isinstance(g, dict) and g.get("id")]
+
+
+def public_ground(g: dict | None) -> dict | None:
+    if not g:
+        return None
+    return {k: g[k] for k in ("id", "name", "background", "background_wide") if g.get(k)}
+
+
+def draw_grounds(seed: str, day: str, ops: list[str], pool: list[dict]) -> dict[str, str]:
+    """{op: ground id}: deterministic for the family (seed) and the day; different grounds for different operations while there are enough."""
+    import hashlib
+    ids = [g["id"] for g in pool]
+    if not ids:
+        return {}
+    r = random.Random(int(hashlib.sha256(f"{seed}:{day}".encode()).hexdigest()[:16], 16))
+    order = ids[:]
+    r.shuffle(order)
+    return {op: order[i % len(order)] for i, op in enumerate(ops)}
+
+
+def grounds_today(data: dict, cfg: dict, day: str) -> tuple[dict[str, dict], bool]:
+    """-> ({op: ground}, changed). The day's draw is kept in the learning data (`grounds` = {day, map}), so it holds the whole day even after a
+    restart or an edit of hunt.yaml; the family's own random `seed` (created once, also in the data) makes it the same for all its children."""
+    pool = grounds(cfg)
+    if not pool:
+        return {}, False
+    changed = False
+    if not data.get("seed"):
+        import secrets
+        data["seed"] = secrets.token_hex(8)
+        changed = True
+    ops = list(cfg["learning"]["ops"])
+    by_id = {g["id"]: g for g in pool}
+    kept = data.get("grounds") or {}
+    m = kept.get("map") if kept.get("day") == day else None
+    if not isinstance(m, dict) or any(op not in m or m[op] not in by_id for op in ops):
+        m = draw_grounds(data["seed"], day, ops, pool)
+        data["grounds"] = {"day": day, "map": m}
+        changed = True
+    return {op: by_id[m[op]] for op in ops if m.get(op) in by_id}, changed
+
+
+def entry_status(cfg: dict, stage: int, inventory: list | None) -> tuple[bool, str]:
+    """#189: may a child go hunting? hunt.yaml `entry`: min_stage (the fortress stage reached, logic.fortress_stage) and needs_item (an item the
+    child owns; it need not be worn). -> (open, reason): reason "stage" | "item" | ""."""
+    e = cfg.get("entry") or {}
+    if int(stage) < int(e.get("min_stage") or 0):
+        return False, "stage"
+    need = e.get("needs_item")
+    if need and need not in (inventory or []):
+        return False, "item"
+    return True, ""
+
+
+def default_mode(cfg: dict) -> str:
+    m = str((cfg.get("scene") or {}).get("mode") or "aim")
+    return m if m in MODES and (m != "aim" or animals(cfg)) else "auto"
+
+
 class LearnSet:
     """One set of a child and an operation: exactly `set_size` problems (a wrong answer counts); a wrong one comes back a few places later in place of an unasked one (at most max_repeats times)."""
 
-    def __init__(self, set_id: str, kid: str, op: str, problems: list[dict], cfg: dict, rng: random.Random, day: str) -> None:
+    def __init__(self, set_id: str, kid: str, op: str, problems: list[dict], cfg: dict, rng: random.Random, day: str, mode: str = "auto",
+                 ground: dict | None = None) -> None:
         self.id, self.kid, self.op, self.day = set_id, kid, op, day
+        self.ground = ground                     # #191: the hunting ground of this operation today (only the scenery and the animals)
+        self.mode = mode
+        self.shot: dict | None = None            # aim: the animal waiting for the child's shot after a right answer
+        self.won = 0                             # aim: hams of the animals hit
+        self.shots = {"hit": 0, "miss": 0}
         self.cfg, self.rng = cfg, rng
         self.queue: list[dict] = list(problems)
         self.size = len(problems)
@@ -219,6 +313,7 @@ class LearnSet:
         self.repeats: dict[str, int] = {}
         self.wrong_log: list[dict] = []
         self.done = False
+        self.quit = False                        # addendum 7 (#189): ended early with the cross
 
     @property
     def current(self) -> dict | None:
@@ -236,6 +331,8 @@ class LearnSet:
             self.hits += 1
             if self.tries[key] == 1:
                 self.first_try += 1
+            if self.mode == "aim":
+                self.shot = pick_animal(self.cfg, self.rng, self.ground)
         else:
             self.wrong_log.append({"text": p["text"], "given": value, "answer": p["answer"]})
             rp = self.cfg["learning"]["repeat"]
@@ -243,11 +340,29 @@ class LearnSet:
                 self.repeats[key] = self.repeats.get(key, 0) + 1
                 gap = self.rng.randint(int(rp["gap"][0]), int(rp["gap"][1]))
                 self.queue[min(gap - 1, len(self.queue) - 1)] = p
-        self.done = not self.queue
+        self.done = not self.queue and self.shot is None
         return {"problem": p, "correct": correct}
 
+    def take_shot(self, hit: bool) -> dict:
+        """aim: the child's shot at the waiting animal. A hit adds its hams; either way the animal is gone."""
+        a = self.shot
+        if a is None:
+            raise LearnError("invalid", "no animal is waiting for a shot")
+        self.shot = None
+        self.shots["hit" if hit else "miss"] += 1
+        if hit:
+            self.won += int(a["hams"])
+        self.done = not self.queue
+        return {"animal": a, "hit": bool(hit), "hams": int(a["hams"]) if hit else 0}
+
     def summary(self) -> dict:
-        return {"op": self.op, "size": self.size, "hits": self.hits, "first_try": self.first_try, "wrong": self.wrong_log}
+        out = {"op": self.op, "size": self.size, "hits": self.hits, "first_try": self.first_try, "wrong": self.wrong_log, "mode": self.mode,
+               "answered": sum(self.tries.values()), "quit": self.quit}
+        if self.ground:
+            out["ground"] = public_ground(self.ground)
+        if self.mode == "aim":
+            out.update(shots=dict(self.shots), won=self.won)
+        return out
 
 
 class LearningHub:
@@ -267,15 +382,27 @@ class LearningHub:
         self.sets: dict[str, LearnSet] = {}
         self._n = 0
 
-    def start(self, kid: str, op: str) -> LearnSet:
+    def start(self, kid: str, op: str, mode: str | None = None) -> LearnSet:
         if op not in self.cfg["learning"]["ops"]:
             raise LearnError("invalid", f"unknown operation '{op}'")
+        mode = mode or default_mode(self.cfg)
+        if mode not in MODES or (mode == "aim" and not animals(self.cfg)):
+            raise LearnError("invalid", f"unknown hunt mode '{mode}'")
         for sid in [i for i, s in self.sets.items() if s.kid == kid]:      # one running set per child
             del self.sets[sid]
         self._n += 1
-        s = LearnSet(f"s{self._n}-{int(self.now())}", kid, op, draw_problems(self.data, kid, op, self.cfg, self.rng), self.cfg, self.rng, self.today())
+        day = self.today()
+        g = self.grounds(day).get(op)
+        s = LearnSet(f"s{self._n}-{int(self.now())}", kid, op, draw_problems(self.data, kid, op, self.cfg, self.rng), self.cfg, self.rng, day, mode, g)
         self.sets[s.id] = s
         return s
+
+    def grounds(self, day: str | None = None) -> dict[str, dict]:
+        """#191: today's hunting grounds {op: ground}; a new draw is saved."""
+        m, changed = grounds_today(self.data, self.cfg, day or self.today())
+        if changed:
+            self.save(self.data)
+        return m
 
     def need(self, set_id: str) -> LearnSet:
         s = self.sets.get(set_id)
@@ -285,17 +412,52 @@ class LearningHub:
 
     def answer(self, set_id: str, value: int | None, ms: int | None) -> dict:
         s = self.need(set_id)
+        if s.shot is not None:                                                      # aim: an answer while the animal still waits = the shot was missed
+            s.take_shot(False)
         res = s.answer(value)
         p = res["problem"]
         record(self.data, s.kid, p, value, res["correct"], ms, self.cfg, self.now())
         out = {"correct": res["correct"], "answer": p["answer"], "text": p["text"], "hits": s.hits, "remaining": len(s.queue), "done": s.done,
-               "next": public(s.current) if s.current else None}
+               "next": public(s.current) if s.current else None, "mode": s.mode, "animal": s.shot}
         if s.done:
-            kd = _kid(self.data, s.kid)
-            out["reward"] = reward(kd, s.op, s.day, s.hits, self.cfg)             # before the set is recorded: "first set of the day" looks at the earlier ones
-            kd["sets"] = (kd["sets"] + [{"op": s.op, "day": s.day, "ts": int(self.now()), "hits": s.hits, "first_try": s.first_try, "size": s.size, "hams": out["reward"]["hams"]}])[-KEEP_SETS:]
-            out["summary"] = s.summary()
-            out["daily"] = done_today(self.data, s.kid, s.day, self.cfg)
-            del self.sets[set_id]
+            self._finish(s, out)
         self.save(self.data)
         return out
+
+    def shot(self, set_id: str, hit: bool) -> dict:
+        """aim (#188): the child's shot at the animal of the last right answer -> {hit, hams, animal, won, remaining, done, next, (reward, summary, daily)}."""
+        s = self.need(set_id)
+        res = s.take_shot(bool(hit))
+        out = {**res, "won": s.won, "hits": s.hits, "remaining": len(s.queue), "done": s.done, "next": public(s.current) if s.current else None, "mode": s.mode}
+        if s.done:
+            self._finish(s, out)
+        self.save(self.data)
+        return out
+
+    def quit(self, set_id: str) -> dict:
+        """Addendum 7 (#189): the cross ends the set early like a finished one: the hams of the animals hit so far (the same daily rule) and the
+        ground counts as used today. An animal still waiting runs away (a miss). A set with no answer yet just ends: nothing is recorded, so a
+        tap on the cross by mistake does not cost the day's hams -> {"recorded": False}."""
+        s = self.need(set_id)
+        if not s.tries:
+            del self.sets[s.id]
+            return {"recorded": False, "done": True}
+        if s.shot is not None:
+            s.take_shot(False)
+        s.quit = True
+        s.done = True
+        out = {"recorded": True, "done": True, "hits": s.hits, "won": s.won, "mode": s.mode, "remaining": len(s.queue), "next": None}
+        self._finish(s, out)
+        self.save(self.data)
+        return out
+
+    def _finish(self, s: LearnSet, out: dict) -> None:
+        kd = _kid(self.data, s.kid)
+        gid = s.ground["id"] if s.ground else None
+        out["reward"] = reward(kd, s.op, s.day, s.hits, self.cfg, s.won if s.mode == "aim" else None, gid)   # before the set is recorded: "first set of the day" looks at the earlier ones
+        kd["sets"] = (kd["sets"] + [{"op": s.op, "day": s.day, "ts": int(self.now()), "hits": s.hits, "first_try": s.first_try, "size": s.size, "hams": out["reward"]["hams"],
+                                     **({"mode": "aim", "won": s.won, "shots": dict(s.shots)} if s.mode == "aim" else {}),
+                                     **({"ground": gid} if gid else {}), **({"quit": True} if s.quit else {})}])[-KEEP_SETS:]
+        out["summary"] = s.summary()
+        out["daily"] = done_today(self.data, s.kid, s.day, self.cfg)
+        del self.sets[s.id]

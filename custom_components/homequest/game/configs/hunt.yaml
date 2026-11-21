@@ -1,4 +1,5 @@
-# Hunt (maths): one player, turn based. The kid types the result, the hero shoots the hare. Test only (dev_panels). Everything below is data:
+# Hunt (maths): one player, turn based. The kid types the result; a right answer lets an animal peek out and the kid shoots it with a finger (v1.9,
+# #188: mode aim; the old turn where the hero shoots by himself = mode auto, kept). Since v1.9 in the child's game (Quest -> Na lov, #189). Everything below is data:
 # ranges and thresholds of the learning part, and the scene (fractions of the scene box; frontend/games/lib/scene.js draws it).
 id: hunt
 title: Lov
@@ -32,7 +33,66 @@ learning:
     hams_per_hit: 1                         # a ham for every right answer (the set always has set_size problems, a wrong one counts)
     hams_per_coin: 25                       # the balance of hams (all operations together) turns into a coin per this many; 50 = two coins
 
+# who may go hunting (#189): the fortress stage reached (the index in story.yaml fortress.stages) and an item the child owns (it need not be worn)
+entry:
+  min_stage: 3
+  needs_item: bow_short
+  label: Na lov
+  locked_item: Na lov potřebuješ luk. Najdeš ho v obchodě.
+  # addendum 5 (#189): the first screen = the hunter of story.yaml cast (`giver`) asks where to go; `help` = how a turn goes; `other` = the button
+  # after a finished round back to the choice
+  giver: hunter
+  ask: Kam dnes vyrazíme?
+  help: Vypočítej, kde je zvíře, jak daleko máš střílet a odkud fouká vítr. Když to zvládneš, zastihneš kořist nekrytou. Natáhni luk, počkej, zamiř a vystřel, než uteče! Lovit můžeš kolikrát chceš, ale z každého loviště dostaneš šunku jen jednou za den.
+  other: Jiné loviště
+
+# the animals (#188 addendum 3): one is drawn at random after every right answer (weight = how often); hams = the reward for a hit (the daily rule
+# and hams_per_coin below stay); size = width as a fraction of the scene unit; ratio = height / width; hit = the hit zone as a share of the size
+# (x aim.hit_scale): a small animal is harder to hit. Another animal = a line here + its art (sprites) or a placeholder shape in scene.js.
+animals:
+  # ratio = the height / width of the art (brief-021: the hare 1291x1218, the deer and the boar 1536x1024); the deer looking out fills ~56 %
+  # of its width, so its box is wider than the placeholder was
+  - {id: hare, name: Zajíc, weight: 60, hams: 1, size: 0.15, ratio: 0.94, hit: 1.0}
+  - {id: deer, name: Srnka, weight: 30, hams: 2, size: 0.32, ratio: 0.67, hit: 0.8}
+  - {id: boar, name: Divočák, weight: 10, hams: 3, size: 0.28, ratio: 0.67, hit: 0.95}
+
+# the hunting grounds (#191, addendum 5 point 7): every kind of problems (learning.ops) is one ground today; the draw is new every day, the same for
+# all children of the family (seed + day, kept in homequest.learning for the whole day). Keep at least 2 more grounds than ops. background /
+# background_wide = the picture of the scene on a portrait / landscape phone (assets, like the sprites; missing = the drawn meadow stays);
+# animals = own weights of the animals there (missing = the weights above; 0 = not there). The hams rule ("the first round of an operation a day")
+# is unchanged: a ground is only the scenery of its operation.
+grounds:
+  - {id: forest, name: Les, background: story/bg_hunt_forest.webp, background_wide: story/bg_hunt_forest_wide_1.webp}
+  - {id: meadow, name: Louka, background: story/bg_hunt_meadow.webp, background_wide: story/bg_hunt_meadow_wide_1.webp, animals: {hare: 70, deer: 25, boar: 5}}
+  - {id: marsh, name: Bažina, background: story/bg_hunt_marsh.webp, background_wide: story/bg_hunt_marsh_wide_1.webp, animals: {hare: 35, deer: 25, boar: 40}}
+  - {id: mountains, name: Hory, background: story/bg_hunt_mountains.webp, background_wide: story/bg_hunt_mountains_wide_1.webp, animals: {hare: 40, deer: 50, boar: 10}}
+  - {id: brook, name: Potok, background: story/bg_hunt_brook.webp, background_wide: story/bg_hunt_brook_wide_1.webp, animals: {hare: 50, deer: 40, boar: 10}}
+  - {id: glade, name: Paseka, background: story/bg_hunt_glade.webp, background_wide: story/bg_hunt_glade_wide_1.webp, animals: {hare: 55, deer: 30, boar: 15}}
+
+# the finger shot (#188): pull_max = the longest pull (x the scene unit), min_power = a shorter pull does not shoot, gravity (x the scene height
+# per s^2) and range (the longest shot at 45 degrees, x the scene width) shape the curve, preview = seconds of the flight shown as dots while
+# aiming (the help with aiming; 0 = none), hit_scale = x every hit zone (generous: children of the 1st grade), angle_min/max = the aim in degrees
+# (negative = up), show_ms = how long the animal stays fully out before it crouches (the old turn), lurk = the share of its height that stays visible,
+# window_ms = addendum 5 (#189): the turn after a right answer is draw the bow -> the animal runs out (target.peek_ms) -> this long to shoot, else it runs away
+aim:
+  pull_max: 0.32
+  min_power: 0.18
+  gravity: 1.3
+  range: 1.5
+  preview: 0.32
+  hit_scale: 1.25
+  angle_min: -75
+  angle_max: 25
+  show_ms: 1100
+  lurk: 0.45
+  window_ms: 3000
+  # addendum 7 (#189): the arrow's flight is shown faster than the curve's own time (the curve itself stays): its time / flight_speed, at most
+  # flight_max_ms, so a far shot takes only a little longer than a near one. Tune at the UAT.
+  flight_speed: 2.0
+  flight_max_ms: 650
+
 scene:
+  mode: aim                                 # aim (v1.9) | auto (the hero shoots by himself after every answer)
   aspect: 0.62                              # scene height / width (portrait phone: the scene takes the upper ~55 % of the screen)
   background:
     sky: ["#9fd4f2", "#d9f0e0"]
@@ -56,6 +116,15 @@ scene:
     y: 0.93
     size: 0.46                              # height as a fraction of the scene height
     action: shoot                           # fishing: cast
+    outfit: outfit_hunter_1                 # on the hunt the hero always wears the hunting gear (#185; every child gets it at stage 3), whatever is worn
+    quiver: bow_short                       # addendum 9 (#189): the quiver of this weapon art on the back (manifest layer:quiver:<art>; missing = none)
+    # #189 (brief-025): the archer - pictures aim<deg>_<relaxed|drawn> of the outfit; the scene shows the angle nearest to the aim and
+    # `drawn` while the string is pulled. string_hand = the pinch of the drawn hand at the cheek (px of the 1024 hero canvas, measured on the
+    # imported pictures); the string and the arrow's nock go there. Missing pictures = the reach pose below.
+    string_hand:
+      boy: {aim0_drawn: [435, 180], aim25_drawn: [450, 175], aim50_drawn: [445, 175]}
+      girl: {aim0_drawn: [430, 190], aim25_drawn: [430, 190], aim50_drawn: [440, 185]}
+    pose: reach                             # brief-021: the left arm stretched, the bow on its fist (manifest grip of set <outfit>.reach); missing art = the plain hero + bow.grip_canvas
     draw_ms: 420
     release_ms: 140
   side: hero_left                           # the hero (drawn facing us, NOT mirrored) stands left, the forest right; the bow is in his left hand = the right of the screen. Fishing: same
@@ -74,6 +143,20 @@ scene:
     arc_height: 0.28
     to: score
   score:
-    label: Šunky
+    label: ""                             # addendum 10 (#189): no word by the counter, only the number and the ham
   reveal_ms: 1700                           # how long the right result stays on the scene after a wrong answer
-  sprites: {}                               # id -> {state: file}: the finished art replaces the placeholders; empty = placeholders from CSS shapes
+  # id -> {state: file}: the finished art replaces the placeholders (a file that does not load = the CSS shape stays). A file is relative to the
+  # assets of HomeQuest (assets/story, tools/import_story_art.py). States: peek (rises), wait, hit (the code makes the jump), flee (runs away).
+  # brief-021 (#188 addendum 4): the animal art, peek = looking out, run = running away.
+  sprites:
+    hare: {peek: story/sprite_hunt_hare_peek.webp, wait: story/sprite_hunt_hare_peek.webp, hit: story/sprite_hunt_hare_peek.webp, flee: story/sprite_hunt_hare_run.webp}
+    deer: {peek: story/sprite_hunt_deer_peek.webp, wait: story/sprite_hunt_deer_peek.webp, hit: story/sprite_hunt_deer_peek.webp, flee: story/sprite_hunt_deer_run.webp}
+    boar: {peek: story/sprite_hunt_boar_peek.webp, wait: story/sprite_hunt_boar_peek.webp, hit: story/sprite_hunt_boar_peek.webp, flee: story/sprite_hunt_boar_run.webp}
+  # #189 (brief-025, addendum 5 point 8): the pictures of the bow (without its string: the scene draws the string), of the arrow and of the bush (the
+  # covers). size = the canvas of the file in px, the other points are px of that canvas (the scene only uses ratios, so a scaled file is fine);
+  # bow: tips = the ends of the string, grip = the middle of the handle (on the fist), mirror = flipped so that its back faces the animals;
+  # arrow / cover: box = the drawn part of the canvas (the rest is transparent). A file that does not load = the drawn shape stays.
+  art:
+    bow: {file: story/sprite_hunt_bow.webp, size: [1024, 1536], tips: [[637, 11], [638, 1505]], grip: [493, 758], mirror: true}
+    arrow: {file: story/sprite_hunt_arrow.webp, size: [2172, 724], box: [68, 267, 2102, 471]}
+    cover: {file: story/sprite_hunt_bush.webp, size: [1536, 1024], box: [46, 136, 1489, 885]}

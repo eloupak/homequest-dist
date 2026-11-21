@@ -132,12 +132,12 @@ async def ws_buy(mgr: HomeQuestManager, ident: Identity, connection: Any, msg: d
 
 
 @websocket_api.websocket_command(
-    {vol.Required("type"): "homequest/claim_gift", vol.Required("stage"): str, **KID}
+    {vol.Required("type"): "homequest/claim_gift", vol.Required("stage"): str, vol.Optional("pick"): str, **KID}
 )
 @_handler()
 async def ws_claim_gift(mgr: HomeQuestManager, ident: Identity, connection: Any, msg: dict) -> Any:
     """The gift of a reached fortress stage; idempotent (a second call pays nothing)."""
-    return await mgr.async_claim_gift(mgr.require_kid(ident), msg["stage"])
+    return await mgr.async_claim_gift(mgr.require_kid(ident), msg["stage"], msg.get("pick"))
 
 
 @websocket_api.websocket_command(

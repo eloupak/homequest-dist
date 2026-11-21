@@ -26,6 +26,7 @@ VARS: dict[str, tuple[str, str]] = {
     "sedlak_5": ("Jméno sedláka (oslovení)", "Matouši"),
     "kastelan": ("Jméno kastelána", "Bohumil"),
     "kastelan_5": ("Jméno kastelána (oslovení)", "Bohumile"),
+    "lovec": ("Jméno lovce", "Ctibor"),                       # #185: the hunter of stage 3 (each family sets its own in Rodič -> Nastavení -> Příběh)
 }
 DEFAULTS: dict[str, str] = {k: v[1] for k, v in VARS.items()}
 
@@ -37,6 +38,7 @@ GROUPS: list[dict[str, Any]] = [
     {"id": "hora", "title": "Hora", "text": "Blízká hora nebo kopec, který je od vás vidět.", "keys": ["hora", "hora_2"]},
     {"id": "sedlak", "title": "Sedlák", "text": "Jméno sedláka z vaší obce, který dětem nosí zprávy.", "keys": ["sedlak", "sedlak_5"]},
     {"id": "kastelan", "title": "Kastelán", "text": "Jméno kastelána, správce tvrze, kterou děti stavějí.", "keys": ["kastelan", "kastelan_5"]},
+    {"id": "lovec", "title": "Lovec", "text": "Jméno lovce, který přijde k tvrzi s věží a vezme děti na lov.", "keys": ["lovec"]},
 ]
 HINTS: dict[str, str] = {
     "obec": "kdo/co (1. pád)",
@@ -51,6 +53,7 @@ HINTS: dict[str, str] = {
     "sedlak_5": "oslovení (5. pád)",
     "kastelan": "kdo (1. pád)",
     "kastelan_5": "oslovení (5. pád)",
+    "lovec": "kdo (1. pád)",
 }
 _KID_PLACEHOLDER = re.compile(r"\{(deti|jmeno|jeden)\}")
 _SENTENCE = re.compile(r"(?<=[.!?…])[\"“”]?\s+")

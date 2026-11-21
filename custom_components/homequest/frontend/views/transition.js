@@ -5,6 +5,8 @@
 import { coin, h } from "../lib/dom.js";
 import { bgUrl } from "../lib/story.js";
 import { pausableTimeout } from "../lib/upright.js";
+import { BUST_HAT } from "../lib/layers.js";
+import { heroSpec } from "./common.js";
 
 export const REBUILD_MS = 4600;
 export const REBUILD_REDUCED_MS = 900;
@@ -47,4 +49,51 @@ export function coinGift(ctx, coins, onDone) {
   const overlay = h("div", { class: `coin-gift${quick ? " quick" : ""}`, "data-kind": "gift" }, h("div", { class: "gift-text" }, `+${coins} zlaťáky`), ...flying);
   pausableTimeout(overlay, quick ? 900 : COINS_MS, () => { overlay.remove(); if (onDone) onDone(); });
   return overlay;
+}
+
+/** #185: an item as a gift (gives.item, e.g. the hunting gear of stage 3): the server has put it in the inventory and on the hero already; this
+ *  card shows it until the child taps "Díky!" (addendum 13: no timer - a child who reads slowly must not lose it). item = the catalog item;
+ *  a missing item = nothing to show.
+ *  #185 addendum 11: an outfit (a set has no picture of its own) = the child's hero (head and shoulders) wearing it, composed like the cards of
+ *  the feather choice (BUST_HAT); any other item = its thumbnail. A picture that is missing or fails to load = no frame at all (name and text only). */
+export function itemGift(ctx, item, note, onDone) {
+  let done = false;
+  const finish = () => { if (done) return; done = true; overlay.remove(); if (onDone) onDone(); };
+  const pic = giftPicture(ctx, item);
+  const overlay = h("div", { class: "item-gift", "data-kind": "item-gift", "data-item": item ? item.id : "" },
+    h("div", { class: "box" },
+      h("div", { class: "note" }, note || "Dar"),
+      pic,
+      h("div", { class: "name", "data-id": "gift-name" }, item ? item.name : ""),
+      h("div", { class: "muted" }, "Hrdina ji má hned na sobě. Převléknout se můžeš v Hrdinovi."),
+      h("button", { class: "btn", "data-act": "gift-ok", onclick: finish }, "Díky!")));
+  return overlay;
+}
+
+/** The picture of an item gift (itemGift), or null. */
+export function giftPicture(ctx, item) {
+  const kid = ctx.kid;
+  if (!item || !ctx.stage || !kid || !kid.hero) return null;
+  if (item.slot === "outfit") {
+    if (!ctx.stage.illustrated || !ctx.cat) return null;
+    try {
+      const equipped = { ...(kid.equipped || {}), outfit: item.id };     // the server has dressed the hero already; the same if not yet
+      delete equipped.weapon;
+      delete equipped.offhand;
+      const hero = ctx.stage.hero(`gift-${item.id}`, heroSpec(ctx, kid, { scale: 3, equipped, cropBox: BUST_HAT }));
+      return hero ? h("div", { class: "pic bust", "data-id": "gift-bust" }, hero) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+  let img = null;
+  try {
+    img = ctx.stage.thumb(item, kid.hero.body, ctx.items, 160);
+  } catch (e) {
+    img = null;
+  }
+  if (!img) return null;
+  const box = h("div", { class: "pic" }, img);
+  img.addEventListener("error", () => box.remove());
+  return box;
 }

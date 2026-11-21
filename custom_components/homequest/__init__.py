@@ -159,6 +159,8 @@ async def _async_start(hass: HomeAssistant, config: dict[str, Any]) -> bool:
 
     mgr.kids_changed = _kids_changed
     await _kids_changed()
+    # the learning games (the maths hunt): own commands and own storage file; since v1.9 (#189) everywhere, a child hunts from the Quest tab
+    await websocket_learning.async_setup_learning(hass)
     # development panels (3D heroes, 2D motion test page): only where the flag file <data>/dev_panels exists (the test instance), never in production
     if await hass.async_add_executor_job((mgr.data_dir / DEV_PANELS_FLAG).exists):
         # second, independent panel: 3D heroes (KayKit), admin only for now. Same static view (frontend/three3d/), models via the assets route.
@@ -187,7 +189,6 @@ async def _async_start(hass: HomeAssistant, config: dict[str, Any]) -> bool:
         )
         # fourth (admin only, test only): the minigames. Their websocket commands exist only here, never in production.
         websocket_games.async_register(hass)
-        await websocket_learning.async_setup_learning(hass)       # the learning games (maths hunt): own commands and own storage file
         sound_lab.async_register(hass)             # the sound lab: the parent's choice of the sound variants (test only)
         await panel_custom.async_register_panel(
             hass,

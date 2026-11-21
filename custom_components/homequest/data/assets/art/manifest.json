@@ -1,7 +1,5 @@
 {
- "back_hidden_sets": [
-  "light_3"
- ],
+ "back_hidden_sets": [],
  "canvas": 1024,
  "cape": {
   "pose_map": {
@@ -46,12 +44,42 @@
   }
  },
  "items": {
+  "bg::fortress_3:*:-": {
+   "body": null,
+   "file": "standalone/bg_fortress_3.webp",
+   "h": 1536,
+   "id": "fortress_3",
+   "key": "bg::fortress_3:*:-",
+   "kind": "bg",
+   "revision": 1,
+   "slot": null,
+   "view": null,
+   "w": 1024,
+   "x": 0,
+   "y": 0,
+   "z": null
+  },
   "bg::fortress_wide_2:*:-": {
    "body": null,
    "file": "standalone/bg_fortress_wide_2.webp",
    "h": 1024,
    "id": "fortress_wide_2",
    "key": "bg::fortress_wide_2:*:-",
+   "kind": "bg",
+   "revision": 1,
+   "slot": null,
+   "view": null,
+   "w": 1536,
+   "x": 0,
+   "y": 0,
+   "z": null
+  },
+  "bg::fortress_wide_3:*:-": {
+   "body": null,
+   "file": "standalone/bg_fortress_wide_3.webp",
+   "h": 1024,
+   "id": "fortress_wide_3",
+   "key": "bg::fortress_wide_3:*:-",
    "kind": "bg",
    "revision": 1,
    "slot": null,
@@ -1106,7 +1134,7 @@
   "layer:hairfill:short_bob:girl:front": {
    "body": "girl",
    "file": "layers/hairfill/short_bob_girl_front.webp",
-   "h": 9,
+   "h": 40,
    "id": "short_bob",
    "key": "layer:hairfill:short_bob:girl:front",
    "kind": "layer",
@@ -1131,10 +1159,146 @@
     }
    },
    "view": "front",
-   "w": 9,
+   "w": 66,
    "x": 450,
-   "y": 88,
+   "y": 57,
    "z": 69
+  },
+  "layer:head:hat_hunter_blue:boy:front": {
+   "body": "boy",
+   "file": "layers/head/hat_hunter_blue_boy_front.webp",
+   "h": 133,
+   "hair": "clip",
+   "hair_clip_y": 115,
+   "id": "hat_hunter_blue",
+   "key": "layer:head:hat_hunter_blue:boy:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head",
+   "view": "front",
+   "w": 204,
+   "x": 410,
+   "y": 9,
+   "z": 80
+  },
+  "layer:head:hat_hunter_blue:girl:front": {
+   "body": "girl",
+   "file": "layers/head/hat_hunter_blue_girl_front.webp",
+   "h": 126,
+   "hair": "clip",
+   "hair_clip_y": 117,
+   "id": "hat_hunter_blue",
+   "key": "layer:head:hat_hunter_blue:girl:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head",
+   "view": "front",
+   "w": 192,
+   "x": 415,
+   "y": 16,
+   "z": 80
+  },
+  "layer:head:hat_hunter_gold:boy:front": {
+   "body": "boy",
+   "file": "layers/head/hat_hunter_gold_boy_front.webp",
+   "h": 133,
+   "hair": "clip",
+   "hair_clip_y": 115,
+   "id": "hat_hunter_gold",
+   "key": "layer:head:hat_hunter_gold:boy:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head",
+   "view": "front",
+   "w": 204,
+   "x": 410,
+   "y": 9,
+   "z": 80
+  },
+  "layer:head:hat_hunter_gold:girl:front": {
+   "body": "girl",
+   "file": "layers/head/hat_hunter_gold_girl_front.webp",
+   "h": 126,
+   "hair": "clip",
+   "hair_clip_y": 117,
+   "id": "hat_hunter_gold",
+   "key": "layer:head:hat_hunter_gold:girl:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head",
+   "view": "front",
+   "w": 192,
+   "x": 415,
+   "y": 16,
+   "z": 80
+  },
+  "layer:head:hat_hunter_red:boy:front": {
+   "body": "boy",
+   "file": "layers/head/hat_hunter_red_boy_front.webp",
+   "h": 133,
+   "hair": "clip",
+   "hair_clip_y": 115,
+   "id": "hat_hunter_red",
+   "key": "layer:head:hat_hunter_red:boy:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head",
+   "view": "front",
+   "w": 204,
+   "x": 410,
+   "y": 9,
+   "z": 80
+  },
+  "layer:head:hat_hunter_red:girl:front": {
+   "body": "girl",
+   "file": "layers/head/hat_hunter_red_girl_front.webp",
+   "h": 125,
+   "hair": "clip",
+   "hair_clip_y": 117,
+   "id": "hat_hunter_red",
+   "key": "layer:head:hat_hunter_red:girl:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head",
+   "view": "front",
+   "w": 192,
+   "x": 415,
+   "y": 17,
+   "z": 80
+  },
+  "layer:head:hat_hunter_white:boy:front": {
+   "body": "boy",
+   "file": "layers/head/hat_hunter_white_boy_front.webp",
+   "h": 134,
+   "hair": "clip",
+   "hair_clip_y": 115,
+   "id": "hat_hunter_white",
+   "key": "layer:head:hat_hunter_white:boy:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head",
+   "view": "front",
+   "w": 204,
+   "x": 410,
+   "y": 8,
+   "z": 80
+  },
+  "layer:head:hat_hunter_white:girl:front": {
+   "body": "girl",
+   "file": "layers/head/hat_hunter_white_girl_front.webp",
+   "h": 126,
+   "hair": "clip",
+   "hair_clip_y": 117,
+   "id": "hat_hunter_white",
+   "key": "layer:head:hat_hunter_white:girl:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head",
+   "view": "front",
+   "w": 192,
+   "x": 415,
+   "y": 16,
+   "z": 80
   },
   "layer:head:hat_wizard:boy:front": {
    "body": "boy",
@@ -1169,6 +1333,126 @@
    "x": 412,
    "y": 3,
    "z": 80
+  },
+  "layer:head_back:hat_hunter_blue:boy:front": {
+   "body": "boy",
+   "file": "layers/head_back/hat_hunter_blue_boy_front.webp",
+   "h": 133,
+   "id": "hat_hunter_blue",
+   "key": "layer:head_back:hat_hunter_blue:boy:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head_back",
+   "view": "front",
+   "w": 204,
+   "x": 410,
+   "y": 9,
+   "z": 66
+  },
+  "layer:head_back:hat_hunter_blue:girl:front": {
+   "body": "girl",
+   "file": "layers/head_back/hat_hunter_blue_girl_front.webp",
+   "h": 126,
+   "id": "hat_hunter_blue",
+   "key": "layer:head_back:hat_hunter_blue:girl:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head_back",
+   "view": "front",
+   "w": 192,
+   "x": 415,
+   "y": 16,
+   "z": 66
+  },
+  "layer:head_back:hat_hunter_gold:boy:front": {
+   "body": "boy",
+   "file": "layers/head_back/hat_hunter_gold_boy_front.webp",
+   "h": 133,
+   "id": "hat_hunter_gold",
+   "key": "layer:head_back:hat_hunter_gold:boy:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head_back",
+   "view": "front",
+   "w": 204,
+   "x": 410,
+   "y": 9,
+   "z": 66
+  },
+  "layer:head_back:hat_hunter_gold:girl:front": {
+   "body": "girl",
+   "file": "layers/head_back/hat_hunter_gold_girl_front.webp",
+   "h": 126,
+   "id": "hat_hunter_gold",
+   "key": "layer:head_back:hat_hunter_gold:girl:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head_back",
+   "view": "front",
+   "w": 192,
+   "x": 415,
+   "y": 16,
+   "z": 66
+  },
+  "layer:head_back:hat_hunter_red:boy:front": {
+   "body": "boy",
+   "file": "layers/head_back/hat_hunter_red_boy_front.webp",
+   "h": 133,
+   "id": "hat_hunter_red",
+   "key": "layer:head_back:hat_hunter_red:boy:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head_back",
+   "view": "front",
+   "w": 204,
+   "x": 410,
+   "y": 9,
+   "z": 66
+  },
+  "layer:head_back:hat_hunter_red:girl:front": {
+   "body": "girl",
+   "file": "layers/head_back/hat_hunter_red_girl_front.webp",
+   "h": 125,
+   "id": "hat_hunter_red",
+   "key": "layer:head_back:hat_hunter_red:girl:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head_back",
+   "view": "front",
+   "w": 192,
+   "x": 415,
+   "y": 17,
+   "z": 66
+  },
+  "layer:head_back:hat_hunter_white:boy:front": {
+   "body": "boy",
+   "file": "layers/head_back/hat_hunter_white_boy_front.webp",
+   "h": 134,
+   "id": "hat_hunter_white",
+   "key": "layer:head_back:hat_hunter_white:boy:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head_back",
+   "view": "front",
+   "w": 204,
+   "x": 410,
+   "y": 8,
+   "z": 66
+  },
+  "layer:head_back:hat_hunter_white:girl:front": {
+   "body": "girl",
+   "file": "layers/head_back/hat_hunter_white_girl_front.webp",
+   "h": 126,
+   "id": "hat_hunter_white",
+   "key": "layer:head_back:hat_hunter_white:girl:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "head_back",
+   "view": "front",
+   "w": 192,
+   "x": 415,
+   "y": 16,
+   "z": 66
   },
   "layer:legs:pants_basic:boy:back": {
    "body": "boy",
@@ -1625,6 +1909,21 @@
    "x": 523,
    "y": 325,
    "z": 90
+  },
+  "layer:quiver:bow_short:*:front": {
+   "body": null,
+   "file": "layers/quiver/bow_short_front.webp",
+   "h": 1024,
+   "id": "bow_short",
+   "key": "layer:quiver:bow_short:*:front",
+   "kind": "layer",
+   "revision": 1,
+   "slot": "quiver",
+   "view": "front",
+   "w": 681,
+   "x": 0,
+   "y": 0,
+   "z": 11
   },
   "layer:set:cloth_0.angle:boy:front": {
    "body": "boy",
@@ -2173,6 +2472,15 @@
    "pose": "vert",
    "revision": 1,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/cloth_0.vert_boy_front.tilt20.webp",
+     "h": 965,
+     "w": 462,
+     "x": 268,
+     "y": 59
+    }
+   },
    "view": "front",
    "w": 460,
    "x": 270,
@@ -2217,8 +2525,8 @@
     },
     "lhand": {
      "forearm": [
-      657.8,
-      484.4
+      657.6,
+      483.7
      ],
      "point": [
       673.1,
@@ -2252,6 +2560,15 @@
    "pose": "vert",
    "revision": 1,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/cloth_0.vert_girl_front.tilt20.webp",
+     "h": 949,
+     "w": 405,
+     "x": 287,
+     "y": 59
+    }
+   },
    "view": "front",
    "w": 403,
    "x": 289,
@@ -2867,19 +3184,19 @@
     "angle": 0.07,
     "bottom": [
      304.8,
-     1072.4
+     1071.7
     ],
-    "bottom_len": 613.1,
-    "gap": 44.6,
+    "bottom_len": 610.9,
+    "gap": 46.8,
     "point": [
      303.9,
-     437.0
+     437.4
     ],
     "top": [
      303.4,
      32.0
     ],
-    "top_len": 382.7,
+    "top_len": 382.0,
     "width": 26.8
    },
    "h": 965,
@@ -2887,16 +3204,16 @@
     "fist": {
      "point": [
       303.9,
-      437.0
+      437.4
      ]
     },
     "lhand": {
      "forearm": [
       684.7,
-      500.8
+      501.0
      ],
      "point": [
-      709.8,
+      709.9,
       581.9
      ]
     }
@@ -2911,8 +3228,8 @@
    "key": "layer:set:heavy_1.vert:boy:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 1,
-    "rod_px": 48277
+    "green_left": 0,
+    "rod_px": 48233
    },
    "kind": "layer",
    "overlays": {
@@ -2927,6 +3244,15 @@
    "pose": "vert",
    "revision": 3,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/heavy_1.vert_boy_front.tilt20.webp",
+     "h": 965,
+     "w": 468,
+     "x": 269,
+     "y": 59
+    }
+   },
    "view": "front",
    "w": 466,
    "x": 271,
@@ -2971,11 +3297,11 @@
     },
     "lhand": {
      "forearm": [
-      647.1,
-      453.1
+      647.2,
+      452.4
      ],
      "point": [
-      668.1,
+      668.6,
       492.0
      ]
     }
@@ -2991,7 +3317,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 37467
+    "rod_px": 37437
    },
    "kind": "layer",
    "overlays": {
@@ -3006,6 +3332,15 @@
    "pose": "vert",
    "revision": 3,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/heavy_1.vert_girl_front.tilt20.webp",
+     "h": 961,
+     "w": 426,
+     "x": 280,
+     "y": 60
+    }
+   },
    "view": "front",
    "w": 424,
    "x": 282,
@@ -3623,8 +3958,8 @@
      324.9,
      1011.8
     ],
-    "bottom_len": 565.1,
-    "gap": 43.3,
+    "bottom_len": 563.1,
+    "gap": 47.4,
     "point": [
      315.5,
      425.0
@@ -3633,7 +3968,7 @@
      309.1,
      27.1
     ],
-    "top_len": 376.3,
+    "top_len": 374.3,
     "width": 24.8
    },
    "h": 956,
@@ -3646,12 +3981,12 @@
     },
     "lhand": {
      "forearm": [
-      679.1,
-      503.2
+      658.3,
+      454.3
      ],
      "point": [
-      695.8,
-      581.3
+      677.3,
+      496.5
      ]
     }
    },
@@ -3665,22 +4000,31 @@
    "key": "layer:set:heavy_2.vert:boy:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 0,
-    "rod_px": 48549
+    "green_left": 1,
+    "rod_px": 48534
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_2.vert_boy_front.lhand.webp",
-     "h": 63,
-     "w": 53,
-     "x": 667,
-     "y": 549
+     "h": 70,
+     "w": 78,
+     "x": 636,
+     "y": 467
     }
    },
    "pose": "vert",
    "revision": 2,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/heavy_2.vert_boy_front.tilt20.webp",
+     "h": 956,
+     "w": 437,
+     "x": 283,
+     "y": 60
+    }
+   },
    "view": "front",
    "w": 435,
    "x": 285,
@@ -3692,52 +4036,52 @@
    "drift": {
     "dx": -0.0093,
     "dy": 0.338,
-    "scale": 0.1539
+    "scale": 0.1501
    },
-   "figure_h": 951,
+   "figure_h": 948,
    "file": "layers/set/heavy_2.vert_girl_front.webp",
    "grip": {
     "angle": 1.77,
     "bottom": [
-     334.4,
-     1004.5
+     335.7,
+     1001.3
     ],
-    "bottom_len": 610.0,
-    "gap": 42.7,
+    "bottom_len": 607.5,
+    "gap": 42.5,
     "point": [
-     314.9,
-     373.5
+     316.2,
+     372.9
     ],
     "top": [
-     306.2,
-     90.0
+     307.5,
+     90.6
     ],
-    "top_len": 262.3,
-    "width": 22.8
+    "top_len": 261.3,
+    "width": 22.7
    },
-   "h": 952,
+   "h": 949,
    "hands": {
     "fist": {
      "point": [
-      314.9,
-      373.5
+      316.2,
+      372.9
      ]
     },
     "lhand": {
      "forearm": [
-      649.3,
-      450.3
+      650.3,
+      450.0
      ],
      "point": [
-      665.6,
+      666.1,
       484.1
      ]
     }
    },
    "head": [
-    507.0,
-    59,
-    192
+    507.5,
+    60,
+    193
    ],
    "head_score": 0.896,
    "id": "heavy_2.vert",
@@ -3745,7 +4089,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 38880
+    "rod_px": 38839
    },
    "kind": "layer",
    "overlays": {
@@ -3760,10 +4104,19 @@
    "pose": "vert",
    "revision": 3,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/heavy_2.vert_girl_front.tilt20.webp",
+     "h": 949,
+     "w": 419,
+     "x": 286,
+     "y": 60
+    }
+   },
    "view": "front",
-   "w": 418,
-   "x": 287,
-   "y": 59,
+   "w": 417,
+   "x": 288,
+   "y": 60,
    "z": 20
   },
   "layer:set:heavy_2:boy:front": {
@@ -4400,17 +4753,17 @@
     },
     "lhand": {
      "forearm": [
-      653.3,
-      471.9
+      652.9,
+      471.0
      ],
      "point": [
-      661.9,
-      485.0
+      661.5,
+      484.5
      ]
     }
    },
    "head": [
-    511.5,
+    512.0,
     60,
     197
    ],
@@ -4420,21 +4773,30 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 47139
+    "rod_px": 47128
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_3.vert_boy_front.lhand.webp",
      "h": 70,
-     "w": 62,
-     "x": 631,
-     "y": 452
+     "w": 63,
+     "x": 630,
+     "y": 451
     }
    },
    "pose": "vert",
    "revision": 3,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/heavy_3.vert_boy_front.tilt20.webp",
+     "h": 957,
+     "w": 461,
+     "x": 275,
+     "y": 60
+    }
+   },
    "view": "front",
    "w": 459,
    "x": 277,
@@ -4444,53 +4806,53 @@
   "layer:set:heavy_3.vert:girl:front": {
    "body": "girl",
    "drift": {
-    "dx": -0.0023,
+    "dx": -0.0046,
     "dy": 0.3148,
-    "scale": 0.1234
+    "scale": 0.1284
    },
-   "figure_h": 926,
+   "figure_h": 931,
    "file": "layers/set/heavy_3.vert_girl_front.webp",
    "grip": {
     "angle": 1.61,
     "bottom": [
-     338.2,
-     983.5
+     337.0,
+     986.6
     ],
-    "bottom_len": 593.2,
-    "gap": 43.6,
+    "bottom_len": 595.7,
+    "gap": 43.7,
     "point": [
-     320.9,
-     368.7
+     319.6,
+     369.2
     ],
     "top": [
-     313.1,
-     91.9
+     311.8,
+     91.3
     ],
-    "top_len": 255.1,
-    "width": 23.6
+    "top_len": 256.2,
+    "width": 23.7
    },
-   "h": 928,
+   "h": 932,
    "hands": {
     "fist": {
      "point": [
-      320.9,
-      368.7
+      319.6,
+      369.2
      ]
     },
     "lhand": {
      "forearm": [
-      671.0,
-      511.0
+      673.1,
+      501.3
      ],
      "point": [
-      677.3,
-      557.2
+      676.0,
+      559.5
      ]
     }
    },
    "head": [
-    509.5,
-    60,
+    508.5,
+    59,
     193
    ],
    "head_score": 0.883,
@@ -4498,15 +4860,15 @@
    "key": "layer:set:heavy_3.vert:girl:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 0,
-    "rod_px": 41314
+    "green_left": 1,
+    "rod_px": 41286
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_3.vert_girl_front.lhand.webp",
-     "h": 57,
-     "w": 50,
+     "h": 59,
+     "w": 51,
      "x": 652,
      "y": 528
     }
@@ -4514,10 +4876,19 @@
    "pose": "vert",
    "revision": 3,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/heavy_3.vert_girl_front.tilt20.webp",
+     "h": 932,
+     "w": 416,
+     "x": 287,
+     "y": 59
+    }
+   },
    "view": "front",
-   "w": 411,
-   "x": 291,
-   "y": 60,
+   "w": 414,
+   "x": 289,
+   "y": 59,
    "z": 20
   },
   "layer:set:heavy_3:boy:front": {
@@ -4639,6 +5010,1396 @@
    "view": "front",
    "w": 427,
    "x": 292,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.aim0_drawn:boy:front": {
+   "body": "boy",
+   "drift": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "scale": 0.0
+   },
+   "figure_h": 962,
+   "file": "layers/set/hunter_1.aim0_drawn_boy_front.webp",
+   "grip": {
+    "angle": -0.01,
+    "bottom": [
+     814.7,
+     1022.8
+    ],
+    "bottom_len": 748.5,
+    "gap": 42.8,
+    "point": [
+     814.8,
+     252.9
+    ],
+    "top": [
+     814.8,
+     2.0
+    ],
+    "top_len": 229.6,
+    "width": 25.0
+   },
+   "h": 965,
+   "head": [
+    509.5,
+    60,
+    193
+   ],
+   "head_dx": -5.5,
+   "head_score": 1.0,
+   "id": "hunter_1.aim0_drawn",
+   "key": "layer:set:hunter_1.aim0_drawn:boy:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 47109
+   },
+   "kind": "layer",
+   "pose": "aim0_drawn",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 550,
+   "x": 297,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.aim0_drawn:girl:front": {
+   "body": "girl",
+   "drift": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "scale": 0.0
+   },
+   "figure_h": 951,
+   "file": "layers/set/hunter_1.aim0_drawn_girl_front.webp",
+   "grip": {
+    "angle": 0.0,
+    "bottom": [
+     795.6,
+     1010.2
+    ],
+    "bottom_len": 727.6,
+    "gap": 27.5,
+    "point": [
+     795.6,
+     268.8
+    ],
+    "top": [
+     795.6,
+     25.2
+    ],
+    "top_len": 229.9,
+    "width": 22.6
+   },
+   "h": 953,
+   "head": [
+    513.5,
+    60,
+    193
+   ],
+   "head_dx": -14.7,
+   "head_score": 1.0,
+   "id": "hunter_1.aim0_drawn",
+   "key": "layer:set:hunter_1.aim0_drawn:girl:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 42557
+   },
+   "kind": "layer",
+   "pose": "aim0_drawn",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 565,
+   "x": 259,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.aim0_relaxed:boy:front": {
+   "body": "boy",
+   "drift": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "scale": 0.0
+   },
+   "figure_h": 963,
+   "file": "layers/set/hunter_1.aim0_relaxed_boy_front.webp",
+   "grip": {
+    "angle": -0.0,
+    "bottom": [
+     816.4,
+     1022.8
+    ],
+    "bottom_len": 748.5,
+    "gap": 42.8,
+    "point": [
+     816.4,
+     252.9
+    ],
+    "top": [
+     816.5,
+     0.6
+    ],
+    "top_len": 231.0,
+    "width": 25.0
+   },
+   "h": 965,
+   "head": [
+    510.5,
+    59,
+    192
+   ],
+   "head_dx": -4.5,
+   "head_score": 1.0,
+   "id": "hunter_1.aim0_relaxed",
+   "key": "layer:set:hunter_1.aim0_relaxed:boy:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 47199
+   },
+   "kind": "layer",
+   "pose": "aim0_relaxed",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 528,
+   "x": 320,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.aim0_relaxed:girl:front": {
+   "body": "girl",
+   "drift": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "scale": 0.0
+   },
+   "figure_h": 951,
+   "file": "layers/set/hunter_1.aim0_relaxed_girl_front.webp",
+   "grip": {
+    "angle": -0.01,
+    "bottom": [
+     795.2,
+     1011.2
+    ],
+    "bottom_len": 731.9,
+    "gap": 25.4,
+    "point": [
+     795.3,
+     266.6
+    ],
+    "top": [
+     795.4,
+     26.2
+    ],
+    "top_len": 227.7,
+    "width": 21.9
+   },
+   "h": 952,
+   "head": [
+    514.0,
+    60,
+    193
+   ],
+   "head_dx": -15.4,
+   "head_score": 1.0,
+   "id": "hunter_1.aim0_relaxed",
+   "key": "layer:set:hunter_1.aim0_relaxed:girl:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 41397
+   },
+   "kind": "layer",
+   "pose": "aim0_relaxed",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 473,
+   "x": 351,
+   "y": 60,
+   "z": 20
+  },
+  "layer:set:hunter_1.aim25_drawn:boy:front": {
+   "body": "boy",
+   "drift": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "scale": 0.0
+   },
+   "figure_h": 963,
+   "file": "layers/set/hunter_1.aim25_drawn_boy_front.webp",
+   "grip": {
+    "angle": 19.79,
+    "bottom": [
+     856.8,
+     365.2
+    ],
+    "bottom_len": 190.1,
+    "gap": 42.7,
+    "point": [
+     785.1,
+     166.3
+    ],
+    "top": [
+     728.1,
+     7.7
+    ],
+    "top_len": 147.1,
+    "width": 20.5
+   },
+   "h": 965,
+   "head": [
+    510.5,
+    60,
+    193
+   ],
+   "head_dx": -10.5,
+   "head_score": 1.0,
+   "id": "hunter_1.aim25_drawn",
+   "key": "layer:set:hunter_1.aim25_drawn:boy:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 12654
+   },
+   "kind": "layer",
+   "pose": "aim25_drawn",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 541,
+   "x": 273,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.aim25_drawn:girl:front": {
+   "body": "girl",
+   "drift": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "scale": 0.0
+   },
+   "figure_h": 950,
+   "file": "layers/set/hunter_1.aim25_drawn_girl_front.webp",
+   "grip": {
+    "angle": 22.91,
+    "bottom": [
+     845.7,
+     383.6
+    ],
+    "bottom_len": 186.1,
+    "gap": 40.2,
+    "point": [
+     765.4,
+     193.7
+    ],
+    "top": [
+     686.6,
+     7.0
+    ],
+    "top_len": 182.5,
+    "width": 21.9
+   },
+   "h": 953,
+   "head": [
+    514.5,
+    60,
+    193
+   ],
+   "head_dx": -14.2,
+   "head_score": 1.0,
+   "id": "hunter_1.aim25_drawn",
+   "key": "layer:set:hunter_1.aim25_drawn:girl:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 7,
+    "rod_px": 15376
+   },
+   "kind": "layer",
+   "pose": "aim25_drawn",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 511,
+   "x": 281,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.aim25_relaxed:boy:front": {
+   "body": "boy",
+   "drift": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "scale": 0.0
+   },
+   "figure_h": 963,
+   "file": "layers/set/hunter_1.aim25_relaxed_boy_front.webp",
+   "grip": {
+    "angle": 19.25,
+    "bottom": [
+     863.4,
+     383.9
+    ],
+    "bottom_len": 173.2,
+    "gap": 42.8,
+    "point": [
+     799.3,
+     200.1
+    ],
+    "top": [
+     732.4,
+     8.5
+    ],
+    "top_len": 181.5,
+    "width": 21.0
+   },
+   "h": 965,
+   "head": [
+    510.0,
+    60,
+    193
+   ],
+   "head_dx": -4.5,
+   "head_score": 1.0,
+   "id": "hunter_1.aim25_relaxed",
+   "key": "layer:set:hunter_1.aim25_relaxed:boy:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 13744
+   },
+   "kind": "layer",
+   "pose": "aim25_relaxed",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 513,
+   "x": 318,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.aim25_relaxed:girl:front": {
+   "body": "girl",
+   "drift": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "scale": 0.0
+   },
+   "figure_h": 951,
+   "file": "layers/set/hunter_1.aim25_relaxed_girl_front.webp",
+   "grip": {
+    "angle": 22.65,
+    "bottom": [
+     843.9,
+     411.6
+    ],
+    "bottom_len": 196.7,
+    "gap": 31.7,
+    "point": [
+     762.0,
+     215.4
+    ],
+    "top": [
+     677.9,
+     13.8
+    ],
+    "top_len": 202.6,
+    "width": 22.8
+   },
+   "h": 953,
+   "head": [
+    514.0,
+    60,
+    193
+   ],
+   "head_dx": -14.2,
+   "head_score": 1.0,
+   "id": "hunter_1.aim25_relaxed",
+   "key": "layer:set:hunter_1.aim25_relaxed:girl:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 17127
+   },
+   "kind": "layer",
+   "pose": "aim25_relaxed",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 491,
+   "x": 344,
+   "y": 60,
+   "z": 20
+  },
+  "layer:set:hunter_1.aim50_drawn:boy:front": {
+   "body": "boy",
+   "drift": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "scale": 0.0
+   },
+   "figure_h": 962,
+   "file": "layers/set/hunter_1.aim50_drawn_boy_front.webp",
+   "grip": {
+    "angle": 34.08,
+    "bottom": [
+     848.6,
+     287.5
+    ],
+    "bottom_len": 154.0,
+    "gap": 38.5,
+    "point": [
+     751.5,
+     144.1
+    ],
+    "top": [
+     657.3,
+     4.7
+    ],
+    "top_len": 149.0,
+    "width": 20.9
+   },
+   "h": 965,
+   "head": [
+    510.0,
+    60,
+    193
+   ],
+   "head_dx": -5.0,
+   "head_score": 1.0,
+   "id": "hunter_1.aim50_drawn",
+   "key": "layer:set:hunter_1.aim50_drawn:boy:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 11461
+   },
+   "kind": "layer",
+   "pose": "aim50_drawn",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 502,
+   "x": 280,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.aim50_drawn:girl:front": {
+   "body": "girl",
+   "drift": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "scale": 0.0
+   },
+   "figure_h": 951,
+   "file": "layers/set/hunter_1.aim50_drawn_girl_front.webp",
+   "grip": {
+    "angle": 39.88,
+    "bottom": [
+     844.0,
+     314.9
+    ],
+    "bottom_len": 175.6,
+    "gap": 29.6,
+    "point": [
+     722.0,
+     168.8
+    ],
+    "top": [
+     591.2,
+     12.3
+    ],
+    "top_len": 189.2,
+    "width": 21.6
+   },
+   "h": 953,
+   "head": [
+    513.5,
+    60,
+    193
+   ],
+   "head_dx": -15.2,
+   "head_score": 1.0,
+   "id": "hunter_1.aim50_drawn",
+   "key": "layer:set:hunter_1.aim50_drawn:girl:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 14816
+   },
+   "kind": "layer",
+   "pose": "aim50_drawn",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 466,
+   "x": 285,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.aim50_relaxed:boy:front": {
+   "body": "boy",
+   "drift": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "scale": 0.0
+   },
+   "figure_h": 962,
+   "file": "layers/set/hunter_1.aim50_relaxed_boy_front.webp",
+   "grip": {
+    "angle": 45.38,
+    "bottom": [
+     855.0,
+     266.1
+    ],
+    "bottom_len": 151.8,
+    "gap": 40.6,
+    "point": [
+     732.5,
+     145.1
+    ],
+    "top": [
+     586.6,
+     1.2
+    ],
+    "top_len": 184.6,
+    "width": 20.4
+   },
+   "h": 965,
+   "head": [
+    510.0,
+    60,
+    193
+   ],
+   "head_dx": -6.0,
+   "head_score": 1.0,
+   "id": "hunter_1.aim50_relaxed",
+   "key": "layer:set:hunter_1.aim50_relaxed:boy:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 12685
+   },
+   "kind": "layer",
+   "pose": "aim50_relaxed",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 449,
+   "x": 317,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.aim50_relaxed:girl:front": {
+   "body": "girl",
+   "drift": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "scale": 0.0
+   },
+   "figure_h": 951,
+   "file": "layers/set/hunter_1.aim50_relaxed_girl_front.webp",
+   "grip": {
+    "angle": 28.78,
+    "bottom": [
+     847.1,
+     313.5
+    ],
+    "bottom_len": 188.3,
+    "gap": 29.6,
+    "point": [
+     749.3,
+     135.6
+    ],
+    "top": [
+     681.8,
+     12.7
+    ],
+    "top_len": 125.4,
+    "width": 22.8
+   },
+   "h": 952,
+   "head": [
+    514.5,
+    60,
+    193
+   ],
+   "head_dx": -14.7,
+   "head_score": 1.0,
+   "id": "hunter_1.aim50_relaxed",
+   "key": "layer:set:hunter_1.aim50_relaxed:girl:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 13322
+   },
+   "kind": "layer",
+   "pose": "aim50_relaxed",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 434,
+   "x": 348,
+   "y": 60,
+   "z": 20
+  },
+  "layer:set:hunter_1.angle:boy:front": {
+   "body": "boy",
+   "drift": {
+    "dx": 0.0156,
+    "dy": -0.3589,
+    "scale": 0.0879
+   },
+   "figure_h": 963,
+   "file": "layers/set/hunter_1.angle_boy_front.webp",
+   "grip": {
+    "angle": 12.38,
+    "bottom": [
+     374.1,
+     756.4
+    ],
+    "bottom_len": 297.0,
+    "gap": 45.7,
+    "point": [
+     305.6,
+     443.9
+    ],
+    "top": [
+     236.9,
+     130.9
+    ],
+    "top_len": 297.7,
+    "width": 16.8
+   },
+   "h": 964,
+   "hands": {
+    "fist": {
+     "point": [
+      305.6,
+      443.9
+     ]
+    },
+    "lhand": {
+     "forearm": [
+      689.0,
+      503.4
+     ],
+     "point": [
+      704.5,
+      579.1
+     ]
+    }
+   },
+   "head": [
+    512.0,
+    60,
+    194
+   ],
+   "head_score": 0.909,
+   "id": "hunter_1.angle",
+   "key": "layer:set:hunter_1.angle:boy:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 1,
+    "rod_px": 20046
+   },
+   "kind": "layer",
+   "overlays": {
+    "lhand": {
+     "file": "layers/set/hunter_1.angle_boy_front.lhand.webp",
+     "h": 69,
+     "w": 52,
+     "x": 677,
+     "y": 548
+    }
+   },
+   "pose": "angle",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 456,
+   "x": 273,
+   "y": 60,
+   "z": 20
+  },
+  "layer:set:hunter_1.angle:girl:front": {
+   "body": "girl",
+   "drift": {
+    "dx": 0.0139,
+    "dy": 0.1528,
+    "scale": 0.1004
+   },
+   "figure_h": 935,
+   "file": "layers/set/hunter_1.angle_girl_front.webp",
+   "grip": {
+    "angle": 15.59,
+    "bottom": [
+     362.9,
+     603.0
+    ],
+    "bottom_len": 126.1,
+    "gap": 32.5,
+    "point": [
+     324.7,
+     465.8
+    ],
+    "top": [
+     222.6,
+     99.8
+    ],
+    "top_len": 363.7,
+    "width": 24.2
+   },
+   "h": 937,
+   "hands": {
+    "fist": {
+     "point": [
+      324.7,
+      465.8
+     ]
+    },
+    "lhand": {
+     "forearm": [
+      696.0,
+      502.2
+     ],
+     "point": [
+      722.8,
+      574.0
+     ]
+    }
+   },
+   "head": [
+    509.5,
+    59,
+    193
+   ],
+   "head_score": 0.856,
+   "id": "hunter_1.angle",
+   "key": "layer:set:hunter_1.angle:girl:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 24687
+   },
+   "kind": "layer",
+   "overlays": {
+    "lhand": {
+     "file": "layers/set/hunter_1.angle_girl_front.lhand.webp",
+     "h": 61,
+     "w": 42,
+     "x": 697,
+     "y": 547
+    }
+   },
+   "pose": "angle",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 446,
+   "x": 293,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.raise:boy:front": {
+   "body": "boy",
+   "drift": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "scale": 0.0
+   },
+   "figure_h": 963,
+   "file": "layers/set/hunter_1.raise_boy_front.webp",
+   "grip": {
+    "angle": -62.78,
+    "bottom": [
+     263.0,
+     164.1
+    ],
+    "bottom_len": 70.6,
+    "gap": 43.6,
+    "point": [
+     345.2,
+     121.8
+    ],
+    "top": [
+     566.5,
+     8.0
+    ],
+    "top_len": 227.0,
+    "width": 19.5
+   },
+   "h": 965,
+   "hands": {
+    "fist": {
+     "point": [
+      345.2,
+      121.8
+     ]
+    },
+    "lhand": {
+     "forearm": [
+      692.4,
+      502.4
+     ],
+     "point": [
+      715.3,
+      579.1
+     ]
+    }
+   },
+   "head": [
+    510.0,
+    60,
+    193
+   ],
+   "head_score": 1.0,
+   "id": "hunter_1.raise",
+   "key": "layer:set:hunter_1.raise:boy:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 11615
+   },
+   "kind": "layer",
+   "overlays": {
+    "lhand": {
+     "file": "layers/set/hunter_1.raise_boy_front.lhand.webp",
+     "h": 67,
+     "w": 53,
+     "x": 687,
+     "y": 549
+    }
+   },
+   "pose": "raise",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 445,
+   "x": 295,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.raise:girl:front": {
+   "body": "girl",
+   "drift": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "scale": 0.0
+   },
+   "figure_h": 952,
+   "file": "layers/set/hunter_1.raise_girl_front.webp",
+   "grip": {
+    "angle": -62.57,
+    "bottom": [
+     261.6,
+     163.3
+    ],
+    "bottom_len": 77.1,
+    "gap": 41.7,
+    "point": [
+     348.5,
+     118.1
+    ],
+    "top": [
+     578.6,
+     -1.3
+    ],
+    "top_len": 238.4,
+    "width": 20.9
+   },
+   "h": 953,
+   "hands": {
+    "fist": {
+     "point": [
+      348.5,
+      118.1
+     ]
+    },
+    "lhand": {
+     "forearm": [
+      696.4,
+      501.4
+     ],
+     "point": [
+      730.7,
+      576.3
+     ]
+    }
+   },
+   "head": [
+    514.5,
+    59,
+    192
+   ],
+   "head_score": 1.0,
+   "id": "hunter_1.raise",
+   "key": "layer:set:hunter_1.raise:girl:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 12832
+   },
+   "kind": "layer",
+   "overlays": {
+    "lhand": {
+     "file": "layers/set/hunter_1.raise_girl_front.lhand.webp",
+     "h": 67,
+     "w": 51,
+     "x": 701,
+     "y": 549
+    }
+   },
+   "pose": "raise",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 460,
+   "x": 292,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.reach:boy:front": {
+   "body": "boy",
+   "drift": {
+    "dx": 0.0048,
+    "dy": -0.1531,
+    "scale": 0.1847
+   },
+   "figure_h": 963,
+   "file": "layers/set/hunter_1.reach_boy_front.webp",
+   "grip": {
+    "angle": -0.0,
+    "bottom": [
+     838.9,
+     1078.1
+    ],
+    "bottom_len": 796.1,
+    "gap": 40.7,
+    "point": [
+     838.9,
+     261.7
+    ],
+    "top": [
+     838.9,
+     -0.7
+    ],
+    "top_len": 242.0,
+    "width": 24.9
+   },
+   "h": 965,
+   "head": [
+    511.0,
+    60,
+    196
+   ],
+   "head_score": 0.876,
+   "id": "hunter_1.reach",
+   "key": "layer:set:hunter_1.reach:boy:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 44437
+   },
+   "kind": "layer",
+   "pose": "reach",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 603,
+   "x": 269,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.reach:girl:front": {
+   "body": "girl",
+   "drift": {
+    "dx": -0.0046,
+    "dy": 0.3148,
+    "scale": 0.1064
+   },
+   "figure_h": 918,
+   "file": "layers/set/hunter_1.reach_girl_front.webp",
+   "grip": {
+    "angle": -0.01,
+    "bottom": [
+     796.8,
+     975.5
+    ],
+    "bottom_len": 701.4,
+    "gap": 28.6,
+    "point": [
+     796.9,
+     259.8
+    ],
+    "top": [
+     797.0,
+     26.6
+    ],
+    "top_len": 218.8,
+    "width": 21.1
+   },
+   "h": 919,
+   "head": [
+    508.0,
+    59,
+    194
+   ],
+   "head_score": 0.893,
+   "id": "hunter_1.reach",
+   "key": "layer:set:hunter_1.reach:girl:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 40530
+   },
+   "kind": "layer",
+   "pose": "reach",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 513,
+   "x": 311,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.swing:boy:front": {
+   "body": "boy",
+   "drift": {
+    "dx": 0.0431,
+    "dy": -0.3636,
+    "scale": 0.0753
+   },
+   "figure_h": 955,
+   "file": "layers/set/hunter_1.swing_boy_front.webp",
+   "grip": {
+    "angle": -29.97,
+    "bottom": [
+     186.0,
+     792.2
+    ],
+    "bottom_len": 289.6,
+    "gap": 22.6,
+    "point": [
+     336.3,
+     531.6
+    ],
+    "top": [
+     363.1,
+     485.1
+    ],
+    "top_len": 42.3,
+    "width": 22.4
+   },
+   "h": 957,
+   "hands": {
+    "fist": {
+     "point": [
+      336.3,
+      531.6
+     ]
+    },
+    "lhand": {
+     "forearm": [
+      688.0,
+      504.7
+     ],
+     "point": [
+      702.7,
+      577.5
+     ]
+    }
+   },
+   "head": [
+    515.0,
+    60,
+    196
+   ],
+   "head_score": 0.866,
+   "id": "hunter_1.swing",
+   "key": "layer:set:hunter_1.swing:boy:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 14329
+   },
+   "kind": "layer",
+   "overlays": {
+    "lhand": {
+     "file": "layers/set/hunter_1.swing_boy_front.lhand.webp",
+     "h": 63,
+     "w": 54,
+     "x": 674,
+     "y": 549
+    }
+   },
+   "pose": "swing",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 434,
+   "x": 294,
+   "y": 60,
+   "z": 20
+  },
+  "layer:set:hunter_1.swing:girl:front": {
+   "body": "girl",
+   "drift": {
+    "dx": 0.0116,
+    "dy": 0.1528,
+    "scale": 0.1054
+   },
+   "figure_h": 941,
+   "file": "layers/set/hunter_1.swing_girl_front.webp",
+   "grip": {
+    "angle": -30.47,
+    "bottom": [
+     191.2,
+     777.5
+    ],
+    "bottom_len": 281.8,
+    "gap": 16.3,
+    "point": [
+     338.2,
+     527.6
+    ],
+    "top": [
+     368.2,
+     476.8
+    ],
+    "top_len": 50.8,
+    "width": 23.0
+   },
+   "h": 943,
+   "hands": {
+    "fist": {
+     "point": [
+      338.2,
+      527.6
+     ]
+    },
+    "lhand": {
+     "forearm": [
+      697.3,
+      503.1
+     ],
+     "point": [
+      724.5,
+      576.6
+     ]
+    }
+   },
+   "head": [
+    509.5,
+    60,
+    195
+   ],
+   "head_score": 0.857,
+   "id": "hunter_1.swing",
+   "key": "layer:set:hunter_1.swing:girl:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 0,
+    "rod_px": 15161
+   },
+   "kind": "layer",
+   "overlays": {
+    "lhand": {
+     "file": "layers/set/hunter_1.swing_girl_front.lhand.webp",
+     "h": 61,
+     "w": 44,
+     "x": 698,
+     "y": 549
+    }
+   },
+   "pose": "swing",
+   "revision": 1,
+   "slot": "set",
+   "view": "front",
+   "w": 445,
+   "x": 297,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.vert:boy:front": {
+   "body": "boy",
+   "drift": {
+    "dx": 0.0144,
+    "dy": -0.1483,
+    "scale": 0.1847
+   },
+   "figure_h": 964,
+   "file": "layers/set/hunter_1.vert_boy_front.webp",
+   "grip": {
+    "angle": 0.03,
+    "bottom": [
+     303.1,
+     1073.4
+    ],
+    "bottom_len": 608.4,
+    "gap": 54.3,
+    "point": [
+     302.7,
+     437.8
+    ],
+    "top": [
+     302.4,
+     11.9
+    ],
+    "top_len": 398.8,
+    "width": 25.6
+   },
+   "h": 965,
+   "hands": {
+    "fist": {
+     "point": [
+      302.7,
+      437.8
+     ]
+    },
+    "lhand": {
+     "forearm": [
+      684.3,
+      499.8
+     ],
+     "point": [
+      701.9,
+      583.4
+     ]
+    }
+   },
+   "head": [
+    511.5,
+    59,
+    195
+   ],
+   "head_score": 0.845,
+   "id": "hunter_1.vert",
+   "key": "layer:set:hunter_1.vert:boy:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 7,
+    "rod_px": 45580
+   },
+   "kind": "layer",
+   "overlays": {
+    "lhand": {
+     "file": "layers/set/hunter_1.vert_boy_front.lhand.webp",
+     "h": 70,
+     "w": 59,
+     "x": 672,
+     "y": 549
+    }
+   },
+   "pose": "vert",
+   "revision": 1,
+   "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/hunter_1.vert_boy_front.tilt20.webp",
+     "h": 965,
+     "w": 463,
+     "x": 268,
+     "y": 59
+    }
+   },
+   "view": "front",
+   "w": 462,
+   "x": 269,
+   "y": 59,
+   "z": 20
+  },
+  "layer:set:hunter_1.vert:girl:front": {
+   "body": "girl",
+   "drift": {
+    "dx": -0.0069,
+    "dy": 0.3241,
+    "scale": 0.1292
+   },
+   "figure_h": 935,
+   "file": "layers/set/hunter_1.vert_girl_front.webp",
+   "grip": {
+    "angle": 1.86,
+    "bottom": [
+     339.7,
+     986.8
+    ],
+    "bottom_len": 598.7,
+    "gap": 39.6,
+    "point": [
+     319.6,
+     368.7
+    ],
+    "top": [
+     310.6,
+     91.1
+    ],
+    "top_len": 257.8,
+    "width": 23.0
+   },
+   "h": 938,
+   "hands": {
+    "fist": {
+     "point": [
+      319.6,
+      368.7
+     ]
+    },
+    "lhand": {
+     "forearm": [
+      658.4,
+      484.8
+     ],
+     "point": [
+      671.1,
+      556.4
+     ]
+    }
+   },
+   "head": [
+    507.5,
+    60,
+    193
+   ],
+   "head_score": 0.891,
+   "id": "hunter_1.vert",
+   "key": "layer:set:hunter_1.vert:girl:front",
+   "keying": {
+    "fringe_left": 0,
+    "green_left": 18,
+    "rod_px": 40713
+   },
+   "kind": "layer",
+   "overlays": {
+    "lhand": {
+     "file": "layers/set/hunter_1.vert_girl_front.lhand.webp",
+     "h": 58,
+     "w": 40,
+     "x": 651,
+     "y": 527
+    }
+   },
+   "pose": "vert",
+   "revision": 1,
+   "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/hunter_1.vert_girl_front.tilt20.webp",
+     "h": 938,
+     "w": 401,
+     "x": 290,
+     "y": 59
+    }
+   },
+   "view": "front",
+   "w": 400,
+   "x": 291,
    "y": 59,
    "z": 20
   },
@@ -5131,11 +6892,11 @@
      307.8,
      1072.1
     ],
-    "bottom_len": 610.7,
-    "gap": 52.0,
+    "bottom_len": 608.4,
+    "gap": 54.3,
     "point": [
      303.1,
-     435.4
+     436.6
     ],
     "top": [
      300.5,
@@ -5149,7 +6910,7 @@
     "fist": {
      "point": [
       303.1,
-      435.4
+      436.6
      ]
     },
     "lhand": {
@@ -5174,7 +6935,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 40445
+    "rod_px": 40397
    },
    "kind": "layer",
    "overlays": {
@@ -5189,6 +6950,15 @@
    "pose": "vert",
    "revision": 3,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/light_1.vert_boy_front.tilt20.webp",
+     "h": 965,
+     "w": 464,
+     "x": 268,
+     "y": 59
+    }
+   },
    "view": "front",
    "w": 461,
    "x": 271,
@@ -5200,77 +6970,86 @@
    "drift": {
     "dx": -0.0069,
     "dy": 0.3333,
-    "scale": 0.1392
+    "scale": 0.145
    },
-   "figure_h": 944,
+   "figure_h": 949,
    "file": "layers/set/light_1.vert_girl_front.webp",
    "grip": {
     "angle": 1.81,
     "bottom": [
-     337.7,
-     991.8
+     336.7,
+     997.4
     ],
-    "bottom_len": 601.6,
-    "gap": 40.0,
+    "bottom_len": 605.0,
+    "gap": 40.2,
     "point": [
-     318.1,
-     370.6
+     317.0,
+     372.7
     ],
     "top": [
-     309.2,
-     90.7
+     308.1,
+     91.2
     ],
-    "top_len": 260.1,
-    "width": 23.1
+    "top_len": 261.5,
+    "width": 23.3
    },
-   "h": 946,
+   "h": 952,
    "hands": {
     "fist": {
      "point": [
-      318.1,
-      370.6
+      317.0,
+      372.7
      ]
     },
     "lhand": {
      "forearm": [
-      659.4,
-      485.1
+      660.5,
+      488.7
      ],
      "point": [
-      672.7,
-      558.6
+      673.4,
+      562.5
      ]
     }
    },
    "head": [
     507.5,
     60,
-    195
+    193
    ],
-   "head_score": 0.885,
+   "head_score": 0.889,
    "id": "light_1.vert",
    "key": "layer:set:light_1.vert:girl:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 39510
+    "rod_px": 39496
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/light_1.vert_girl_front.lhand.webp",
-     "h": 59,
+     "h": 57,
      "w": 42,
-     "x": 652,
-     "y": 528
+     "x": 653,
+     "y": 533
     }
    },
    "pose": "vert",
    "revision": 2,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/light_1.vert_girl_front.tilt20.webp",
+     "h": 952,
+     "w": 408,
+     "x": 287,
+     "y": 59
+    }
+   },
    "view": "front",
-   "w": 404,
-   "x": 290,
+   "w": 407,
+   "x": 288,
    "y": 59,
    "z": 20
   },
@@ -5873,7 +7652,7 @@
   "layer:set:light_2.vert:boy:front": {
    "body": "boy",
    "drift": {
-    "dx": 0.0024,
+    "dx": 0.0,
     "dy": -0.2632,
     "scale": 0.1367
    },
@@ -5909,7 +7688,7 @@
     "lhand": {
      "forearm": [
       668.3,
-      461.5
+      461.2
      ],
      "point": [
       695.6,
@@ -5927,8 +7706,8 @@
    "key": "layer:set:light_2.vert:boy:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 1,
-    "rod_px": 49471
+    "green_left": 0,
+    "rod_px": 49446
    },
    "kind": "layer",
    "overlays": {
@@ -5943,6 +7722,15 @@
    "pose": "vert",
    "revision": 2,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/light_2.vert_boy_front.tilt20.webp",
+     "h": 964,
+     "w": 471,
+     "x": 266,
+     "y": 60
+    }
+   },
    "view": "front",
    "w": 468,
    "x": 269,
@@ -5952,7 +7740,7 @@
   "layer:set:light_2.vert:girl:front": {
    "body": "girl",
    "drift": {
-    "dx": 0.0162,
+    "dx": 0.0208,
     "dy": 0.338,
     "scale": 0.132
    },
@@ -5987,27 +7775,27 @@
     },
     "lhand": {
      "forearm": [
-      663.3,
-      484.0
+      670.5,
+      509.5
      ],
      "point": [
-      674.2,
-      549.7
+      674.4,
+      549.1
      ]
     }
    },
    "head": [
-    511.0,
+    509.5,
     60,
     191
    ],
-   "head_score": 0.902,
+   "head_score": 0.907,
    "id": "light_2.vert",
    "key": "layer:set:light_2.vert:girl:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 1,
-    "rod_px": 38206
+    "green_left": 0,
+    "rod_px": 38177
    },
    "kind": "layer",
    "overlays": {
@@ -6022,6 +7810,15 @@
    "pose": "vert",
    "revision": 3,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/light_2.vert_girl_front.tilt20.webp",
+     "h": 936,
+     "w": 404,
+     "x": 290,
+     "y": 60
+    }
+   },
    "view": "front",
    "w": 402,
    "x": 292,
@@ -6639,8 +8436,8 @@
      279.0,
      1097.8
     ],
-    "bottom_len": 626.1,
-    "gap": 48.0,
+    "bottom_len": 623.8,
+    "gap": 52.6,
     "point": [
      279.1,
      447.7
@@ -6649,7 +8446,7 @@
      279.2,
      12.3
     ],
-    "top_len": 411.3,
+    "top_len": 409.0,
     "width": 30.5
    },
    "h": 965,
@@ -6662,19 +8459,19 @@
     },
     "lhand": {
      "forearm": [
-      668.6,
-      460.4
+      666.4,
+      452.9
      ],
      "point": [
-      690.1,
-      509.7
+      688.4,
+      492.2
      ]
     }
    },
    "head": [
     514.0,
     60,
-    198
+    197
    ],
    "head_score": 0.858,
    "id": "light_3.vert",
@@ -6682,21 +8479,30 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 53663
+    "rod_px": 53646
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/light_3.vert_boy_front.lhand.webp",
      "h": 70,
-     "w": 89,
-     "x": 646,
-     "y": 481
+     "w": 93,
+     "x": 637,
+     "y": 465
     }
    },
    "pose": "vert",
    "revision": 4,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/light_3.vert_boy_front.tilt20.webp",
+     "h": 965,
+     "w": 497,
+     "x": 243,
+     "y": 59
+    }
+   },
    "view": "front",
    "w": 496,
    "x": 244,
@@ -6718,11 +8524,11 @@
      320.4,
      1012.3
     ],
-    "bottom_len": 609.8,
-    "gap": 39.4,
+    "bottom_len": 607.7,
+    "gap": 41.5,
     "point": [
      316.2,
-     382.8
+     383.8
     ],
     "top": [
      314.4,
@@ -6736,17 +8542,17 @@
     "fist": {
      "point": [
       316.2,
-      382.8
+      383.8
      ]
     },
     "lhand": {
      "forearm": [
-      671.8,
-      497.8
+      685.3,
+      529.5
      ],
      "point": [
       689.6,
-      574.1
+      574.0
      ]
     }
    },
@@ -6761,7 +8567,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 39930
+    "rod_px": 39911
    },
    "kind": "layer",
    "overlays": {
@@ -6776,6 +8582,15 @@
    "pose": "vert",
    "revision": 4,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/light_3.vert_girl_front.tilt20.webp",
+     "h": 959,
+     "w": 423,
+     "x": 287,
+     "y": 59
+    }
+   },
    "view": "front",
    "w": 422,
    "x": 288,
@@ -7416,17 +9231,17 @@
     },
     "lhand": {
      "forearm": [
-      693.2,
-      525.6
+      693.1,
+      525.7
      ],
      "point": [
-      695.8,
-      574.1
+      695.9,
+      573.9
      ]
     }
    },
    "head": [
-    512.5,
+    512.0,
     60,
     196
    ],
@@ -7436,7 +9251,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 47310
+    "rod_px": 47268
    },
    "kind": "layer",
    "overlays": {
@@ -7451,6 +9266,15 @@
    "pose": "vert",
    "revision": 3,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/robe_1.vert_boy_front.tilt20.webp",
+     "h": 949,
+     "w": 439,
+     "x": 281,
+     "y": 59
+    }
+   },
    "view": "front",
    "w": 438,
    "x": 282,
@@ -7460,62 +9284,62 @@
   "layer:set:robe_1.vert:girl:front": {
    "body": "girl",
    "drift": {
-    "dx": 0.0069,
+    "dx": 0.0035,
     "dy": 0.3472,
-    "scale": 0.1618
+    "scale": 0.1729
    },
-   "figure_h": 957,
+   "figure_h": 963,
    "file": "layers/set/robe_1.vert_girl_front.webp",
    "grip": {
     "angle": 1.61,
     "bottom": [
-     330.2,
-     1010.2
+     328.9,
+     1019.9
     ],
-    "bottom_len": 616.3,
-    "gap": 40.8,
+    "bottom_len": 622.2,
+    "gap": 41.2,
     "point": [
-     312.3,
-     373.7
+     310.9,
+     377.3
     ],
     "top": [
-     304.2,
-     87.9
+     302.8,
+     88.9
     ],
-    "top_len": 265.5,
-    "width": 24.3
+    "top_len": 268.0,
+    "width": 24.6
    },
-   "h": 958,
+   "h": 964,
    "hands": {
     "fist": {
      "point": [
-      312.3,
-      373.7
+      310.9,
+      377.3
      ]
     },
     "lhand": {
      "forearm": [
-      681.1,
-      512.4
+      683.7,
+      516.9
      ],
      "point": [
-      696.4,
-      565.6
+      698.8,
+      571.0
      ]
     }
    },
    "head": [
     509.5,
-    59,
-    195
+    60,
+    196
    ],
-   "head_score": 0.917,
+   "head_score": 0.91,
    "id": "robe_1.vert",
    "key": "layer:set:robe_1.vert:girl:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 3,
-    "rod_px": 40946
+    "green_left": 0,
+    "rod_px": 40874
    },
    "kind": "layer",
    "overlays": {
@@ -7523,17 +9347,26 @@
      "file": "layers/set/robe_1.vert_girl_front.lhand.webp",
      "h": 60,
      "w": 44,
-     "x": 672,
-     "y": 538
+     "x": 674,
+     "y": 543
     }
    },
    "pose": "vert",
    "revision": 3,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/robe_1.vert_girl_front.tilt20.webp",
+     "h": 964,
+     "w": 445,
+     "x": 280,
+     "y": 60
+    }
+   },
    "view": "front",
-   "w": 439,
-   "x": 284,
-   "y": 59,
+   "w": 443,
+   "x": 282,
+   "y": 60,
    "z": 20
   },
   "layer:set:robe_1:boy:front": {
@@ -8135,7 +9968,7 @@
   "layer:set:robe_2.vert:boy:front": {
    "body": "boy",
    "drift": {
-    "dx": 0.0024,
+    "dx": 0.0096,
     "dy": -0.2105,
     "scale": 0.1073
    },
@@ -8144,53 +9977,53 @@
    "grip": {
     "angle": 0.51,
     "bottom": [
-     317.6,
+     315.6,
      1026.3
     ],
-    "bottom_len": 583.8,
-    "gap": 44.4,
+    "bottom_len": 581.7,
+    "gap": 48.7,
     "point": [
-     312.3,
+     310.3,
      420.2
     ],
     "top": [
-     308.7,
+     306.7,
      21.4
     ],
-    "top_len": 376.7,
+    "top_len": 374.5,
     "width": 25.4
    },
    "h": 965,
    "hands": {
     "fist": {
      "point": [
-      312.3,
+      310.3,
       420.2
      ]
     },
     "lhand": {
      "forearm": [
-      692.4,
-      531.8
+      692.2,
+      531.3
      ],
      "point": [
-      697.6,
-      580.7
+      695.6,
+      580.5
      ]
     }
    },
    "head": [
-    513.0,
+    510.5,
     60,
     196
    ],
-   "head_score": 0.863,
+   "head_score": 0.864,
    "id": "robe_2.vert",
    "key": "layer:set:robe_2.vert:boy:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 0,
-    "rod_px": 48484
+    "green_left": 10,
+    "rod_px": 48443
    },
    "kind": "layer",
    "overlays": {
@@ -8198,16 +10031,25 @@
      "file": "layers/set/robe_2.vert_boy_front.lhand.webp",
      "h": 63,
      "w": 63,
-     "x": 659,
+     "x": 657,
      "y": 549
     }
    },
    "pose": "vert",
    "revision": 2,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/robe_2.vert_boy_front.tilt20.webp",
+     "h": 965,
+     "w": 442,
+     "x": 278,
+     "y": 59
+    }
+   },
    "view": "front",
    "w": 440,
-   "x": 282,
+   "x": 280,
    "y": 59,
    "z": 20
   },
@@ -8249,12 +10091,12 @@
     },
     "lhand": {
      "forearm": [
-      690.7,
-      516.6
+      690.8,
+      516.3
      ],
      "point": [
-      712.5,
-      575.3
+      711.1,
+      575.5
      ]
     }
    },
@@ -8269,7 +10111,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 39566
+    "rod_px": 39542
    },
    "kind": "layer",
    "overlays": {
@@ -8284,6 +10126,15 @@
    "pose": "vert",
    "revision": 2,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/robe_2.vert_girl_front.tilt20.webp",
+     "h": 965,
+     "w": 442,
+     "x": 293,
+     "y": 59
+    }
+   },
    "view": "front",
    "w": 440,
    "x": 295,
@@ -8896,7 +10747,7 @@
    "figure_h": 948,
    "file": "layers/set/robe_3.vert_boy_front.webp",
    "grip": {
-    "angle": 0.81,
+    "angle": 0.8,
     "bottom": [
      328.7,
      1004.3
@@ -8924,12 +10775,12 @@
     },
     "lhand": {
      "forearm": [
-      688.2,
-      519.9
+      688.4,
+      520.3
      ],
      "point": [
-      691.3,
-      576.5
+      691.5,
+      576.4
      ]
     }
    },
@@ -8944,7 +10795,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 2,
-    "rod_px": 46810
+    "rod_px": 46755
    },
    "kind": "layer",
    "overlays": {
@@ -8959,6 +10810,15 @@
    "pose": "vert",
    "revision": 3,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/robe_3.vert_boy_front.tilt20.webp",
+     "h": 950,
+     "w": 429,
+     "x": 288,
+     "y": 59
+    }
+   },
    "view": "front",
    "w": 427,
    "x": 290,
@@ -8970,60 +10830,60 @@
    "drift": {
     "dx": -0.0116,
     "dy": 0.2963,
-    "scale": 0.1142
+    "scale": 0.1084
    },
-   "figure_h": 928,
+   "figure_h": 923,
    "file": "layers/set/robe_3.vert_girl_front.webp",
    "grip": {
     "angle": 1.2,
     "bottom": [
      334.3,
-     984.5
+     979.9
     ],
-    "bottom_len": 597.3,
-    "gap": 37.1,
+    "bottom_len": 593.9,
+    "gap": 36.9,
     "point": [
-     321.4,
-     368.9
+     321.5,
+     367.8
     ],
     "top": [
-     315.6,
-     91.2
+     315.7,
+     91.7
     ],
-    "top_len": 259.2,
-    "width": 23.4
+    "top_len": 257.8,
+    "width": 23.3
    },
-   "h": 930,
+   "h": 925,
    "hands": {
     "fist": {
      "point": [
-      321.4,
-      368.9
+      321.5,
+      367.8
      ]
     },
     "lhand": {
      "forearm": [
-      666.4,
-      501.9
+      664.4,
+      500.0
      ],
      "point": [
-      664.7,
-      549.8
+      662.9,
+      548.2
      ]
     }
    },
    "head": [
-    509.5,
-    59,
+    508.0,
+    60,
     191
    ],
-   "head_score": 0.872,
+   "head_score": 0.869,
    "id": "robe_3.vert",
    "key": "layer:set:robe_3.vert:girl:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 41805
+    "rod_px": 41786
    },
    "kind": "layer",
    "overlays": {
@@ -9031,16 +10891,25 @@
      "file": "layers/set/robe_3.vert_girl_front.lhand.webp",
      "h": 59,
      "w": 86,
-     "x": 612,
-     "y": 523
+     "x": 610,
+     "y": 521
     }
    },
    "pose": "vert",
    "revision": 3,
    "slot": "set",
+   "tilt": {
+    "20": {
+     "file": "layers/set/robe_3.vert_girl_front.tilt20.webp",
+     "h": 925,
+     "w": 402,
+     "x": 294,
+     "y": 59
+    }
+   },
    "view": "front",
-   "w": 403,
-   "x": 295,
+   "w": 400,
+   "x": 296,
    "y": 59,
    "z": 20
   },
@@ -9767,21 +11636,22 @@
    "cylinder": true,
    "file": "layers/weapon/bow_short.vert_boy_front.webp",
    "grip": [
-    34.6,
+    36.1,
     310.2
    ],
    "h": 622,
    "handle_ratio": 1.05,
+   "hold_tilt": 20,
    "id": "bow_short.vert",
    "key": "layer:weapon:bow_short.vert:boy:front",
    "kind": "layer",
    "pose": "vert",
-   "revision": 1,
+   "revision": 2,
    "slot": "weapon",
    "two_handed": true,
    "view": "front",
-   "w": 115,
-   "x": 269,
+   "w": 116,
+   "x": 268,
    "y": 128,
    "z": 12
   },
@@ -9790,21 +11660,22 @@
    "cylinder": true,
    "file": "layers/weapon/bow_short.vert_girl_front.webp",
    "grip": [
-    44.7,
+    45.7,
     316.3
    ],
    "h": 633,
    "handle_ratio": 1.24,
+   "hold_tilt": 20,
    "id": "bow_short.vert",
    "key": "layer:weapon:bow_short.vert:girl:front",
    "kind": "layer",
    "pose": "vert",
-   "revision": 1,
+   "revision": 2,
    "slot": "weapon",
    "two_handed": true,
    "view": "front",
-   "w": 135,
-   "x": 273,
+   "w": 136,
+   "x": 272,
    "y": 55,
    "z": 12
   },
@@ -9812,19 +11683,19 @@
    "body": "boy",
    "file": "layers/weapon/bow_short_boy_front.webp",
    "grip": [
-    64,
+    65,
     310
    ],
    "h": 621,
    "id": "bow_short",
    "key": "layer:weapon:bow_short:boy:front",
    "kind": "layer",
-   "revision": 1,
+   "revision": 2,
    "slot": "weapon",
    "two_handed": true,
    "view": "front",
-   "w": 113,
-   "x": 325,
+   "w": 114,
+   "x": 324,
    "y": 176,
    "z": 95
   },
@@ -9839,11 +11710,11 @@
    "id": "bow_short",
    "key": "layer:weapon:bow_short:girl:front",
    "kind": "layer",
-   "revision": 1,
+   "revision": 2,
    "slot": "weapon",
    "two_handed": true,
    "view": "front",
-   "w": 115,
+   "w": 116,
    "x": 254,
    "y": 201,
    "z": 95
@@ -12162,6 +14033,54 @@
    "y": 356,
    "z": 95
   },
+  "layer:weapon_top:bow_short.vert:boy:front": {
+   "body": "boy",
+   "cylinder": true,
+   "file": "layers/weapon_top/bow_short.vert_boy_front.webp",
+   "grip": [
+    36.1,
+    310.2
+   ],
+   "h": 622,
+   "handle_ratio": 1.05,
+   "hold_tilt": 20,
+   "id": "bow_short.vert",
+   "key": "layer:weapon_top:bow_short.vert:boy:front",
+   "kind": "layer",
+   "pose": "vert",
+   "revision": 2,
+   "slot": "weapon_top",
+   "two_handed": true,
+   "view": "front",
+   "w": 116,
+   "x": 268,
+   "y": 128,
+   "z": 25
+  },
+  "layer:weapon_top:bow_short.vert:girl:front": {
+   "body": "girl",
+   "cylinder": true,
+   "file": "layers/weapon_top/bow_short.vert_girl_front.webp",
+   "grip": [
+    45.7,
+    316.3
+   ],
+   "h": 633,
+   "handle_ratio": 1.24,
+   "hold_tilt": 20,
+   "id": "bow_short.vert",
+   "key": "layer:weapon_top:bow_short.vert:girl:front",
+   "kind": "layer",
+   "pose": "vert",
+   "revision": 2,
+   "slot": "weapon_top",
+   "two_handed": true,
+   "view": "front",
+   "w": 136,
+   "x": 272,
+   "y": 55,
+   "z": 25
+  },
   "layer:weapon_top:dagger_iron.angle:boy:front": {
    "body": "boy",
    "cylinder": true,
@@ -13740,6 +15659,17 @@
   "dy": 0.42,
   "w": 0.5
  },
+ "quiver": {
+  "anchor": [
+   0.36,
+   0.29
+  ],
+  "dx": -0.55,
+  "dy": 0.25,
+  "poses": {},
+  "rot": 0,
+  "w": 1.7
+ },
  "sprite_groups": {
   "goblin_armored": {
    "body_h": 570,
@@ -13805,6 +15735,6 @@
    "taupe": "#B68B6C"
   }
  },
- "updated": 1794076492,
+ "updated": 1795280874,
  "version": 1
 }

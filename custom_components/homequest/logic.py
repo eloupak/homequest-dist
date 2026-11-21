@@ -943,12 +943,15 @@ def reset_hero(
 
 
 def buy(
-    state: dict[str, Any], catalog: dict[str, Any], kid_id: str, item_id: str, ts: str
+    state: dict[str, Any], catalog: dict[str, Any], kid_id: str, item_id: str, ts: str, stage: int | None = None
 ) -> dict[str, Any]:
+    """stage: the fortress stage reached (fortress_stage); an item with min_stage above it is not for sale yet (#187). None = not checked."""
     kid = _kid(state, kid_id)
     item = _item(catalog, item_id)
     if not item["shop"]:
         raise HomeQuestError(ERR_NOT_FOUND, "item is not for sale")
+    if stage is not None and int(item.get("min_stage") or 0) > stage:
+        raise HomeQuestError(ERR_NOT_FOUND, "item is not for sale yet (the fortress has not reached its stage)")
     if kid["hero"] is None:
         raise HomeQuestError(ERR_INVALID_STATE, "create a hero first")
     dye = item["slot"] == DYE_SLOT
@@ -1113,9 +1116,15 @@ def admin_adjust(
     return {"kid_id": kid_id, "delta": delta}
 
 
-def claim_stage_gift(state: dict[str, Any], story: dict[str, Any] | None, kid_id: str, stage_id: str, ts: str) -> dict[str, Any]:
+def claim_stage_gift(state: dict[str, Any], story: dict[str, Any] | None, kid_id: str, stage_id: str, ts: str,
+                     catalog: dict[str, Any] | None = None, pick: Any = None) -> dict[str, Any]:
     """The gift of a reached fortress stage (stage.gives): coins to this child, once per stage and child (kid["gifts"] keeps the stages,
-    so a second call, a second device or a replay of the scene pays nothing). Not a task: it does not count towards the fortress."""
+    so a second call, a second device or a replay of the scene pays nothing). Not a task: it does not count towards the fortress.
+    #185: gives.item = an item of the catalog (the hunting gear at stage 3): into the inventory and put on at once (the child may change back).
+    An item missing in the catalog is skipped (the coins still come) rather than blocking the scene.
+    #185 addendum 4: gives.choose = {items: [...]} - the child also picks ONE of these (the hunting hat by the colour of its feather), once per
+    stage and child (kid["gift_picks"][stage]); the picked item goes into the inventory and onto the hero, the others never. `pick` may come
+    with the first claim or later (the gear paid before the choice existed, another device); a second pick keeps the first one."""
     kid = _kid(state, kid_id)
     fort = (story or {}).get("fortress") or {}
     stage = next((s for s in fort.get("stages", []) if s["id"] == stage_id), None)
@@ -1124,14 +1133,46 @@ def claim_stage_gift(state: dict[str, Any], story: dict[str, Any] | None, kid_id
     done = max(0, fortress_done(state) - fort.get("baseline", 0))
     if done < stage["tasks"]:
         raise HomeQuestError(ERR_INVALID_STATE, "the stage is not reached yet")
+    choose = stage["gives"].get("choose") or {}
+    if pick is not None and (not isinstance(pick, str) or pick not in (choose.get("items") or [])):
+        raise HomeQuestError(ERR_INVALID_PARAMS, f"pick: one of {', '.join(choose.get('items') or []) or 'nothing (no choice here)'}")
     gifts = kid.setdefault("gifts", [])
     if stage_id in gifts:
-        return {"kid_id": kid_id, "stage": stage_id, "coins": 0, "claimed": False}
+        picked = _gift_pick(kid, catalog, stage_id, pick, stage["gives"]["note"], ts)
+        return {"kid_id": kid_id, "stage": stage_id, "coins": 0, "claimed": False, "pick": picked}
     gifts.append(stage_id)
-    coins = int(stage["gives"]["coins"])
+    coins = int(stage["gives"].get("coins") or 0)
     kid["coins"] += coins
-    _history(kid, ts, type="gift", coins=coins, note=stage["gives"]["note"], stage=stage_id)
-    return {"kid_id": kid_id, "stage": stage_id, "coins": coins, "claimed": True}
+    item_id = stage["gives"].get("item")
+    item = (catalog or {}).get("items", {}).get(item_id) if item_id else None
+    if item is not None and kid.get("hero") is not None:
+        if item_id not in kid["inventory"]:
+            kid["inventory"].append(item_id)
+        if item["slot"] != DYE_SLOT and _body_ok(item, kid):
+            _equip_into(kid, item)
+    else:
+        item_id = None
+    extra = {"item": item_id} if item_id else {}
+    _history(kid, ts, type="gift", coins=coins, note=stage["gives"]["note"], stage=stage_id, **extra)
+    picked = _gift_pick(kid, catalog, stage_id, pick, stage["gives"]["note"], ts)
+    return {"kid_id": kid_id, "stage": stage_id, "coins": coins, "item": item_id, "claimed": True, "pick": picked}
+
+
+def _gift_pick(kid: dict[str, Any], catalog: dict[str, Any] | None, stage_id: str, pick: str | None, note: str, ts: str) -> str | None:
+    """The chosen item of a stage gift (already validated against gives.choose): once per stage; returns the item the child has (or None)."""
+    picks = kid.get("gift_picks") or {}
+    if stage_id in picks or pick is None:
+        return picks.get(stage_id)
+    item = (catalog or {}).get("items", {}).get(pick)
+    if item is None:
+        raise HomeQuestError(ERR_NOT_FOUND, f"item '{pick}' is not in the catalog")
+    kid.setdefault("gift_picks", {})[stage_id] = pick
+    if pick not in kid["inventory"]:
+        kid["inventory"].append(pick)
+    if kid.get("hero") is not None and item["slot"] != DYE_SLOT and _body_ok(item, kid):
+        _equip_into(kid, item)
+    _history(kid, ts, type="gift", coins=0, note=note, stage=stage_id, item=pick)
+    return pick
 
 
 # ------------------------------------------------------------------ siege ---
@@ -1523,6 +1564,17 @@ def pending_list(state: dict[str, Any], catalog: dict[str, Any]) -> list[dict[st
                     }
                 )
     return out
+
+
+def fortress_stage(state: dict[str, Any], story: dict[str, Any] | None) -> int:
+    """The index of the fortress stage reached (story.yaml fortress.stages, 0 = the first): what `min_stage` of a shop item compares with (#187)."""
+    fort = (story or {}).get("fortress") or {}
+    done = max(0, fortress_done(state) - fort.get("baseline", 0))
+    idx = 0
+    for i, st in enumerate(fort.get("stages", [])):
+        if done >= st["tasks"]:
+            idx = i
+    return idx
 
 
 def fortress_next(state: dict[str, Any], story: dict[str, Any] | None) -> dict[str, Any] | None:

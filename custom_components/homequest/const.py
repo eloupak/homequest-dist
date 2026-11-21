@@ -30,7 +30,7 @@ DYE_SLOT = "hair_dye"
 ITEM_SLOTS = SLOTS + (DYE_SLOT,)
 # layered clothing replaced by whole-outfit sets (addendum 5): hidden from shop/inventory when sets are used
 LAYERED_SLOTS = ("torso", "legs", "feet")
-OUTFIT_STYLES = ("cloth", "light", "heavy", "robe")
+OUTFIT_STYLES = ("cloth", "light", "heavy", "robe", "hunter")   # hunter: the hunting gear, a gift of the castellan at stage 3 (#185), not in the shop
 RARITIES = ("common", "rare", "epic", "legendary")
 PERIODS = ("daily", "weekly", "adhoc")
 DEFAULT_REWARD = {"daily": 1, "weekly": 3, "adhoc": 3}

@@ -225,6 +225,9 @@ select.field option:hover, select.field option:focus, select.field option:checke
 .chapter p { margin: 8px 0 0; line-height: 1.4; }
 .questscreen .btn.block { margin-top: 14px; }
 .questscreen .btn.replay { justify-content: flex-start; text-align: left; }   /* icon + text from the left (#127) */
+.questscreen .hunt-go { font-size: 20px; min-height: 56px; }                    /* #189: Na lov */
+.questscreen .hunt-go.locked { opacity: .65; filter: grayscale(.6); }
+.questscreen .hunt-locked .muted { margin: 6px 2px 0; }
 /* The scene picture (2:3) always covers its box, centred; the giver is placed in % of the picture, so it stands on the road at every crop. */
 .scene-box { position: relative; overflow: hidden; container-type: size; border-radius: 16px; background: #14122a; }
 .scene-box.tab { width: 100%; aspect-ratio: 1 / 1.1; border: 3px solid var(--gold-dark); }
@@ -301,6 +304,16 @@ select.field option:hover, select.field option:focus, select.field option:checke
 @keyframes hq-fadein { to { opacity: 1; } }
 /* the gift of the castellan: coins fly into the purse (top right) */
 .coin-gift { position: fixed; inset: 0; z-index: 71; pointer-events: none; overflow: hidden; }
+.item-gift { position: fixed; inset: 0; z-index: 72; display: flex; align-items: center; justify-content: center; background: rgba(20, 16, 8, .55); }
+.item-gift .box { background: #f6ecd2; color: #3a2a10; border: 4px solid #c99a2e; border-radius: 18px; padding: 16px 18px; text-align: center; max-width: 320px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.item-gift .note { font-weight: 700; color: #8a5f10; }
+.item-gift .name { font: 700 24px var(--hq-font-heading, Georgia, serif); }
+.item-gift .pic { width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; }
+.item-gift .pic > img { width: 100%; height: 100%; object-fit: contain; }
+.item-gift .pic.bust { width: 200px; height: 200px; overflow: hidden; border-radius: 12px; background: radial-gradient(circle at 50% 45%, #5a7d4a, #2b3d26 80%); }
+.item-gift .pic.bust .hq-hero { width: 100%; }
+.item-gift .muted { font-size: 14px; opacity: .8; }
+.item-gift .btn { min-width: 140px; min-height: 48px; font-size: 18px; }
 .coin-gift .gift-text { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); font: 700 34px var(--hq-font-heading, Georgia, serif); color: #fff3b8; text-shadow: 0 2px 0 #8a5f10, 0 0 12px #000a; animation: hq-gifttext 1.9s ease-out both; }
 .coin-gift .flycoin { position: absolute; left: 50%; top: 48%; width: 36px; height: 36px; margin: -18px 0 0 -18px; opacity: 0; animation: hq-flycoin 1.15s cubic-bezier(.5,0,.8,.4) var(--dl) both; }
 .coin-gift .flycoin .coin { width: 100%; height: 100%; }
@@ -381,7 +394,7 @@ select.field option:hover, select.field option:focus, select.field option:checke
 .avatar .hq-hero { width: 100%; height: 100%; aspect-ratio: auto; }
 .choice .hq-hero.portrait { width: 96px; margin-bottom: 4px; border-radius: 10px; background: var(--stage); }
 .icard .thumb, .slot .thumb { object-fit: contain; image-rendering: auto; }
-.thumb-missing { opacity: 0.25; }
+.thumb-missing { visibility: hidden; }   /* addendum 12: no broken "?" picture */
 /* pouring the dye over the hero after the purchase */
 .pour { position: absolute; left: 50%; top: 4%; width: 0; height: 0; pointer-events: none; }
 .pour .bottle { position: absolute; left: 18px; top: -6px; width: 38px; height: 46px; border-radius: 12px 12px 16px 16px; border: 3px solid #ffffffcc; background: linear-gradient(var(--dye) 0 65%, #ffffff44 65%); transform-origin: 20% 10%; animation: hq-tilt 1.6s ease-in-out both; }
@@ -419,6 +432,14 @@ nav:empty { display: none; }
 @keyframes hq-amulet-fly { 0% { transform: none; opacity: 1; } 100% { transform: translateY(45vh) scale(.15); opacity: 0; } }
 .amulet-name { font: 700 22px var(--hq-font-heading, Georgia, serif); color: var(--parch); }
 .amulet-x { position: absolute; top: calc(10px + env(safe-area-inset-top)); right: 10px; width: 56px; height: 56px; border-radius: 50%; border: 3px solid var(--parch); background: #2a2742; color: var(--parch); font-size: 28px; line-height: 1; }
+/* #185 addendum 4: the choice in a stage gift (the hunting hat by the feather colour), cards like the amulets; a swatch works before the art */
+.pick-pic { position: relative; width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
+.pick-pic > img { position: relative; width: 100%; height: 100%; object-fit: contain; }
+.pick-swatch { position: absolute; z-index: 1; left: 6%; top: 6%; width: 22%; height: 22%; border-radius: 50% 50% 50% 8%; transform: rotate(-45deg); background: var(--sw); box-shadow: inset 0 0 0 3px #0003, 0 2px 8px #0006; }
+.pick-pic.noart .pick-swatch { left: 27%; top: 27%; width: 46%; height: 46%; }
+.pick-pic.bust { overflow: hidden; border-radius: 12px; background: radial-gradient(circle at 50% 45%, #5a7d4a, #2b3d26 80%); }
+.pick-pic.bust .hq-hero { width: 100%; }
+.pick-pic.bust .pick-swatch { z-index: 2; width: 18%; height: 18%; }
 
 /* ---- #129 header: portraits of the heroes + the shield of Rodič ---- */
 .kidswitch { align-items: center; }

@@ -17,7 +17,9 @@ const MIN_STAGE = 2;
 const SIEGE_CSS = `
 :host { position: fixed; inset: 0; z-index: 90; height: auto; }
 .body { top: 0; }
-.sg-screen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 20px; text-align: center; background: #1c1a2e; }
+/* addendum 7 (#189): on a portrait iPhone the HUD strip of the game lay under the status bar (the layer covers the whole screen) */
+@media (orientation: portrait) { .g2 { padding-top: calc(4px + env(safe-area-inset-top, 0px)); } }
+.sg-screen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: calc(20px + env(safe-area-inset-top, 0px)) 20px calc(20px + env(safe-area-inset-bottom, 0px)); text-align: center; background: #1c1a2e; }
 .sg-screen h2 { margin: 0; font-size: 24px; }
 .sg-screen p { margin: 0; font-size: 18px; max-width: 520px; }
 .sg-phone { width: 70px; height: 120px; border: 6px solid #f3ecd8; border-radius: 14px; position: relative; animation: sg-turn ${ROTATE_MS}ms ease-in-out infinite; }

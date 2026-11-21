@@ -383,6 +383,7 @@ class HomeQuestPanel extends HTMLElement {
       playStage: (at) => this._playStage(at, false),
       playSiegeWon: (stage) => this._playSiegeWon(stage, false),
       siegeBack: () => this._siegeBack(),
+      openHunt: () => this._openHunt(),                                  // #189: Quest -> Na lov
       bench: () => this._openBench(),                                    // #174: Test výkonu (Rodič -> O hře)
       toast: (t, k) => this.toast(t, k),
       sheet: (build, opts = {}) => this._openSheet(build, opts.onClose || null, opts),   // opts.parent: the look of the Rodič screen (#129 addendum 1)
@@ -503,7 +504,7 @@ class HomeQuestPanel extends HTMLElement {
   async _maybeStage(ctx, at) {
     if (this._introOpen || this._stageBusy || !ctx.kid) return;
     const seen = Math.max(stageSeen(localStorage, ctx.kidId), serverSeen(ctx.kid).stage);
-    const go = stageToCelebrate({ story: ctx.view.story, isAdmin: ctx.isAdmin, done: at.done, seen, gifts: ctx.kid.gifts || [] });
+    const go = stageToCelebrate({ story: ctx.view.story, isAdmin: ctx.isAdmin, done: at.done, seen, gifts: ctx.kid.gifts || [], picks: ctx.kid.gift_picks || {} });
     if (!go) return this._maybeSiege(ctx);
     if (this._stageFailed && this._stageFailed.has(`${ctx.kidId}.${go.stage.id}`)) return;
     this._stageBusy = true;
@@ -526,7 +527,7 @@ class HomeQuestPanel extends HTMLElement {
       this._introOpen = false;
       if (claim && ok) this._markStage(kidId, go.index);
       if (claim && !ok) (this._stageFailed = this._stageFailed || new Set()).add(`${kidId}.${go.stage.id}`);
-    }, { layer: this._layer, claim });
+    }, { layer: this._layer, claim, pickOnly: !!(claim && go.pickOnly) });
   }
 
   /** A stage celebration seen to the end: on this device and on the server (another phone does not play it again, v1.4.0). */
@@ -616,6 +617,20 @@ class HomeQuestPanel extends HTMLElement {
     } catch (e) {
       this._siegeGame = null;
       this.toast("Hra se nespustila: " + (e.message || e), "error");
+    }
+  }
+
+  /** #189: the hunt (maths) over the panel, loaded on demand (games/hunt_game.js). */
+  async _openHunt() {
+    if (this._huntGame) return;
+    this._huntGame = true;
+    try {
+      const m = await import("./games/hunt_game.js");
+      this._huntGame = m.openHuntGame(this.shadowRoot, { hass: this._hass, api: this.api, stage: this.stage, view: this.view, kidId: this.kidId, assets: ASSETS,
+        onClose: () => { this._huntGame = null; this.render(); } });
+    } catch (e) {
+      this._huntGame = null;
+      this.toast("Lov se nespustil: " + (e.message || e), "error");
     }
   }
 

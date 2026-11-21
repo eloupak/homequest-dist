@@ -18,6 +18,7 @@ vars:
   sedlak_5: "Matouši"
   kastelan: "Bohumil"
   kastelan_5: "Bohumile"
+  lovec: "Ctibor"
 
 cast:
   - id: farmer
@@ -31,6 +32,11 @@ cast:
     quote: "Vítejte doma, páni tvrze!"
     show: true
     gives: [fortress_care]
+  - id: hunter
+    name: Lovec {lovec}
+    role: Lov, luky (tvrz s věží)
+    quote: "Zdravím, statečná družino!"
+    show: true
   # only a record for now (show: false): they do not appear in the game yet
   - id: guard_captain
     name: Velitelka stráže
@@ -121,13 +127,37 @@ fortress:
       name: Tvrz s věží
       description: Hlásná věž nad branou.
       tasks: 220
-      announce:
-        - "Nad bránou vyrostla věž! Hlídky uvidí nepřítele dřív, než dojde k lesu."
+      replay_label: "Lovec a luky"
+      scene:
+        - giver: castellan
+          text:
+            - "{deti}, podívejte! Tvrz má novou věž. Z ní uvidíme daleko do kraje."
+        - giver: hunter
+          text:
+            - "Zdravím, statečná družino! Jsem lovec {lovec}. Takovou věž jsem v celém kraji neviděl."
+            - "Z věže uvidíte skřety dřív, než dorazí k bráně. A až přijdou, bude se hodit dobrý luk."
+            - "Přivezl jsem z lesa pár luků. Najdete je v obchodě."
+            - "Kdo má luk, může se mnou chodit na lov. Na lov je potřeba být dobře připraven. Dobře spočítat vzdálenost kořisti a směr větru. No, uvidíte sami."
+        - giver: farmer
+          text:
+            - "Konečně pořádná šunka na stůl!"
+            - "Jsem si jist, že pokud nalovíte dost, můžete maso prodat na trhu."
+        - giver: castellan
+          text:
+            - "Počkejte ještě! Za tu krásnou věž pro vás mám něco, co se vám určitě bude hodit."
+            - "Lovecká výstroj. V lese vás v ní žádný zajíc nezahlédne. Ať se vám na lovu daří!"
+      gives:
+        item: outfit_hunter_1
+        note: "Dar od kastelána"
+        choose:
+          items: [hat_hunter_red, hat_hunter_blue, hat_hunter_white, hat_hunter_gold]
+          text: "K výstroji patří lovecký klobouk. Vyber si barvu pírka!"
+          chosen: "Sluší ti! Ať se ti na lovu daří."
       giver_pos: {x: 56, y: 90, h: 30}
     - id: fortress_4
       name: Opevněná tvrz
       description: Padací most před branou.
-      tasks: 400
+      tasks: 360
       announce:
         - "Padací most! Kdo nás chce navštívit, musí zaklepat. Tvrz je pevnější než kdy dřív."
       giver_pos: {x: 56, y: 90, h: 30}

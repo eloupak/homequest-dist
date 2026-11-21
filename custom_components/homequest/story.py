@@ -216,12 +216,32 @@ def parse_story(raw: Any) -> tuple[dict[str, Any] | None, list[str]]:
                 scene.append({"giver": gid, "text": _paragraphs(part.get("text"), f"{where}.text", errors), "hurry": hurry})
         gives: dict[str, Any] | None = None
         if s.get("gives") is not None:
-            g = s["gives"]
-            coins = g.get("coins") if isinstance(g, dict) else None
-            if isinstance(coins, bool) or not isinstance(coins, int) or coins < 1 or coins > MAX_GIFT_COINS:
-                errors.append(f"fortress.stages[{i}].gives.coins: a whole number 1-{MAX_GIFT_COINS} (coins every child gets once at this stage)")
-            else:
-                gives = {"coins": coins, "note": str(g.get("note") or "Dar").strip()[:60]}
+            g = s["gives"] if isinstance(s["gives"], dict) else {}
+            coins = g.get("coins", 0 if g.get("item") else None)
+            item = g.get("item")                                           # #185: an item of the catalog (e.g. the hunting gear), put on at once
+            ok = True
+            if isinstance(coins, bool) or not isinstance(coins, int) or coins < (0 if item else 1) or coins > MAX_GIFT_COINS:
+                errors.append(f"fortress.stages[{i}].gives.coins: a whole number 1-{MAX_GIFT_COINS} (coins every child gets once at this stage; 0-{MAX_GIFT_COINS} with an item)")
+                ok = False
+            if item is not None and not (isinstance(item, str) and ID_RE.match(item)):
+                errors.append(f"fortress.stages[{i}].gives.item: the id of a catalog item (a-z, 0-9, _)")
+                ok = False
+            choose = None                                                  # #185 add. 4: one item to pick (the hat by the feather colour)
+            if g.get("choose") is not None:
+                c = g["choose"] if isinstance(g["choose"], dict) else {}
+                items = c.get("items")
+                if not isinstance(items, list) or not 2 <= len(items) <= 8 or any(not (isinstance(x, str) and ID_RE.match(x)) for x in items) \
+                        or len(set(items)) != len(items):
+                    errors.append(f"fortress.stages[{i}].gives.choose.items: 2-8 different catalog item ids (the child picks one, once)")
+                    ok = False
+                else:
+                    choose = {"items": list(items), "text": str(c.get("text") or "Vyber si.").strip()[:200],
+                              "chosen": str(c.get("chosen") or "").strip()[:200],
+                              "button": str(c.get("button") or "").strip()[:40]}   # add. 12: the word on the pick button (empty = "Tohle!")
+            if ok:
+                gives = {"coins": coins, "item": item, "note": str(g.get("note") or "Dar").strip()[:60]}
+                if choose:
+                    gives["choose"] = choose
         stages.append({
             "id": sid,
             "name": name,

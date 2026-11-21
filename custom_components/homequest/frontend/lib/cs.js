@@ -35,7 +35,7 @@ export const SLOT_ICONS = {
 };
 
 /** Shop sections (whole-outfit sets): outfits by style, then weapons, offhand items, accessories. */
-export const OUTFIT_STYLE_NAMES = { cloth: "Plátěné oblečení", light: "Lehká zbroj", heavy: "Těžká zbroj", robe: "Róba" };
+export const OUTFIT_STYLE_NAMES = { cloth: "Plátěné oblečení", light: "Lehká zbroj", heavy: "Těžká zbroj", robe: "Róba", hunter: "Lovecká výstroj" };
 export const SHOP_SECTIONS = [
   { id: "outfit", name: "Výbava", slots: ["outfit"] },
   { id: "weapon", name: "Zbraně", slots: ["weapon"] },

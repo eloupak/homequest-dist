@@ -199,7 +199,8 @@ class HomeQuestManager:
         if not had_state:
             self.state["app_version"] = self.version
             return None
-        files = [Path(self.hass.config.path(".storage", STORAGE_KEY)), self.data_dir / CATALOG_FILE, self.data_dir / STORY_FILE]
+        files = [Path(self.hass.config.path(".storage", STORAGE_KEY)), self.data_dir / CATALOG_FILE, self.data_dir / STORY_FILE,
+                 Path(self.hass.config.path(".storage", "homequest.learning"))]       # v1.9 (#189): the hunt's data (a missing file is skipped)
         bdir = self.data_dir / upgrade.BACKUP_DIR
         try:
             names = await self.hass.async_add_executor_job(upgrade.backup, files, bdir, old, self.version)
@@ -752,11 +753,28 @@ class HomeQuestManager:
             "update": self._update_view() if ident.is_admin else None,          # v1.7 (#141): a new version, only for the parent
             "version": self.version or None,                                    # O hře (manifest; on TEST the dev manifest, see build)
             "build": self.build or None,                                       # TEST only: "<branch> <commit> <time>" from deploy.sh test
-            "fortress": {"done": max(0, fortress_done(self.state) - ((self.story or {}).get("fortress") or {}).get("baseline", 0))},
+            "fortress": {"done": max(0, fortress_done(self.state) - ((self.story or {}).get("fortress") or {}).get("baseline", 0)),
+                         "stage": logic.fortress_stage(self.state, self.story)},       # the index of the reached stage: shop items with min_stage (#187)
             "siege": logic.siege_info(self.state, self.story),
+            "hunt": self._hunt_view(list(out)),
             "pin": {"enabled": bool(self.state.get("parent_pin"))} if ident.is_admin else None,
             "kids": out,
         }
+
+    def _hunt_view(self, kid_ids: list[str]) -> dict[str, Any] | None:
+        """#189: the Quest button "Na lov": from which fortress stage, which item it needs, and per child whether it is open (game/learning.entry_status)."""
+        hub = self.hass.data.get(DOMAIN + "_learning")
+        if hub is None:
+            return None
+        from .game.learning import entry_status
+        e = hub.cfg.get("entry") or {}
+        stage = logic.fortress_stage(self.state, self.story)
+        kids = {}
+        for k in kid_ids:
+            ok, why = entry_status(hub.cfg, stage, (self.state.get("kids", {}).get(k) or {}).get("inventory"))
+            kids[k] = {"open": ok, "reason": why}
+        return {"min_stage": int(e.get("min_stage") or 0), "needs_item": e.get("needs_item"), "label": e.get("label") or "Na lov",
+                "locked_item": e.get("locked_item") or "", "kids": kids}
 
     def _settings_view(self) -> dict[str, Any]:
         """The parent's settings of v1.5 (#128): the phones for the task notifications and the story variables."""
@@ -1154,7 +1172,7 @@ class HomeQuestManager:
 
     async def async_buy(self, kid_id: str, item_id: str) -> dict[str, Any]:
         res = await self._mutate(
-            lambda ts: logic.buy(self.state, self.catalog, kid_id, item_id, ts)
+            lambda ts: logic.buy(self.state, self.catalog, kid_id, item_id, ts, logic.fortress_stage(self.state, self.story))
         )
         self.hass.bus.async_fire(
             EVENT_PURCHASE,
@@ -1168,8 +1186,8 @@ class HomeQuestManager:
         )
         return res
 
-    async def async_claim_gift(self, kid_id: str, stage_id: str) -> dict[str, Any]:
-        return await self._mutate(lambda ts: logic.claim_stage_gift(self.state, self.story, kid_id, stage_id, ts))
+    async def async_claim_gift(self, kid_id: str, stage_id: str, pick: str | None = None) -> dict[str, Any]:
+        return await self._mutate(lambda ts: logic.claim_stage_gift(self.state, self.story, kid_id, stage_id, ts, self.catalog, pick))
 
     # ------------------------------------------------------------ siege ----
 

@@ -1,5 +1,7 @@
-"""Websocket commands of the learning games (homequest/learn_*). Registered ONLY where <data>/dev_panels exists, and for admins only.
-The tracking data lives in its own storage file (.storage/homequest.learning), never in homequest.state."""
+"""Websocket commands of the learning games (homequest/learn_*). Since v1.9 (#189) registered everywhere (production too): a child plays its own
+hunt from the Quest tab once the fortress has reached the stage and the child owns the bow (hunt.yaml `entry`); a parent (admin) may act for any
+child (the test panel "HomeQuest Učení" stays TEST only). The tracking data lives in its own storage file (.storage/homequest.learning, in the
+backups since v1.9), never in homequest.state."""
 
 from __future__ import annotations
 
@@ -13,8 +15,10 @@ from homeassistant.helpers.storage import Store
 
 from .const import DOMAIN
 from .game.learn_api import handle
-from .game.learning import LearnError, LearningHub, empty_data, load_config, pending_coins, settle_coins
-from .store import get_manager
+from .game.learning import LearnError, LearningHub, empty_data, entry_status, load_config, pending_coins, settle_coins
+from .logic import fortress_stage
+from .store import HomeQuestManager, Identity
+from .websocket import KID, _handler
 
 STORAGE_KEY = "homequest.learning"
 STORAGE_VERSION = 1
@@ -22,29 +26,38 @@ SAVE_DELAY_S = 5
 
 SCHEMAS: dict[str, dict] = {
     "state": {},
-    "start": {vol.Required("kid_id"): str, vol.Required("op"): str},
+    "start": {vol.Required("op"): str, vol.Optional("mode"): str},
     "answer": {vol.Required("set_id"): str, vol.Required("answer"): vol.Any(int, str), vol.Optional("ms"): vol.Any(int, float)},
-    "overview": {vol.Required("kid_id"): str, vol.Optional("top"): int},
+    "shot": {vol.Required("set_id"): str, vol.Required("hit"): bool},
+    "quit": {vol.Required("set_id"): str},
+    "overview": {vol.Optional("top"): int},
 }
+ADMIN_ONLY = {"overview"}
 
 
 def _hub(hass: HomeAssistant) -> LearningHub:
     return hass.data[DOMAIN + "_learning"]
 
 
+def _entry(mgr: HomeQuestManager, cfg: dict) -> dict[str, tuple[bool, str]]:
+    stage = fortress_stage(mgr.state, mgr.story)
+    return {k: entry_status(cfg, stage, (mgr.state.get("kids", {}).get(k) or {}).get("inventory")) for k in mgr.catalog["kids"]}
+
+
 def _command(cmd: str):
-    @websocket_api.websocket_command({vol.Required("type"): f"homequest/learn_{cmd}", **SCHEMAS[cmd]})
-    @websocket_api.async_response
-    async def run(hass: HomeAssistant, connection: Any, msg: dict[str, Any]) -> None:
-        if connection.user is None or not connection.user.is_admin:
-            connection.send_error(msg["id"], "forbidden", "the learning games are for parents (admins) only")
-            return
-        hub, mgr = _hub(hass), get_manager(hass)
+    @websocket_api.websocket_command({vol.Required("type"): f"homequest/learn_{cmd}", **KID, **SCHEMAS[cmd]})
+    @_handler(admin_only=cmd in ADMIN_ONLY, pin_gate=False)
+    async def run(mgr: HomeQuestManager, ident: Identity, connection: Any, msg: dict) -> Any:
+        hub = _hub(mgr.hass)
+        as_kid = None if ident.is_admin else ident.kid_id
+        data = dict(msg)
+        if ident.kid_id is not None:
+            data["kid_id"] = ident.kid_id
         try:
-            result = handle(hub, cmd, msg, mgr.catalog["kids"])
+            result = handle(hub, cmd, data, mgr.catalog["kids"], as_kid, _entry(mgr, hub.cfg))
         except LearnError as err:
             connection.send_error(msg["id"], err.code, err.message)
-            return
+            return None
         for kid, n in pending_coins(hub.data).items():                 # the coins of the hams go through the store's own mutation; what fails waits for the next command
             try:
                 await mgr.async_adjust(kid, n, "Lov: šunky")
@@ -52,8 +65,9 @@ def _command(cmd: str):
                 continue
             settle_coins(hub.data, kid, n)
             hub.save(hub.data)
-        connection.send_result(msg["id"], result)
+        return result
 
+    run.__name__ = f"ws_learn_{cmd}"
     return run
 
 

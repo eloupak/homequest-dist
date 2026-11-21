@@ -96,8 +96,9 @@ function shopCard(ctx, kid, item) {
 
 function shopGrid(ctx, filter) {
   const { kid } = ctx;
+  const reached = (ctx.view && ctx.view.fortress && ctx.view.fortress.stage) || 0;     // #187: an item with min_stage waits for its fortress stage
   const stock = ctx.cat.items
-    .filter((i) => i.shop && !kid.inventory.includes(i.id) && filter(i) && fitsBody(i, kid.hero) && ctx.stage.supports(i, kid.hero.body))
+    .filter((i) => i.shop && (i.min_stage || 0) <= reached && !kid.inventory.includes(i.id) && filter(i) && fitsBody(i, kid.hero) && ctx.stage.supports(i, kid.hero.body))
     .sort((a, b) => a.price - b.price);
   if (!stock.length) return h("div", { class: "empty" }, "V obchodě už pro tebe nic nezbylo. Máš všechno!");
   if (!usesSets(ctx)) {

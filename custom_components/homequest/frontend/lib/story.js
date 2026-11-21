@@ -125,13 +125,15 @@ export function markStageSeen(storage, kidId, index) {
 /** The stage the celebration starts by itself for (a child, not the parent account), or null. A stage with a gift (stage.gives) is played until
  *  the server has paid it (kid.gifts: so it also stays quiet on a second device, and a child who saw the old text-only announcement still gets it);
  *  any other stage once, when it is higher than the last one seen on this device. A stage needs a scene or an announcement to be played. */
-export function stageToCelebrate({ story, isAdmin, done, seen, gifts = [] }) {
+export function stageToCelebrate({ story, isAdmin, done, seen, gifts = [], picks = {} }) {
   const at = stageAt(story, done);
   if (!at || isAdmin) return null;
   const stages = story.fortress.stages;
   const playable = (s) => (s.scene && s.scene.length) || (s.announce && s.announce.length);
   for (let i = 1; i <= at.index; i++) {
     if (stages[i].gives && playable(stages[i]) && !gifts.includes(stages[i].id)) return { ...stageAt(story, stages[i].tasks), done };
+    // #185 addendum 4: paid, but the choice of the gift (the hat) is missing -> only the choice, no scene again
+    if (stages[i].gives && stages[i].gives.choose && gifts.includes(stages[i].id) && !(picks || {})[stages[i].id]) return { ...stageAt(story, stages[i].tasks), done, pickOnly: true };
   }
   if (at.index > seen && !at.stage.gives && !at.stage.siege && playable(at.stage)) return at;     // a siege stage plays its scene in the siege (views/siege.js)
   return null;

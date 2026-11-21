@@ -14,6 +14,7 @@ export const FRONT_ONLY = new Set(["weapon", "offhand"]);
 export const BACK_Z = { weapon: 12, offhand: 14 };
 export const PORTRAIT = { x: 330, y: 118, w: 364, h: 336 }; // head and shoulders, in canvas px
 export const PORTRAIT_SETS = { x: 376, y: 36, w: 272, h: 262 }; // same for whole-outfit sets (smaller head, higher up)
+export const BUST_HAT = { x: 302, y: 0, w: 420, h: 420 };       // #185 addendum 5: head and shoulders of a set hero with room for a hat above (the choice of the feather)
 // weapons held in two hands hide the offhand item
 export const TWO_HANDED = new Set(["staff", "bow"]);
 // green-rod grip (addendum 7): which pose set carries the grip of a weapon
@@ -29,6 +30,13 @@ export function indexManifest(manifest) {
   const map = new Map();
   for (const e of Object.values((manifest && manifest.items) || {})) {
     map.set(key(e.kind, e.slot, e.id, e.body, e.view), e);
+  }
+  // #185 addendum 4: a set delivered only in its poses (hunter_1, brief-021: vert / angle / raise / swing / reach, no plain picture) is drawn
+  // by its vert pose wherever the plain set is asked for (the hero tab, the shop, the portraits); a plain picture, when it exists, wins.
+  for (const e of [...map.values()]) {
+    if (e.kind !== "layer" || e.slot !== "set" || !String(e.id).endsWith(".vert")) continue;
+    const plain = key("layer", "set", String(e.id).slice(0, -5), e.body, e.view);
+    if (!map.has(plain)) map.set(plain, e);
   }
   const hasSets = [...map.values()].some((e) => e.kind === "layer" && e.slot === "set");
   return { map, manifest: manifest || { items: {} }, version: (manifest && manifest.updated) || 0, hasSets };
@@ -57,18 +65,45 @@ export function viewOfSlot(slot, view) {
   return FRONT_ONLY.has(slot) ? "front" : view;
 }
 
+/** #185: the art id of an outfit set to draw: its own art, or `art_fallback` (a placeholder from the catalog) while its own does not exist yet. */
+export function setArtOf(ix, item, body) {
+  const own = (item && (item.art || item.id)) || "";
+  if (!item || !item.art_fallback || findEntry(ix, "layer", "set", own, body, "front")) return own;
+  return findEntry(ix, "layer", "set", item.art_fallback, body, "front") ? item.art_fallback : own;
+}
+
 export function supportsItem(ix, item, bodyType) {
   const body = BODY_ART[bodyType] || bodyType;
   if (item.slot === "hair_dye") return true;                                           // a bottle: nothing is drawn on the hero
   if (item.picture) return true;                                                       // a trophy (#118 amulet): its own picture, see pictureLayer
   if (ix.hasSets && ["torso", "legs", "feet"].includes(item.slot)) return false; // replaced by whole-outfit sets
   if (item.slot === "back" && findEntry(ix, "layer", "back", `${item.art || item.id}.vert`, body, "front")) return true;   // #130 two-layer cape
+  if (item.slot === "outfit") return !!findEntry(ix, "layer", "set", setArtOf(ix, item, body), body, "front");
   return !!findEntry(ix, "layer", ART_SLOT[item.slot] || item.slot, item.art || item.id, body, "front");
 }
 
 export function isTwoHanded(item, entry) {
   if (entry && entry.two_handed != null) return !!entry.two_handed;
   return TWO_HANDED.has(String(item.art || item.id).split("_")[0]);
+}
+
+/** #188 addendum 4: the fist of the worn outfit's pose set (manifest grip.point, px of the hero canvas) when the hero can be drawn in `pose`, else null.
+ *  The hunt draws the hero in `reach` (the left arm stretched, brief-021) and puts its bow on this point. */
+export function poseGrip(ix, spec, pose) {
+  if (!ix || !hasPose(ix, spec, pose)) return null;
+  const body = BODY_ART[spec.hero.body] || spec.hero.body;
+  const ps = findEntry(ix, "layer", "set", `${setArtOf(ix, spec.items[spec.equipped.outfit], body)}.${pose}`, body, "front");
+  return ps && ps.grip && Array.isArray(ps.grip.point) ? ps.grip.point.slice(0, 2) : null;
+}
+
+/** #189 (brief-025): the archer poses of the worn outfit that exist -> {pose: [x, y] fist of the bow hand}; e.g. aim25_drawn. */
+export function aimPoseGrips(ix, spec, angles = [0, 25, 50]) {
+  const out = {};
+  for (const a of angles) for (const hand of ["relaxed", "drawn"]) {
+    const g = poseGrip(ix, spec, `aim${a}_${hand}`);
+    if (g) out[`aim${a}_${hand}`] = g;
+  }
+  return out;
 }
 
 /** True when the hero of `spec` can be drawn in `pose` (a pose set of the worn outfit with a grip, and the weapon in that pose if one is worn). */
@@ -78,7 +113,7 @@ export function hasPose(ix, spec, pose) {
   const body = BODY_ART[hero.body] || hero.body;
   const outfit = equipped.outfit && items[equipped.outfit];
   if (!outfit) return false;
-  const ps = findEntry(ix, "layer", "set", `${outfit.art || outfit.id}.${pose}`, body, "front");
+  const ps = findEntry(ix, "layer", "set", `${setArtOf(ix, outfit, body)}.${pose}`, body, "front");
   const wi = equipped.weapon ? items[equipped.weapon] : null;
   return !!(ps && ps.grip && (!wi || findEntry(ix, "layer", "weapon", `${wi.art || wi.id}.${pose}`, body, "front")));
 }
@@ -138,19 +173,32 @@ function buildSetLayers(ix, spec, plainSet, body, outfitId) {
   const setEntry = rodMode ? poseSet : plainSet;
   const out = [];
   let n = 0;
-  const add = (entry, file, slot, z, x, y) => {
+  const add = (entry, file, slot, z, x, y, rot) => {
     if (!entry) return;
-    out.push({ entry, file: file || entry.file, slot, z, n: n++, x: x == null ? entry.x : x, y: y == null ? entry.y : y });
+    out.push({ entry, file: file || entry.file, slot, z, n: n++, x: x == null ? entry.x : x, y: y == null ? entry.y : y, ...(rot ? { rot } : {}) });
   };
   const worn = (slot) => (equipped[slot] ? items[equipped[slot]] : null);
   const hands = setEntry.hands || {};
+  // addendum 11 (#188): a pose set aligned by the figure (the archer aim*) has its head off the common spot by head_dx (measured by the
+  // import): the hair, the ears and the hat follow it
+  const hdx = rodMode && Number.isFinite(Number(setEntry.head_dx)) ? Number(setEntry.head_dx) : 0;
+  const atHead = (entry) => (entry && hdx ? entry.x + hdx : null);
   const ov = setEntry.overlays || {};
-  add(setEntry, null, "set", 20);
+  // addendum 5 point 9: a weapon held at a slant (manifest hold_tilt, e.g. the bow): the set picture with the fist turned the same way
+  const tiltW = rodMode && poseWeapon && poseWeapon.hold_tilt ? poseWeapon.hold_tilt : 0;
+  const tiltSet = tiltW && setEntry.tilt ? setEntry.tilt[String(tiltW)] : null;
+  const shownSet = tiltSet ? { ...setEntry, ...tiltSet } : setEntry;
+  add(shownSet, null, "set", 20);
+  // addendum 9 (#189): the quiver of the bow on the back - part of the weapon (its own art `layer:quiver:<weapon art>`), only while the weapon is held;
+  // spec.quiver = the weapon art when the weapon itself is drawn elsewhere (the hunt scene draws its own bow)
+  const quiverArt = spec.quiver || (wi0 ? wi0.art || wi0.id : null);
+  const qe = quiverArt ? quiverEntry(ix, shownSet, body, rodMode ? (tiltSet ? `${pose}.tilt` : pose) : "plain", quiverArt) : null;
+  if (qe) add(qe, null, "quiver", qe.z, qe.x, qe.y, qe.rot);
   const earsItem = worn("ears");
   const earsId = (earsItem && (earsItem.art || earsItem.id)) || (hero.body_options && hero.body_options.ears);
   if (earsId) {
     const ee = findEntry(ix, "layer", "ears", earsId, body, "front");
-    if (ee) add(ee, variantFile(ee, "skin", hero.skin), "ears", 15);
+    if (ee) add(ee, variantFile(ee, "skin", hero.skin), "ears", 15, atHead(ee));
   }
   const back = worn("back");
   if (back && !backHidden(ix, outfitId)) {
@@ -172,14 +220,19 @@ function buildSetLayers(ix, spec, plainSet, body, outfitId) {
     for (const slot of ["hair_back", "hairfill", "hair", "hair_front"]) {      // hairfill: a patch under hairstyles that leave bare skin (only where the art check found it)
       const he = findEntry(ix, "layer", slot, artId, body, "front");
       if (he) {
-        add(he, variantFile(he, "hair", hero.hair_color), slot, he.z == null ? (slot === "hairfill" ? 69 : 70) : he.z);
+        add(he, variantFile(he, "hair", hero.hair_color), slot, he.z == null ? (slot === "hairfill" ? 69 : 70) : he.z, atHead(he));
         if (clipY != null) out[out.length - 1].clipY = clipY;
       }
     }
   }
   const neck = worn("neck");
   if (neck) add(findEntry(ix, "layer", "neck", neck.art || neck.id, body, "front") || pendantEntry(ix, setEntry, neck), null, "neck", 55);
-  if (headEntry) add(headEntry, null, "head", 80);
+  if (headEntry) {
+    // addendum 11 (#188): the brim at the sides of the head under the hair (import artlib/hat.py), the rest of the hat over it
+    const hb = findEntry(ix, "layer", "head_back", headItem.art || headItem.id, body, "front");
+    if (hb) add(hb, null, "head_back", hb.z == null ? 66 : hb.z, atHead(hb));
+    add(headEntry, null, "head", 80, atHead(headEntry));
+  }
   const wi = worn("weapon");
   const we = wi && (rodMode ? poseWeapon : findEntry(ix, "layer", "weapon", wi.art || wi.id, body, "front"));
   const two = !!(wi && isTwoHanded(wi, we));
@@ -197,9 +250,9 @@ function buildSetLayers(ix, spec, plainSet, body, outfitId) {
   }
   if (rodMode && we && we.grip) {
     const G = poseSet.grip.point;
-    add(we, null, "weapon", we.z == null ? 12 : we.z, Math.round(G[0] - we.grip[0]), Math.round(G[1] - we.grip[1]));
+    add(we, null, "weapon", we.z == null ? 12 : we.z, Math.round(G[0] - we.grip[0]), Math.round(G[1] - we.grip[1]), tiltSet ? -tiltW : 0);
     const wt = findEntry(ix, "layer", "weapon_top", `${wi0.art || wi0.id}.${pose}`, body, "front");   // guard + blade over the arm
-    if (wt) add(wt, null, "weapon_top", wt.z == null ? 25 : wt.z, Math.round(G[0] - we.grip[0]), Math.round(G[1] - we.grip[1]));
+    if (wt) add(wt, null, "weapon_top", wt.z == null ? 25 : wt.z, Math.round(G[0] - we.grip[0]), Math.round(G[1] - we.grip[1]), tiltSet ? -tiltW : 0);   // addendum 10: the bow string turns with the bow
   } else if (we && hands.fist && we.grip) {
     const F = hands.fist.point;
     add(we, null, "weapon", 95, Math.round(F[0] - we.grip[0]), Math.round(F[1] - we.grip[1]));
@@ -220,6 +273,30 @@ export function pendantEntry(ix, setEntry, item) {
   const hh = chin - top;
   const w = Math.round(hh * P.w);
   return { file: `../${item.picture}`, w, h: w, x: Math.round(cx - w / 2 + P.dx * hh), y: Math.round(chin + P.dy * hh), z: 55, pendant: true };
+}
+
+/** Addendum 9 (#189): the quiver behind the body, the feathers over the hero's right shoulder (the left of the picture). One picture for both bodies
+ *  (manifest item `layer:quiver:<weapon art>`, w x h px); placed by the head of the shown set picture (entry `head` = [cx, top, chin], like the
+ *  amulet): `anchor` (fractions of the quiver picture) goes to (cx + dx * hh, chin + dy * hh), the width = w * hh, rot = degrees (CSS rotate,
+ *  positive = clockwise). The numbers: design/anchors.json `quiver` (the import copies it into manifest.quiver) - these defaults, then per body
+ *  (`boy` / `girl`), then per pose (`poses.<pose>`, `poses.<body>.<pose>`; pose = the set pose, `<pose>.tilt` for the slanted bow, `plain`).
+ *  z 11: over the back cape (10), under the bow held behind the set (12) and the set itself (20). No picture or no head = no quiver. */
+export const QUIVER_FIT = { w: 1.7, dx: -0.55, dy: 0.25, rot: 0, anchor: [0.36, 0.29], z: 11 };   // = design/anchors.json quiver
+export function quiverFit(ix, body, pose) {
+  const Q = (ix && ix.manifest && ix.manifest.quiver) || {};
+  const pick = (o) => (o && typeof o === "object" ? Object.fromEntries(Object.entries(o).filter(([k]) => k in QUIVER_FIT)) : {});
+  const poses = Q.poses || {};
+  return { ...QUIVER_FIT, ...pick(Q), ...pick(Q[body]), ...pick(poses[pose]), ...pick(poses[`${body}.${pose}`]) };
+}
+export function quiverEntry(ix, setEntry, body, pose, art) {
+  const e = findEntry(ix, "layer", "quiver", art, body, "front");
+  if (!e || !setEntry || !Array.isArray(setEntry.head) || !(e.w > 0) || !(e.h > 0)) return null;
+  const F = quiverFit(ix, body, pose);
+  const [cx, top, chin] = setEntry.head;
+  const hh = chin - top;
+  const w = Math.round(F.w * hh), h = Math.round((e.h / e.w) * F.w * hh);
+  const px = cx + F.dx * hh, py = chin + F.dy * hh;
+  return { ...e, w, h, x: Math.round(px - F.anchor[0] * w), y: Math.round(py - F.anchor[1] * h), z: F.z, rot: Number(F.rot) || 0 };
 }
 
 /** Top-left corner of a levitating offhand item (#121) by the palm point; the same formula as tools/artlib/sets.py float_pos. */
@@ -261,8 +338,9 @@ export function buildLayers(ix, spec, view = "front", expression = "neutral") {
   let hideHair = worn.some((i) => i.hide_hair);
 
   const outfit = equipped.outfit && items[equipped.outfit];
-  const setEntry = outfit && findEntry(ix, "layer", "set", outfit.art || outfit.id, body, "front");
-  if (setEntry) return buildSetLayers(ix, spec, setEntry, body, outfit.art || outfit.id);
+  const setArt = outfit ? setArtOf(ix, outfit, body) : "";
+  const setEntry = outfit && findEntry(ix, "layer", "set", setArt, body, "front");
+  if (setEntry) return buildSetLayers(ix, spec, setEntry, body, setArt);
 
   const be = findEntry(ix, "body", "body", "base", body, view);
   if (!be) return out;
@@ -399,6 +477,7 @@ export class IllustratedStage {
       const cut = clipTopFrac(e, l.y == null ? e.y : l.y, l.clipY);            // #130: hair under a hat, cut above the rim
       if (cut > 0) img.style.clipPath = `inset(${(cut * 100).toFixed(2)}% 0 0 0)`;
       if (e.grip && (l.slot === "weapon" || l.slot === "weapon_top")) img.style.transformOrigin = `${((e.grip[0] / e.w) * 100).toFixed(1)}% ${((e.grip[1] / e.h) * 100).toFixed(1)}%`;
+      if (l.rot) img.style.rotate = `${l.rot}deg`;                         // addendum 5 point 9: the slanted bow (CSS rotate: positive = clockwise), about the grip
       img.dataset.slot = l.slot;
       if (l.float) return floatEl(img, l.float);
       return img;
@@ -424,7 +503,7 @@ export class IllustratedStage {
     const view = spec.view || "front";
     const expression = spec.expression || "neutral";
     let e = this.entries.get(k);
-    const sig = JSON.stringify([spec.hero, spec.equipped, expression, spec.pose || null]);
+    const sig = JSON.stringify([spec.hero, spec.equipped, expression, spec.pose || null, spec.quiver || null]);
     if (!e) {
       const root = document.createElement("div");
       root.className = "hq-hero";
@@ -475,8 +554,8 @@ export class IllustratedStage {
   }
 
   _applySize(e, spec) {
-    const crop = spec.crop ? (this.ix.hasSets && spec.equipped && spec.equipped.outfit ? PORTRAIT_SETS : PORTRAIT) : null;
-    const size = `${spec.scale || 4}|${crop ? crop.x : 0}`;
+    const crop = spec.cropBox || (spec.crop ? (this.ix.hasSets && spec.equipped && spec.equipped.outfit ? PORTRAIT_SETS : PORTRAIT) : null);   // cropBox: an own box (#185 add. 5: the bust with a hat)
+    const size = `${spec.scale || 4}|${crop ? [crop.x, crop.y, crop.w, crop.h].join(",") : 0}`;
     if (e.size === size) return;
     e.size = size;
     const r = e.root;
@@ -499,7 +578,13 @@ export class IllustratedStage {
     img.draggable = false;
     const icon = item.icon && findEntry(this.ix, "icon", null, item.icon, null, null);
     img.src = item.picture ? `${this.base}/${item.picture}` : this.url(icon ? (item.slot === "hair_dye" ? variantFile(icon, "dye", item.color) : icon.file) : thumbPath(item));
-    img.onerror = () => img.classList.add("thumb-missing");
+    // addendum 12: a set only in poses (hunter_1) may lack its own thumbnail (art imported before the fix) -> its vert pose;
+    // nothing at all = an empty spot (thumb-missing hides it), never the browser's broken "?" picture
+    const alt = !item.picture && !icon && item.slot === "outfit" ? this.url(thumbPath(item).replace(/\.webp$/, ".vert.webp")) : null;
+    img.onerror = () => {
+      if (alt && img.dataset.alt !== "1") { img.dataset.alt = "1"; img.src = alt; return; }
+      img.classList.add("thumb-missing");
+    };
     return img;
   }
 }

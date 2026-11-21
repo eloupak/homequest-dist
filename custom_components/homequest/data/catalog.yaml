@@ -105,6 +105,45 @@ items:
   tier: 3
   rarity: epic
   material: cloth
+- id: outfit_hunter_1
+  name: Lovecká výstroj
+  slot: outfit
+  art: hunter_1
+  art_fallback: light_2
+  style: hunter
+  tier: 1
+  price: 0
+  shop: false
+  rarity: common
+  material: leather
+- id: hat_hunter_red
+  name: Lovecký klobouk s červeným pírkem
+  slot: head
+  price: 0
+  shop: false
+  rarity: rare
+  material: leather
+- id: hat_hunter_blue
+  name: Lovecký klobouk s modrým pírkem
+  slot: head
+  price: 0
+  shop: false
+  rarity: rare
+  material: leather
+- id: hat_hunter_white
+  name: Lovecký klobouk s bílým pírkem
+  slot: head
+  price: 0
+  shop: false
+  rarity: rare
+  material: leather
+- id: hat_hunter_gold
+  name: Lovecký klobouk se zlatým pírkem
+  slot: head
+  price: 0
+  shop: false
+  rarity: rare
+  material: leather
 - id: sword_wooden
   name: Dřevěný meč
   slot: weapon
@@ -118,11 +157,12 @@ items:
   material: wood
   shop: false
 - id: bow_short
-  name: Krátký luk
+  name: Luk
   slot: weapon
+  price: 20
+  min_stage: 3
   rarity: common
   material: wood
-  shop: false
 - id: wand_star
   name: Hvězdná hůlka
   slot: weapon
@@ -394,7 +434,7 @@ items:
   price: 10
   body: girl
 - id: hair_short_bob
-  name: Krátký bob
+  name: Mikádo
   slot: hair
   art: short_bob
   rarity: common

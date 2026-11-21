@@ -203,6 +203,10 @@ def parse_catalog(
         if art is not None and not (isinstance(art, str) and ID_RE.match(art)):
             errors.append(f"items '{item_id}': art must be an art id (a-z, 0-9, _)")
             art = None
+        art_fallback = entry.get("art_fallback")                 # #185: drawn instead while the item's own art does not exist yet (a placeholder)
+        if art_fallback is not None and not (isinstance(art_fallback, str) and ID_RE.match(art_fallback)):
+            errors.append(f"items '{item_id}': art_fallback must be an art id (a-z, 0-9, _)")
+            art_fallback = None
         icon_id = entry.get("icon")
         if icon_id is not None and not (isinstance(icon_id, str) and ID_RE.match(icon_id)):
             errors.append(f"items '{item_id}': icon must be an art id (a-z, 0-9, _)")
@@ -223,6 +227,10 @@ def parse_catalog(
             elif any(i.get("color") == dye for i in cat["items"].values()):
                 errors.append(f"items '{item_id}': another hair dye already unlocks the colour '{dye}'")
         colors = _parse_colors(item_id, entry, errors)
+        min_stage = entry.get("min_stage", 0)
+        if not _is_int(min_stage) or min_stage < 0:
+            errors.append(f"items '{item_id}': min_stage must be a whole number >= 0 (the index of a fortress stage in story.yaml)")
+            min_stage = 0
         cat["items"][item_id] = {
             "id": item_id,
             "name": need_name("items", item_id, entry),
@@ -236,11 +244,13 @@ def parse_catalog(
             "colors": colors,
             "stats": stats,
             "art": art or item_id,
+            "art_fallback": art_fallback,
             "icon": icon_id,
             "body": body,                                    # boy | girl | any: which hero may buy / wear it (hairstyles)
             "color": dye,                                   # hair dye only: the colour it unlocks
             "hide_hair": bool(entry.get("hide_hair", False)),
             "covers": list(covers),
+            "min_stage": min_stage,                         # #187: in the shop only from this fortress stage on (0 = always); owned items and the history stay
         }
 
     # appearance (what a kid can choose at onboarding)

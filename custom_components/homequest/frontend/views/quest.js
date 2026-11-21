@@ -3,7 +3,8 @@
 
 import { h, icon } from "../lib/dom.js";
 import { bgUrl, castMember, fillText, giverVars, introPages, introVars, npcUrl, replayList, sceneOf, serverSeen, stageAt, stageSeen, stageVars } from "../lib/story.js";
-import { coinGift, rebuildScene } from "./transition.js";
+import { coinGift, itemGift, rebuildScene } from "./transition.js";
+import { giftChooser, pickedAt } from "./gift_pick.js";
 import { pausableTimeout } from "../lib/upright.js";
 
 const reduced = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -82,6 +83,7 @@ export function renderQuest(ctx) {
   const box = sceneBox(ctx, sc, "tab");
   root.append(
     box,
+    huntButton(ctx),
     h("div", { class: "card chapter", "data-chapter": ch.id }, h("h2", {}, ch.title), ...ch.text.map((t) => h("p", {}, t))),
     ...replayList({ story, done, gifts: (ctx.kid && ctx.kid.gifts) || [], seen: Math.max(stageSeen(window.localStorage, ctx.kidId), serverSeen(ctx.kid).stage), isAdmin: ctx.isAdmin,
       scenes: (ctx.kid && ctx.kid.scenes) || [], trophies: (ctx.kid && ctx.kid.trophies) || [], siege: ctx.view.siege }).map((r) =>
@@ -95,6 +97,18 @@ export function renderQuest(ctx) {
   );
   // no separate "replay the rebuilding" button for the parent any more (#127): the stage buttons above play the same scene with the rebuilding
   return root;
+}
+
+/** #189: "Na lov" from the fortress stage of hunt.yaml entry.min_stage; without the bow it is locked and says where to get it. */
+export function huntButton(ctx) {
+  const hv = ctx.view.hunt, stage = (ctx.view.fortress && ctx.view.fortress.stage) || 0;
+  if (!hv || !ctx.kid || stage < hv.min_stage) return null;
+  const st = (hv.kids || {})[ctx.kidId] || { open: false, reason: "item" };
+  if (st.open) return h("button", { class: "btn gold block hunt-go", "data-act": "hunt", onclick: () => ctx.openHunt() }, icon("mdi:bow-arrow", 24), hv.label || "Na lov");
+  const text = hv.locked_item || "Na lov potřebuješ luk.";
+  return h("div", { class: "hunt-locked", "data-id": "hunt-locked" },
+    h("button", { class: "btn block hunt-go locked", "data-act": "hunt-locked", "aria-disabled": "true", onclick: () => ctx.toast(text, "info") }, icon("mdi:lock", 22), hv.label || "Na lov"),
+    h("p", { class: "muted" }, text));
 }
 
 export function progressBar(at) {
@@ -178,10 +192,21 @@ export function stageDialog(ctx, story, at, onDone, opts = {}) {
   const gift = async () => {
     const g = at.stage.gives;
     if (!g || opts.claim === false) return onDone && onDone(true);
+    const paid = ((ctx.kid && ctx.kid.gifts) || []).includes(at.stage.id);   // paid before (the choice came later, another device): only the choice
     const ok = await ctx.act("claim_gift", { stage: at.stage.id }, { quiet: true });
     if (!ok) return onDone && onDone(false);
-    show(coinGift(ctx, g.coins, () => onDone && onDone(true)));
+    // #185 addendum 4: the choice of the gift (the hunting hat by its feather) after the item; the giver = whoever speaks last in the scene
+    const lastGiver = parts.length ? parts[parts.length - 1].giver : null;
+    const choice = () => (g.choose && !pickedAt(ctx.kid, at.stage.id)
+      ? show(giftChooser(ctx, at.stage, lastGiver, { onDone: () => onDone && onDone(true) }))
+      : onDone && onDone(true));
+    if (paid) return choice();
+    const item = g.item ? (ctx.items || {})[g.item] : null;              // #185: an item (the hunting gear), after the coins if there are any
+    const showItem = () => (item ? show(itemGift(ctx, item, g.note, choice)) : choice());
+    if (g.coins) show(coinGift(ctx, g.coins, showItem));
+    else showItem();
   };
-  if (prev && opts.rebuild !== false) show(rebuildScene(ctx, [prev.background], [at.stage.background, prev.background], () => talk(0)));
+  if (opts.pickOnly) gift();                                              // the scene was seen and paid, only the choice is missing
+  else if (prev && opts.rebuild !== false) show(rebuildScene(ctx, [prev.background], [at.stage.background, prev.background], () => talk(0)));
   else talk(0);
 }
