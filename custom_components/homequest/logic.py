@@ -6,6 +6,7 @@ result dict that callers use for events. Time is always passed in.
 
 from __future__ import annotations
 
+import copy
 import re
 import uuid
 from datetime import date, datetime, timedelta
@@ -175,6 +176,8 @@ def sync(state: dict[str, Any], catalog: dict[str, Any], today: date, ts: str, w
     if state.get("holidays_until") and today.isoformat() > state["holidays_until"]:
         state["holidays_until"] = state["holidays_from"] = None  # the holidays are over: switch off by themselves
         changed = True
+    if apply_task_next(state, today):                      # #227: changes of locked tasks wait for the new day
+        changed = True
     if _day_plan(state, catalog, today, workday, ts):      # the list of daily tasks of the day: made once, changes only at midnight
         changed = True
     plan_ids = set(state["day_plan"]["tasks"])
@@ -278,13 +281,31 @@ def _day_plan(state: dict[str, Any], catalog: dict[str, Any], today: date, workd
         untouched = all((kid.get("tasks", {}).get(tid) or {}).get("status", "open") == "open"
                         for kid in state.get("kids", {}).values() for tid in plan["tasks"])
         if not (late_sensor and untouched):
-            return False
+            return _add_new_optional(state, catalog, plan, plan.get("type") or day_type(state, today, workday))
     dtype = day_type(state, today, workday)
     ids = _plan_ids(state, catalog, dtype)
     state["day_plan"] = {"date": today.isoformat(), "type": dtype, "sensor": workday, "tasks": ids,
                          "kids": {tid: effective_task(state, catalog["tasks"][tid])["kids"] for tid in ids},      # "for whom" is frozen with the plan, a change counts from the next day
                          "single": [tid for tid in ids if effective_task(state, catalog["tasks"][tid]).get("single")]}      # "Pouze 1": only one child does it (frozen as well)
     return True
+
+
+def _add_new_optional(state: dict[str, Any], catalog: dict[str, Any], plan: dict[str, Any], dtype: str) -> bool:
+    """#227 (2026-11-25, 1-B): an optional task ("Příležitost") that appears during the day (a release, a catalog step, the parent)
+    joins today's plan at once. It does not count in the day's progress, so the frozen list of the day stays fair; other daily tasks wait for midnight."""
+    added = False
+    for tid in _plan_ids(state, catalog, dtype):
+        if tid in plan["tasks"]:
+            continue
+        e = effective_task(state, catalog["tasks"][tid])
+        if not e.get("optional"):
+            continue
+        plan["tasks"] = [*plan["tasks"], tid]
+        plan.setdefault("kids", {})[tid] = e["kids"]
+        if e.get("single"):
+            plan.setdefault("single", []).append(tid)
+        added = True
+    return added
 
 
 def day_type(state: dict[str, Any], today: date, workday: bool | None = None) -> str:
@@ -453,6 +474,14 @@ def tasks_view(state: dict[str, Any], catalog: dict[str, Any], today: date, work
     if is_admin:
         out["templates"] = list(state.get("task_templates", {}).values())     # empty after v1.7-recent-tasks (#129); kept for an old panel
         out["recent"] = list(state.get("recent_tasks", []))                   # #129: the tasks the parent added lately, newest first
+        locks = {}                                                             # #227: daily tasks somebody did today (changes wait for midnight)
+        for tid in (state.get("day_plan") or {}).get("tasks", []) if (state.get("day_plan") or {}).get("date") == today.isoformat() else []:
+            who = task_lockers(state, tid, today)
+            if who:
+                locks[tid] = who
+        out["locks"] = locks
+        out["next"] = {tid: _tomorrow_task(state, catalog["tasks"][tid])                 # the waiting change of a locked task (the form shows it)
+                       for tid in (state.get("task_next") or {}) if tid in catalog["tasks"]}
     else:
         out["oneoffs"] = [o for o in out["oneoffs"] if o["status"] == "active"]
     return out
@@ -585,7 +614,8 @@ def _assignees(catalog: dict[str, Any], kids: Any) -> list[str] | None:
 
 
 def set_task(state: dict[str, Any], catalog: dict[str, Any], task_id: str, workday: Any = None, free: Any = None, kids: Any = None, single: Any = None) -> dict[str, Any]:
-    """Parent's setting of a daily task: on which kinds of day it shows (none = off) and for whom (all children = the default). Counts from the next day (see _day_plan)."""
+    """Parent's setting of a daily task: on which kinds of day it shows (none = off) and for whom (all children = the default). Only the settings;
+    when it counts (at once / from tomorrow, #227) decides the caller through _edit_daily."""
     task = catalog["tasks"].get(task_id)
     if task is None or task["period"] != "daily" or task.get("archived"):
         raise HomeQuestError(ERR_NOT_FOUND, f"no daily task '{task_id}'")
@@ -815,10 +845,125 @@ def add_task(state: dict[str, Any], catalog: dict[str, Any], name: Any, reward: 
     return {"task_id": cid}
 
 
+# ------------------------------------------- daily task changes today / from tomorrow (#227, 2026-11-25) ---------
+# A change of a daily task (add, edit, switch off) counts at once when nobody has done it today; a task somebody has done today or that waits
+# for approval is "locked": the change is kept in state["task_next"] and comes at midnight (the first sync of the next day).
+
+def task_lockers(state: dict[str, Any], task_id: str, today: date) -> list[str]:
+    """The children who finished the daily task today (waiting for approval or approved); empty = the task can change at once."""
+    key = period_key("daily", today)
+    return [k for k, kid in (state.get("kids") or {}).items()
+            if ((kid.get("tasks") or {}).get(task_id) or {}).get("period_key") == key
+            and kid["tasks"][task_id].get("status") in ("pending", "approved")]
+
+
+def _task_snapshot(state: dict[str, Any], task_id: str) -> dict[str, Any]:
+    custom = (state.get("custom_tasks") or {}).get(task_id)
+    ov = (state.get("task_settings") or {}).get(task_id)
+    return {"settings": copy.deepcopy(ov) if ov is not None else None,
+            "custom": {"name": custom["name"], "reward": custom["reward"]} if custom is not None else None}
+
+
+def _task_install(state: dict[str, Any], task_id: str, snap: dict[str, Any]) -> None:
+    if snap["settings"] is None:
+        (state.get("task_settings") or {}).pop(task_id, None)
+    else:
+        state.setdefault("task_settings", {})[task_id] = copy.deepcopy(snap["settings"])
+    custom = (state.get("custom_tasks") or {}).get(task_id)
+    if custom is not None and snap["custom"] is not None:
+        custom.update(snap["custom"])
+
+
+def _snap_task(state: dict[str, Any], task: dict[str, Any], snap: dict[str, Any]) -> dict[str, Any]:
+    """The daily task as a snapshot of its settings makes it."""
+    view = {"kids": state.get("kids") or {}, "task_settings": {task["id"]: snap["settings"]} if snap["settings"] is not None else {}}
+    out = effective_task(view, task)
+    if snap["custom"] is not None:
+        out.update(snap["custom"])
+    elif snap["settings"]:
+        out.update({k: snap["settings"][k] for k in ("name", "reward") if k in snap["settings"]})
+    return out
+
+
+def _tomorrow_task(state: dict[str, Any], task: dict[str, Any]) -> dict[str, Any]:
+    """The daily task as it will be from tomorrow (with a waiting change of a locked task)."""
+    nxt = (state.get("task_next") or {}).get(task["id"])
+    return effective_task(state, task) if nxt is None else _snap_task(state, task, nxt)
+
+
+def _edit_daily(state: dict[str, Any], catalog: dict[str, Any], task_id: str, ts: str, change: Callable[[], Any]) -> dict[str, Any]:
+    """Run a change of a daily task: at once (and today's plan follows) or, for a locked task, from tomorrow.
+    Today = the day of today's plan (the callers sync first), the clock of `ts` only without a plan."""
+    today = date.fromisoformat((state.get("day_plan") or {}).get("date") or ts[:10])
+    nxt = (state.get("task_next") or {}).get(task_id)
+    lockers = task_lockers(state, task_id, today)
+    if not lockers:
+        if nxt is not None:                                   # the form showed tomorrow's values: they all count now
+            _task_install(state, task_id, nxt)
+            state["task_next"].pop(task_id, None)
+        change()
+        _replan_task(state, catalog, task_id, today)
+        return {"deferred": False}
+    now = _task_snapshot(state, task_id)
+    if nxt is not None:
+        _task_install(state, task_id, nxt)
+    try:
+        change()
+        new = _task_snapshot(state, task_id)
+    finally:
+        _task_install(state, task_id, now)
+    task = catalog["tasks"][task_id]
+    if _snap_task(state, task, new) == _snap_task(state, task, now):
+        (state.get("task_next") or {}).pop(task_id, None)     # back to today's values: nothing waits
+    else:
+        state.setdefault("task_next", {})[task_id] = new
+    return {"deferred": True, "locked_by": lockers}
+
+
+def set_task_today(state: dict[str, Any], catalog: dict[str, Any], task_id: str, ts: str, workday: Any = None, free: Any = None,
+                   kids: Any = None, single: Any = None) -> dict[str, Any]:
+    """The websocket set_task: set_task with the #227 rule (at once, or from tomorrow for a locked task)."""
+    res = _edit_daily(state, catalog, task_id, ts, lambda: set_task(state, catalog, task_id, workday, free, kids, single))
+    return {"task_id": task_id, **res}
+
+
+def apply_task_next(state: dict[str, Any], today: date) -> bool:
+    """Midnight: the waiting changes of locked tasks come (called by sync before the new day's plan is made)."""
+    plan = state.get("day_plan") or {}
+    if not state.get("task_next") or plan.get("date") == today.isoformat():
+        return False
+    for tid, snap in state["task_next"].items():
+        _task_install(state, tid, snap)
+    state["task_next"] = {}
+    return True
+
+
+def _replan_task(state: dict[str, Any], catalog: dict[str, Any], task_id: str, today: date) -> None:
+    """An unlocked daily task changed: today's plan follows it at once (in or out of today's list, for whom, "Pouze 1")."""
+    plan = state.get("day_plan")
+    task = catalog["tasks"].get(task_id)
+    if not plan or plan.get("date") != today.isoformat() or task is None:
+        return
+    e = effective_task(state, task)
+    dtype = plan.get("type") or day_type(state, today)
+    want = e["enabled"] and not task.get("archived") and dtype in e["days"]
+    single = [t for t in (plan.get("single") or []) if t != task_id]
+    if want:
+        if task_id not in plan["tasks"]:
+            plan["tasks"] = [*plan["tasks"], task_id]
+        plan.setdefault("kids", {})[task_id] = list(e["kids"])
+        if e.get("single"):
+            single.append(task_id)
+    else:
+        plan["tasks"] = [t for t in plan["tasks"] if t != task_id]
+        (plan.get("kids") or {}).pop(task_id, None)
+    plan["single"] = single
+
+
 def update_task(state: dict[str, Any], catalog: dict[str, Any], task_id: str, ts: str, name: Any = None, reward: Any = None, kids: Any = None,
                 single: Any = None, days: Any = None, optional: Any = None) -> dict[str, Any]:
-    """#129 "Upravit úkoly" → Uložit: name, reward, for whom, "Pouze 1" and (daily) the kinds of day. A daily task counts from the next day
-    (the name and the reward at once); an active one-off task at once."""
+    """#129 "Upravit úkoly" → Uložit: name, reward, for whom, "Pouze 1" and (daily) the kinds of day. An active one-off task changes at once;
+    a daily task at once too, unless somebody did it today (#227: then all of the change waits for midnight, `deferred`)."""
     o = (state.get("oneoffs") or {}).get(task_id)
     if o is not None:
         if o["status"] != "active":
@@ -836,23 +981,24 @@ def update_task(state: dict[str, Any], catalog: dict[str, Any], task_id: str, ts
     task = catalog["tasks"].get(task_id)
     if task is None or task["period"] != "daily" or task.get("archived"):
         raise HomeQuestError(ERR_NOT_FOUND, f"no task '{task_id}'")
-    n, r, _ = _oneoff_fields(task["name"] if name is None else name, task["reward"] if reward is None else reward, False)
-    custom = (state.get("custom_tasks") or {}).get(task_id)
-    ov = state.setdefault("task_settings", {}).setdefault(task_id, {})
-    if custom is not None:
-        custom.update(name=n, reward=r)
-    else:
-        base = {"name": n, "reward": r}
-        for k, v in base.items():
-            ov[k] = v
-    if optional is not None:
-        ov["optional"] = bool(optional)                           # #227: at once (it changes only where the task is listed and the progress)
-    if days is not None:
-        d = _days_of(days)
-        set_task(state, catalog, task_id, "workday" in d, "free" in d, kids, single)
-    else:
-        set_task(state, catalog, task_id, None, None, kids, single)
-    return {"task_id": task_id}
+
+    def change() -> None:
+        cur = _snap_task(state, task, _task_snapshot(state, task_id))      # not given = as it is now (tomorrow's values for a locked task)
+        n, r, _ = _oneoff_fields(cur["name"] if name is None else name, cur["reward"] if reward is None else reward, False)
+        custom = (state.get("custom_tasks") or {}).get(task_id)
+        ov = state.setdefault("task_settings", {}).setdefault(task_id, {})
+        if custom is not None:
+            custom.update(name=n, reward=r)
+        else:
+            ov["name"], ov["reward"] = n, r
+        if optional is not None:
+            ov["optional"] = bool(optional)                       # #227
+        if days is not None:
+            d = _days_of(days)
+            set_task(state, catalog, task_id, "workday" in d, "free" in d, kids, single)
+        else:
+            set_task(state, catalog, task_id, None, None, kids, single)
+    return {"task_id": task_id, **_edit_daily(state, catalog, task_id, ts, change)}
 
 
 def remove_task(state: dict[str, Any], catalog: dict[str, Any], task_id: str, ts: str, kid_id: Any = None) -> dict[str, Any]:
@@ -875,8 +1021,9 @@ def remove_task(state: dict[str, Any], catalog: dict[str, Any], task_id: str, ts
     if kid_id and len(mine) > 1:
         if kid_id not in mine:
             raise HomeQuestError(ERR_INVALID_PARAMS, f"'{kid_id}' does not have this task")
-        return set_task(state, catalog, task_id, kids=[k for k in mine if k != kid_id])
-    return set_task(state, catalog, task_id, False, False)
+        res = _edit_daily(state, catalog, task_id, ts, lambda: set_task(state, catalog, task_id, kids=[k for k in _tomorrow_task(state, task)["kids"] if k != kid_id]))
+        return {"task_id": task_id, "kid_id": kid_id, **res}
+    return {"task_id": task_id, **_edit_daily(state, catalog, task_id, ts, lambda: set_task(state, catalog, task_id, False, False))}
 
 
 MIGRATION_TASKS = "v1.2-tasks"

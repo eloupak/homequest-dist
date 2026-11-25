@@ -11,6 +11,7 @@ import { holidaysCard, whoPicker, whoParams } from "./tasks_admin.js";
 import { settingsSections } from "./settings.js";
 import { renderSetup } from "./setup.js";
 import { REPORT_REPO, reportUrl } from "../lib/report.js";
+import { TASK_KINDS as KINDS, kindHead } from "../lib/taskkinds.js";
 
 export const PARENT_TABS = [["overview", "Přehled"], ["settings", "Nastavení"], ["about", "O hře"]];
 export const LICENSE_URL = "https://creativecommons.org/licenses/by-nc-nd/4.0/deed.cs";
@@ -58,6 +59,7 @@ function backBar(ctx, title, to) {
 }
 
 const kidName = (ctx, id) => (ctx.cat.kids.find((k) => k.id === id) || { name: id }).name;
+const femaleKid = (ctx, id) => { const kid = (ctx.view.kids || {})[id]; return !!(kid && kid.hero && kid.hero.body === "female"); };
 
 /* ------------------------------------------------------------------ Přehled */
 
@@ -239,13 +241,9 @@ function taskMeta(ctx, t) {
 
 /* ------------------------------------------------------------------ Nastavení úkolu */
 
-/** UAT beta 2: the three kinds of a task, like the children's groups (Dnes / Příležitost / Občas). "chance" = a daily task with `optional`
- *  (#227): the kind replaces the former switch "Volitelný". */
-export const TASK_KINDS = [
-  ["daily", "Dnes", "Pravidelný úkol každý den."],
-  ["chance", "Příležitost", "Pravidelný každý den, ale nejde splnit vždy."],
-  ["oneoff", "Občas", "Jednorázový úkol."],
-];
+/** The three kinds of a task, like the children's groups (#227: Denní služba / Hlídka / Zvláštní mise, lib/taskkinds.js).
+ *  [id, name, hint under the switch]; "chance" = a daily task with `optional`. */
+export const TASK_KINDS = KINDS.map(([id, name, sub]) => [id, name, sub]);
 export const kindOf = (t) => (t.period === "daily" ? (t.optional ? "chance" : "daily") : "oneoff");
 const kindName = (t) => TASK_KINDS.find(([k]) => k === kindOf(t))[1];
 
@@ -254,6 +252,8 @@ function configScreen(ctx, pv) {
   const allKids = ctx.cat.kids.map((k) => k.id);
   const editing = cfg.mode === "edit";
   const root = h("div", { "data-id": "task-config" }, backBar(ctx, editing ? "Upravit úkol" : "Nový úkol", pv.from));
+  const who = editing && cfg.period === "daily" ? lockedBy(ctx.view, pv.task.id) : [];
+  if (who.length) root.append(h("div", { class: "p-note", "data-id": "lock-note" }, icon("mdi:lock", 20), `${lockText(ctx, who)} Změny se projeví od zítřka.`));
   const name = h("input", { class: "p-field", type: "text", maxlength: "60", value: cfg.name, placeholder: "Název úkolu", "data-field": "task-name", oninput: () => { cfg.name = name.value; } });
   const reward = h("input", { class: "p-field num", type: "number", inputmode: "numeric", min: "0", max: "50", value: String(cfg.reward), "data-field": "task-reward", oninput: () => { cfg.reward = parseInt(reward.value, 10); } });
   const dayBox = h("div", { class: "p-checks", "data-field": "task-days" });
@@ -266,7 +266,7 @@ function configScreen(ctx, pv) {
   };
   drawDays();
   const daysRow = h("div", { class: "p-fieldrow", "data-id": "days-row", style: { display: cfg.period === "daily" ? "" : "none" } }, h("div", { class: "p-label" }, "Dny"), dayBox);
-  // UAT beta 2: Dnes / Příležitost / Občas (Příležitost = a daily task with `optional`, #227), the meaning under the switch
+  // UAT beta 2: Denní služba / Hlídka / Zvláštní mise (Příležitost = a daily task with `optional`, #227), the meaning under the switch
   const kindHint = h("div", { class: "p-muted small", "data-id": "kind-hint" });
   const drawKind = () => {
     const k = kindOf(cfg);
@@ -276,7 +276,7 @@ function configScreen(ctx, pv) {
   };
   const kinds = seg(TASK_KINDS.map(([id, label]) => [id, label]), kindOf(cfg), (v) => {
     const period = v === "oneoff" ? "oneoff" : "daily";
-    if (editing && period !== cfg.period) return;              // a task keeps daily / one-off: a new one is added instead (Dnes <-> Příležitost may change)
+    if (editing && period !== cfg.period) return;              // a task keeps daily / one-off: a new one is added instead (Denní služba <-> Hlídka may change)
     cfg.period = period;
     cfg.optional = v === "chance";
     drawKind();
@@ -308,23 +308,26 @@ function configScreen(ctx, pv) {
       h("button", { class: "p-btn primary", "data-act": "config-save", onclick: async () => {
         if (!check()) return;
         const p = taskParams(cfg, allKids);
-        if (await ctx.act("update_task", { task_id: pv.task.id, ...p })) { ctx.toast("Uloženo."); go(ctx, "edit"); }
+        if (await ctx.act("update_task", { task_id: pv.task.id, ...p })) { ctx.toast(who.length ? "Uloženo, změny platí od zítřka." : "Uloženo."); go(ctx, "edit"); }
       } }, "Uložit"));
   }
   root.append(actions);
-  if (cfg.period === "daily") root.append(h("p", { class: "p-muted small" }, editing ? "Změna dnů a dětí platí od zítřka, název a odměna hned." : "Nový denní úkol se ukáže hned, když dnes je jeho den."));
+  if (cfg.period === "daily" && !editing) root.append(h("p", { class: "p-muted small" }, "Nový úkol se ukáže hned, když dnes je jeho den."));
   return root;
 }
 
 async function removeTask(ctx, t) {
-  const mine = t.kids && t.kids.length ? t.kids : ctx.cat.kids.map((k) => k.id);
+  const src = editSource(ctx, t);
+  const mine = src.kids && src.kids.length ? src.kids : ctx.cat.kids.map((k) => k.id);
+  const who = t.period === "daily" ? lockedBy(ctx.view, t.id) : [];
+  const later = who.length ? `${lockText(ctx, who)} Úkol zmizí od zítřka.` : "";            // #227: a locked task goes at midnight
   let only = null;
   if (mine.length > 1) {
-    only = await choose(ctx, `Odebrat „${t.name}“`, "Pro koho?", [["*", mine.length === 2 ? "Oba" : "Všechny děti"], ...mine.map((k) => [k, `Jen ${kidName(ctx, k)}`])]);
+    only = await choose(ctx, `Odebrat „${t.name}“`, later ? `${later} Pro koho?` : "Pro koho?", [["*", mine.length === 2 ? "Oba" : "Všechny děti"], ...mine.map((k) => [k, `Jen ${kidName(ctx, k)}`])]);
     if (only === null) return;
-  } else if (!(await pConfirm(ctx, { title: `Odebrat „${t.name}“?`, text: t.period === "daily" ? "Denní úkol se vypne, historie zůstane." : "Dětem zmizí.", yes: "Odebrat", no: "Zpět", danger: true }))) return;
+  } else if (!(await pConfirm(ctx, { title: `Odebrat „${t.name}“?`, text: later || (t.period === "daily" ? "Denní úkol se vypne, historie zůstane." : "Dětem zmizí."), yes: "Odebrat", no: "Zpět", danger: true }))) return;
   const data = { task_id: t.id, ...(only && only !== "*" ? { only_kid: only } : {}) };
-  if (await ctx.act("remove_task", data)) { ctx.toast("Odebráno."); go(ctx, "edit"); }
+  if (await ctx.act("remove_task", data)) { ctx.toast(who.length ? "Úkol zmizí od zítřka." : "Odebráno."); go(ctx, "edit"); }
 }
 
 /** A sheet in the look of the Rodič screen (not the game's parchment): build(c, close) -> the content. */
@@ -375,17 +378,45 @@ function editScreen(ctx) {
   const filter = ctx.ui.pfilter || "";
   const root = h("div", { "data-id": "edit-tasks" }, backBar(ctx, "Upravit aktivní"));
   if (ctx.cat.kids.length > 1) root.append(seg([["", "Vše"], ...ctx.cat.kids.map((k) => [k.id, k.name])], filter, (v) => { ctx.ui.pfilter = v; ctx.rerender(); }, "kidfilter"));
-  const list = card();
   const tasks = editableTasks(ctx.view, ctx.cat, filter);
-  if (!tasks.length) list.append(h("div", { class: "p-muted" }, "Žádné úkoly."));
-  for (const t of tasks) {
-    list.append(h("button", { class: "p-row tap", "data-edit": t.id, onclick: () => go(ctx, "config", { cfg: { mode: "edit", ...configOf(t, allKids) }, task: t, from: "edit" }) },
-      h("div", { class: "grow" }, h("div", { class: "p-title" }, t.name), h("div", { class: "p-muted" }, `${kindName(t)}${t.single ? " · Pouze 1" : ""} · +${t.reward}`),
-        h("div", { class: "p-kids" }, t.kids.map((k) => h("span", { class: "p-kidchip" }, kidName(ctx, k))))),
-      icon("mdi:chevron-right", 22)));
+  const locks = (ctx.view.tasks_info || {}).locks || {};
+  if (!tasks.length) root.append(card(h("div", { class: "p-muted" }, "Žádné úkoly.")));
+  // #227 (2026-11-25): the same three groups as the children see (Denní služba / Hlídka / Zvláštní mise) instead of the kind on every row
+  for (const [kind] of TASK_KINDS) {
+    const group = tasks.filter((t) => kindOf(t) === kind);
+    if (!group.length) continue;
+    const list = card();
+    for (const t of group) {
+      const locked = !!locks[t.id];
+      list.append(h("button", { class: "p-row tap", "data-edit": t.id, ...(locked ? { "data-locked": "" } : {}), onclick: () => go(ctx, "config", { cfg: { mode: "edit", ...configOf(editSource(ctx, t), allKids) }, task: t, from: "edit" }) },
+        h("div", { class: "grow" }, h("div", { class: "p-title" }, t.name), h("div", { class: "p-muted" }, `${t.single ? "Pouze 1 · " : ""}+${t.reward}`),
+          h("div", { class: "p-kids" }, t.kids.map((k) => h("span", { class: "p-kidchip" }, kidName(ctx, k))))),
+        locked ? h("span", { class: "p-lock", title: "Dnes už splněno, změny platí od zítřka", "aria-label": "zamčeno do zítřka" }, icon("mdi:lock", 20)) : null,
+        icon("mdi:chevron-right", 22)));
+    }
+    root.append(h("div", { class: "p-section kind-group", "data-group": kind }, kindHead(h, kind, "h3"), list));
   }
-  root.append(list);
   return root;
+}
+
+/** #227: a locked daily task opens with the values it will have from tomorrow (a change saved earlier today). */
+function editSource(ctx, t) {
+  const next = ((ctx.view.tasks_info || {}).next || {})[t.id];
+  if (!next) return t;
+  const allKids = ctx.cat.kids.map((k) => k.id);
+  return { ...t, ...next, kids: next.kids && next.kids.length ? next.kids : allKids };
+}
+
+/** #227: the children who did a daily task today (it is locked until midnight); [] = it changes at once. */
+export function lockedBy(view, taskId) {
+  return ((view.tasks_info || {}).locks || {})[taskId] || [];
+}
+
+/** "Adam už dnes úkol splnil." / "Adam a Eva už dnes úkol splnili." */
+export function lockText(ctx, who) {
+  const names = who.map((k) => kidName(ctx, k));
+  const list = names.length > 1 ? `${names.slice(0, -1).join(", ")} a ${names[names.length - 1]}` : names[0] || "";
+  return `${list} už dnes úkol ${names.length > 1 ? "splnili" : "splnil" + (femaleKid(ctx, who[0]) ? "a" : "")}.`;
 }
 
 /* ------------------------------------------------------------------ Nastavení */

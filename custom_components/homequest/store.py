@@ -995,7 +995,11 @@ class HomeQuestManager:
 
     def _sync(self) -> bool:
         today, ts = self._now()
-        return logic.sync(self.state, self.catalog, today, ts, self._workday())
+        waiting = bool(self.state.get("task_next"))
+        changed = logic.sync(self.state, self.catalog, today, ts, self._workday())
+        if waiting and not self.state.get("task_next"):
+            self._apply_kids()                              # #227: the names / rewards that waited for midnight reach the catalog the rules use
+        return changed
 
     async def _mutate(self, fn: Callable[[str], dict[str, Any]]) -> dict[str, Any]:
         """Run a logic function under the lock, then persist and notify."""
@@ -1067,14 +1071,23 @@ class HomeQuestManager:
         def run(ts: str) -> dict[str, Any]:
             res = logic.update_task(self.state, self.catalog, task_id, ts, name, reward, kids, single, days, optional)
             self._apply_kids()
+            self._sync()                                    # #227: an unlocked task changes for the children at once
             return res
         return await self._mutate(run)
 
     async def async_remove_task(self, task_id: str, kid_id: Any = None) -> dict[str, Any]:
-        return await self._mutate(lambda ts: logic.remove_task(self.state, self.catalog, task_id, ts, kid_id))
+        def run(ts: str) -> dict[str, Any]:
+            res = logic.remove_task(self.state, self.catalog, task_id, ts, kid_id)
+            self._sync()                                    # #227: at once unless somebody did it today
+            return res
+        return await self._mutate(run)
 
     async def async_set_task(self, task_id: str, workday: Any, free: Any, kids: Any = None, single: Any = None) -> dict[str, Any]:
-        return await self._mutate(lambda ts: logic.set_task(self.state, self.catalog, task_id, workday, free, kids, single))
+        def run(ts: str) -> dict[str, Any]:
+            res = logic.set_task_today(self.state, self.catalog, task_id, ts, workday, free, kids, single)
+            self._sync()
+            return res
+        return await self._mutate(run)
 
     async def async_set_holidays(self, until: Any) -> dict[str, Any]:
         return await self._mutate(lambda ts: logic.set_holidays(self.state, until, self._now()[0]))

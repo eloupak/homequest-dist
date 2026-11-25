@@ -1,5 +1,6 @@
 import { coin, h, icon } from "../lib/dom.js";
 import { avatar, classOf, coinCount } from "./common.js";
+import { kindHead } from "../lib/taskkinds.js";
 
 export function czDate(iso) {
   const [y, m, d] = iso.split("-").map(Number);
@@ -57,13 +58,14 @@ export function renderQuests(ctx) {
   if (daily.length && done === daily.length) {
     root.append(h("div", { class: "hint" }, "Skvělá práce, dnes máš všechno splněno!"));
   }
-  const list = (title, items) => {
+  // #227: Denní služba / Hlídka / Zvláštní mise, each with a big icon over the edge and a subtitle
+  const list = (kind, items) => {
     if (!items.length) return null;
-    const sec = h("div", { class: "section" }, title ? h("h2", {}, title) : null);
+    const sec = h("div", { class: "section kind-group", "data-group": kind }, kindHead(h, kind));
     for (const e of items) sec.append(questCard(ctx, e));
     return sec;
   };
-  root.append(...[list("Dnes", daily), list("Příležitost", extra), list("Občas", oneoff)].filter(Boolean));
+  root.append(...[list("daily", daily), list("chance", extra), list("oneoff", oneoff)].filter(Boolean));
   if (!daily.length && !extra.length && !oneoff.length) root.append(h("div", { class: "empty" }, "Zatím tu nejsou žádné úkoly."));
   return root;
 }

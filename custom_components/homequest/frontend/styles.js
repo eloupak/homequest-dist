@@ -102,6 +102,18 @@ nav button ha-icon { --mdc-icon-size: 28px; }
 .card + .card, .card + .section, .section + .card { margin-top: 12px; }
 .section { margin-top: 18px; }
 .section > h2 { font-size: 20px; color: var(--gold); margin-bottom: 8px; }
+/* #227 task kinds (Denní služba / Hlídka / Zvláštní mise): a big icon over the edge of the group, the name and a small subtitle */
+.kind-group { position: relative; }
+.kind-head { position: relative; padding-left: 94px; min-height: 62px; margin-bottom: 8px; display: flex; flex-direction: column; justify-content: flex-end; }
+.kind-head .kind-icon { position: absolute; left: 6px; top: -22px; width: 80px; height: 80px; transform: rotate(-10deg); z-index: 2; pointer-events: none; }
+.kind-head .kind-icon img { width: 100%; height: 100%; display: block; object-fit: contain; }
+.kind-head .kind-name { font-size: 22px; line-height: 1.1; color: var(--gold); margin: 0; }
+.kind-head .kind-sub { font-size: 14px; line-height: 1.2; color: var(--parch-dark); opacity: .85; margin-top: 2px; }
+.kind-group[data-group="chance"] .quest.open { background: #efe6cf; border-style: dashed; border-color: #c9ad74; }   /* Hlídka: no duty left undone */
+.parent-ui .kind-head { padding-left: 58px; min-height: 46px; margin: 0 4px 8px; }
+.parent-ui .kind-head .kind-icon { width: 60px; height: 60px; left: -10px; top: -12px; transform: rotate(-8deg); }
+.parent-ui .kind-head .kind-name { font-size: 17px; text-transform: none; letter-spacing: 0; color: var(--hq-p-text); margin: 0; }
+.parent-ui .kind-head .kind-sub { font-size: 13px; color: var(--hq-p-muted); opacity: 1; }
 .btn {
   min-height: var(--tap); padding: 10px 18px; border-radius: 14px; font-weight: bold; font-size: 18px;
   background: var(--green); color: #fff; border-bottom: 4px solid var(--green-dark);
@@ -478,6 +490,8 @@ nav:empty { border-top: 0; }
 .parent-ui .p-row { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 6px 0; border-bottom: 1px solid var(--hq-p-line); width: 100%; text-align: left; background: none; color: inherit; }
 .parent-ui .p-card > .p-row:last-child, .parent-ui .p-card > :last-child.p-row { border-bottom: 0; }
 .parent-ui .p-row.tap { cursor: pointer; }
+.parent-ui .p-lock { color: var(--hq-p-muted); display: inline-flex; }
+.parent-ui .p-note { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; padding: 10px 14px; border-radius: 12px; background: var(--hq-p-surface); border: 1px solid var(--hq-p-line); color: var(--hq-p-text); }
 .parent-ui .p-row.end { justify-content: flex-end; }
 .parent-ui .grow { flex: 1; min-width: 0; }
 .parent-ui .p-title { font-weight: 600; }
