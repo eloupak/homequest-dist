@@ -10,7 +10,7 @@ import { coinsWord, historyText, when } from "../lib/cs.js";
 import { holidaysCard, whoPicker, whoParams } from "./tasks_admin.js";
 import { settingsSections } from "./settings.js";
 import { renderSetup } from "./setup.js";
-import { reportUrl } from "../lib/report.js";
+import { REPORT_REPO, reportUrl } from "../lib/report.js";
 
 export const PARENT_TABS = [["overview", "Přehled"], ["settings", "Nastavení"], ["about", "O hře"]];
 export const LICENSE_URL = "https://creativecommons.org/licenses/by-nc-nd/4.0/deed.cs";
@@ -143,6 +143,8 @@ export function configOf(t, allKids) {
   return {
     name: t.name, reward: t.reward, period: t.period === "daily" ? "daily" : "oneoff",
     who: t.single ? "*" : only ? only[0] : "", days: t.period === "daily" ? (t.days || ["workday", "free"]) : ["workday", "free"],
+    optional: t.period === "daily" && !!t.optional,                          // #227
+    ...(t.id && /^rec_/.test(t.id) ? { source: t.id } : {}),               // #228: added from "Naposledy přidané"
   };
 }
 
@@ -150,8 +152,36 @@ export function configOf(t, allKids) {
 export function taskParams(cfg, allKids) {
   const who = whoParams(cfg.who);
   const out = { name: cfg.name.trim(), reward: cfg.reward, single: who.single, kids: who.kids || allKids.slice() };
-  if (cfg.period === "daily") out.days = cfg.days.slice();
+  if (cfg.period === "daily") { out.days = cfg.days.slice(); out.optional = !!cfg.optional; }
   return out;
+}
+
+/** #228: the children who have the same one-off task open or waiting for approval: the same "Naposledy přidané" entry (source), or for an
+ *  older task without one the same name (lower case, no spaces at the ends). view = the parent's view. -> [kid ids] */
+export function openDuplicates(view, source, name) {
+  const key = String(name || "").trim().toLowerCase();
+  const info = (view && view.tasks_info) || {};
+  const out = new Set();
+  for (const o of info.oneoffs || []) {
+    if (o.status !== "active") continue;
+    const same = source && o.source ? o.source === source : String(o.name || "").trim().toLowerCase() === key;
+    if (!same) continue;
+    for (const [k, kid] of Object.entries((view && view.kids) || {})) {
+      const st = kid.tasks && kid.tasks[o.id];
+      if (st && (st.status === "open" || st.status === "pending")) out.add(k);
+    }
+  }
+  return [...out];
+}
+
+/** #228: before a one-off task from "Naposledy přidané" is added again: "Tento úkol už má <dítě> nesplněný. Opravdu zadat?" -> true = add. */
+async function confirmDuplicate(ctx, cfg) {
+  if (cfg.period !== "oneoff") return true;
+  const ids = openDuplicates(ctx.view, cfg.source, cfg.name);
+  if (!ids.length) return true;
+  const names = ids.map((k) => kidName(ctx, k));
+  const who = names.length > 1 ? `${names.slice(0, -1).join(", ")} a ${names[names.length - 1]}` : names[0];
+  return pConfirm(ctx, { title: cfg.name.trim(), text: `Tento úkol už ${names.length > 1 ? "mají" : "má"} ${who} nesplněný. Opravdu zadat?`, yes: "Zadat", no: "Zrušit" });
 }
 
 export const RECENT_SHOWN = 5;
@@ -183,7 +213,11 @@ function addTaskSection(ctx) {
         h("button", { class: "p-icon", "data-act": `recent-settings-${r.id}`, "aria-label": "Nastavení úkolu", onclick: () => go(ctx, "config", { cfg: { mode: "add", ...configOf(r, allKids) } }) }, icon("mdi:cog", 24)),
         h("button", {
           class: "p-btn", "data-act": `recent-add-${r.id}`,
-          onclick: async () => { if (await ctx.act("add_task", { period: r.period, ...taskParams(configOf(r, allKids), allKids) })) ctx.toast(`Přidáno: ${r.name}`); },
+          onclick: async () => {
+            const cfg = configOf(r, allKids);
+            if (!(await confirmDuplicate(ctx, cfg))) return;                     // #228
+            if (await ctx.act("add_task", { period: r.period, ...taskParams(cfg, allKids), ...(cfg.source ? { source: cfg.source } : {}) })) ctx.toast(`Přidáno: ${r.name}`);
+          },
         }, "Přidat")));
     }
     if (recent.length > RECENT_SHOWN) {
@@ -196,7 +230,7 @@ function addTaskSection(ctx) {
 }
 
 function taskMeta(ctx, t) {
-  const parts = [t.period === "daily" ? `Denní${t.days && t.days.length === 1 ? (t.days[0] === "workday" ? " · pracovní dny" : " · volné dny") : ""}` : "Jednorázový"];
+  const parts = [t.period === "daily" ? `${kindName(t)}${t.days && t.days.length === 1 ? (t.days[0] === "workday" ? " · pracovní dny" : " · volné dny") : ""}` : kindName(t)];
   if (t.single) parts.push("Pouze 1");
   else if (t.kids && t.kids.length && t.kids.length < ctx.cat.kids.length) parts.push(t.kids.map((k) => kidName(ctx, k)).join(", "));
   parts.push(`+${t.reward}`);
@@ -204,6 +238,16 @@ function taskMeta(ctx, t) {
 }
 
 /* ------------------------------------------------------------------ Nastavení úkolu */
+
+/** UAT beta 2: the three kinds of a task, like the children's groups (Dnes / Příležitost / Občas). "chance" = a daily task with `optional`
+ *  (#227): the kind replaces the former switch "Volitelný". */
+export const TASK_KINDS = [
+  ["daily", "Dnes", "Pravidelný úkol každý den."],
+  ["chance", "Příležitost", "Pravidelný každý den, ale nejde splnit vždy."],
+  ["oneoff", "Občas", "Jednorázový úkol."],
+];
+export const kindOf = (t) => (t.period === "daily" ? (t.optional ? "chance" : "daily") : "oneoff");
+const kindName = (t) => TASK_KINDS.find(([k]) => k === kindOf(t))[1];
 
 function configScreen(ctx, pv) {
   const cfg = pv.cfg;
@@ -222,16 +266,26 @@ function configScreen(ctx, pv) {
   };
   drawDays();
   const daysRow = h("div", { class: "p-fieldrow", "data-id": "days-row", style: { display: cfg.period === "daily" ? "" : "none" } }, h("div", { class: "p-label" }, "Dny"), dayBox);
-  const kinds = seg([["daily", "Denní"], ["oneoff", "Jednorázový"]], cfg.period, (v) => {
-    if (editing) return;                                       // a task keeps its kind: a new one is added instead
-    cfg.period = v;
-    for (const b of kinds.querySelectorAll("button")) b.setAttribute("aria-selected", String(b.dataset.segId === v));
-    daysRow.style.display = v === "daily" ? "" : "none";
+  // UAT beta 2: Dnes / Příležitost / Občas (Příležitost = a daily task with `optional`, #227), the meaning under the switch
+  const kindHint = h("div", { class: "p-muted small", "data-id": "kind-hint" });
+  const drawKind = () => {
+    const k = kindOf(cfg);
+    for (const b of kinds.querySelectorAll("button")) b.setAttribute("aria-selected", String(b.dataset.segId === k));
+    kindHint.textContent = TASK_KINDS.find(([id]) => id === k)[2];
+    daysRow.style.display = cfg.period === "daily" ? "" : "none";
+  };
+  const kinds = seg(TASK_KINDS.map(([id, label]) => [id, label]), kindOf(cfg), (v) => {
+    const period = v === "oneoff" ? "oneoff" : "daily";
+    if (editing && period !== cfg.period) return;              // a task keeps daily / one-off: a new one is added instead (Dnes <-> Příležitost may change)
+    cfg.period = period;
+    cfg.optional = v === "chance";
+    drawKind();
   }, "period");
-  if (editing) kinds.classList.add("locked");
+  drawKind();
+  if (editing) kinds.classList.add(cfg.period === "oneoff" ? "locked" : "no-oneoff");
   root.append(card(
     h("div", { class: "p-fieldrow" }, h("label", { class: "p-label" }, "Název"), name),
-    h("div", { class: "p-fieldrow" }, h("div", { class: "p-label" }, "Typ"), kinds),
+    h("div", { class: "p-fieldrow" }, h("div", { class: "p-label" }, "Typ"), kinds, kindHint),
     ctx.cat.kids.length > 1 ? h("div", { class: "p-fieldrow" }, h("div", { class: "p-label" }, "Pro koho"), whoPicker(ctx, cfg.who, "cfg", (v) => { cfg.who = v; }, true),
       h("div", { class: "p-muted small" }, "Nic nevybráno = všechny děti. Pouze 1 = splní kterékoli dítě, ale jen jedno.")) : null,
     daysRow,
@@ -246,7 +300,8 @@ function configScreen(ctx, pv) {
     actions.append(h("button", { class: "p-btn ghost", onclick: () => (pv.from ? go(ctx, pv.from) : back(ctx)) }, "Zpět"),
       h("button", { class: "p-btn primary", "data-act": "config-add", onclick: async () => {
         if (!check()) return;
-        if (await ctx.act("add_task", { period: cfg.period, ...taskParams(cfg, allKids) })) { ctx.toast(`Přidáno: ${cfg.name.trim()}`); back(ctx); }
+        if (!(await confirmDuplicate(ctx, cfg))) return;                                                 // #228
+        if (await ctx.act("add_task", { period: cfg.period, ...taskParams(cfg, allKids), ...(cfg.source && cfg.period === "oneoff" ? { source: cfg.source } : {}) })) { ctx.toast(`Přidáno: ${cfg.name.trim()}`); back(ctx); }
       } }, "Přidat"));
   } else {
     actions.append(h("button", { class: "p-btn danger-ghost", "data-act": "config-remove", onclick: () => removeTask(ctx, pv.task) }, "Odebrat"),
@@ -325,7 +380,7 @@ function editScreen(ctx) {
   if (!tasks.length) list.append(h("div", { class: "p-muted" }, "Žádné úkoly."));
   for (const t of tasks) {
     list.append(h("button", { class: "p-row tap", "data-edit": t.id, onclick: () => go(ctx, "config", { cfg: { mode: "edit", ...configOf(t, allKids) }, task: t, from: "edit" }) },
-      h("div", { class: "grow" }, h("div", { class: "p-title" }, t.name), h("div", { class: "p-muted" }, `${t.period === "daily" ? "Denní" : "Jednorázový"}${t.single ? " · Pouze 1" : ""} · +${t.reward}`),
+      h("div", { class: "grow" }, h("div", { class: "p-title" }, t.name), h("div", { class: "p-muted" }, `${kindName(t)}${t.single ? " · Pouze 1" : ""} · +${t.reward}`),
         h("div", { class: "p-kids" }, t.kids.map((k) => h("span", { class: "p-kidchip" }, kidName(ctx, k))))),
       icon("mdi:chevron-right", 22)));
   }
@@ -354,7 +409,7 @@ function settingsTab(ctx) {
 const SETTINGS_ROWS = [["game", "Nastavení hry", "mdi:cog-outline"], ["history", "Historie", "mdi:history"], ["notify", "Notifikace", "mdi:bell-outline"],
   ["story", "Příběh (místa a jména)", "mdi:book-open-variant"], ["guide", "Průvodce nastavením", "mdi:map-marker-path"]];
 export const GAME_ROWS = [["coins", "Zlaťáky", "mdi:plus-minus"], ["approvals", "Schvalování úkolů", "mdi:check-decagram-outline"],
-  ["holidays", "Prázdniny", "mdi:beach"], ["reset", "Reset hrdiny", "mdi:account-reactivate-outline"], ["report", "Kam hlásit problémy", "mdi:bug-outline"],
+  ["holidays", "Prázdniny", "mdi:beach"], ["reset", "Reset hrdiny", "mdi:account-reactivate-outline"],
   ["ha", "Úkoly z Home Assistantu", "mdi:home-assistant"]];
 
 function rowList(ctx, rows, from = null) {
@@ -407,22 +462,6 @@ function resetScreen(ctx) {
   }
   return h("div", { "data-screen": "reset" }, backBar(ctx, "Reset hrdiny", "game"),
     h("p", { class: "p-muted small" }, "Dítě si vytvoří hrdinu znovu (vzhled a jméno) a znovu si nasadí výbavu. Zlaťáky, věci a splněné úkoly zůstanou."), list);
-}
-
-/** #175 Kam hlásit problémy: the GitHub repository "Nahlásit problém" opens (empty = the default of the package). */
-function reportScreen(ctx) {
-  const st = ctx.view.settings || {};
-  const def = st.report_repo_default || "";
-  const own = st.report_repo && st.report_repo !== def ? st.report_repo : "";
-  const field = h("input", { class: "p-field", type: "text", value: own, placeholder: def, "data-field": "report-repo", autocapitalize: "off", autocorrect: "off", spellcheck: "false", "aria-label": "Repozitář na GitHubu" });
-  return h("div", { "data-screen": "report" }, backBar(ctx, "Kam hlásit problémy", "game"),
-    h("p", { class: "p-muted small" }, "Tlačítko „Nahlásit problém“ v O hře otevře nové hlášení na GitHubu v tomto repozitáři. Zadejte vlastník/název, např. ",
-      h("code", {}, "eloupak/homequest-feedback"), ". Prázdné pole = výchozí ", h("code", {}, def), "."),
-    card(h("div", { class: "p-fieldrow" }, h("label", { class: "p-label" }, "Repozitář na GitHubu"), field)),
-    h("div", { class: "p-actions" },
-      h("button", { class: "p-btn primary", "data-act": "report-repo-save", onclick: async () => {
-        if (await ctx.act("set_report_repo", { repo: field.value.trim() || null })) ctx.toast("Uloženo.");
-      } }, "Uložit")));
 }
 
 /** v1.8 (#173, #166): the children's To-do lists in HA; the reward of a task a parent or an automation adds straight into a child's list. */
@@ -508,7 +547,6 @@ function subScreen(ctx, pv) {
   if (pv.name === "coins") return coinsScreen(ctx);
   if (pv.name === "approvals") return approvalsScreen(ctx);
   if (pv.name === "reset") return resetScreen(ctx);
-  if (pv.name === "report") return reportScreen(ctx);
   if (pv.name === "ha") return haTasksScreen(ctx);
   const titles = { holidays: "Prázdniny", notify: "Notifikace", story: "Příběh", guide: "Průvodce nastavením" };
   const root = h("div", { "data-screen": pv.name }, backBar(ctx, titles[pv.name] || "", pv.from));
@@ -540,9 +578,9 @@ function aboutTab(ctx) {
       h("div", { class: "p-label" }, "Licence"),
       h("p", { "data-id": "license" }, "CC BY-NC-ND 4.0: hru můžete zdarma používat doma a dál ji šířit beze změny a s uvedením autora. Nesmí se prodávat ani upravovat a šířit upravená."),
       h("a", { class: "p-link", href: LICENSE_URL, target: "_blank", rel: "noopener" }, "Plné znění licence")),
-    h("a", { class: "p-btn block", "data-act": "report-problem", href: reportUrl((ctx.view.settings || {}).report_repo || "eloupak/homequest-dist", reportFacts(ctx)), target: "_blank", rel: "noopener" },
+    h("a", { class: "p-btn block", "data-act": "report-problem", href: reportUrl(REPORT_REPO, reportFacts(ctx)), target: "_blank", rel: "noopener" },
       icon("mdi:bug-outline", 22), "Nahlásit problém"),
-    h("p", { class: "p-muted small", "data-id": "report-hint" }, "Otevře nové hlášení na GitHubu s verzí hry a Home Assistantu, bez jmen. Kam se hlásí, změníte v Nastavení hry."),
+    h("p", { class: "p-muted small", "data-id": "report-hint" }, "Otevře nové hlášení na GitHubu s verzí hry a Home Assistantu, bez jmen."),
     h("button", { class: "p-btn block", "data-act": "bench", onclick: () => ctx.bench && ctx.bench() }, icon("mdi:speedometer", 22), "Test výkonu telefonu"),
     h("p", { class: "p-muted small", "data-id": "bench-hint" }, "Přehraje přerod tvrze a chvíli bitvy naprázdno a změří, jak plynule to tento telefon zvládá. Nic se neukládá. Na telefonu dítěte: třikrát klepnout na nápis HomeQuest nahoře."));
 }

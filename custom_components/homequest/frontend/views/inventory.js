@@ -1,4 +1,4 @@
-import { coin, h } from "../lib/dom.js";
+import { coin, h, ham } from "../lib/dom.js";
 import { DYE_SLOT, POUR_MS } from "../lib/dye.js";
 import { OUTFIT_STYLE_NAMES, RARITY, SHOP_SECTIONS, SLOT_NAMES, coinsWord } from "../lib/cs.js";
 
@@ -13,9 +13,9 @@ export function renderInventory(ctx) {
   root.append(
     h(
       "div",
-      { class: "row", style: { justifyContent: "space-between", marginBottom: "10px" } },
+      { class: "row inv-head", style: { justifyContent: "space-between", marginBottom: "10px" } },
       h("h2", { style: { color: "var(--gold)" } }, ui.invTab === "shop" ? "Obchod" : "Inventář"),
-      coinCount(ctx, kid)
+      h("div", { class: "row", style: { gap: "10px" } }, ui.invTab === "shop" ? hamButton(ctx) : null, coinCount(ctx, kid))
     ),
     h(
       "div",
@@ -34,6 +34,27 @@ export function renderInventory(ctx) {
   if (ui.invTab === "shop") root.append(shopGrid(ctx, filter));
   else root.append(inventoryGrid(ctx, filter));
   return root;
+}
+
+/** #226 (addendum 7): the shop buys the hunt's hams in whole lots of 25 (25 hams = 1 coin, the rest stays). UAT beta 2: the count shows from
+ *  the fortress stage on (view.hunt.kids[kid].shop) also under 25; a tap then only tells how many make a coin. `sell` = {hams, coins} when
+ *  something can be sold. */
+function hamButton(ctx) {
+  const hv = ctx.view && ctx.view.hunt;
+  const kh = hv && hv.kids && hv.kids[ctx.kidId];
+  const sell = kh && kh.sell && kh.sell.coins > 0 ? kh.sell : null;
+  if (!kh || !(kh.shop || sell)) return null;
+  const per = kh.per_coin || 25;
+  return h("button", { class: "hambtn", "data-act": "sell-hams", "aria-label": "Prodat šunky",
+    onclick: () => (sell ? sellHams(ctx, sell) : ctx.toast(`Potřebuješ ${per} ks šunky na 1 zlaťák.`)) },
+    ham(), h("span", { "data-id": "ham-count" }, String(kh.hams || 0)));
+}
+
+async function sellHams(ctx, sell) {
+  const text = h("span", { class: "hamq", "data-id": "sell-q" }, "Prodat ", h("b", { "data-id": "sell-hams" }, String(sell.hams)), " ", ham(),
+    " za ", h("b", { "data-id": "sell-coins" }, String(sell.coins)), " ", coin(), "?");
+  if (!(await ctx.confirm({ title: "Trh", text, yes: "Prodat", no: "Zpět" }))) return;
+  if (await ctx.act("learn_sell_hams")) ctx.toast(`Prodáno! +${sell.coins} ${coinsWord(sell.coins)}`);
 }
 
 function setTab(ctx, tab) {

@@ -3,7 +3,7 @@
  * The server (websocket_learning.py) checks that the child may hunt (the fortress stage and the bow) and pays the hams. Own shadow root with the
  * styles of the games; the panel is pinned to the visible viewport like the learning panel (the pad stays in view on a phone). */
 
-import { h, icon } from "../lib/dom.js";
+import { HAM_SVG, h, icon } from "../lib/dom.js";
 import { ART_CSS } from "../lib/layers.js";
 import { CSS } from "./styles.js";
 import { CSS_L } from "./styles_learning.js";
@@ -25,14 +25,16 @@ const HUNT_CSS = `
 .ht-ham { display: inline-block; vertical-align: -3px; margin: 0 6px 0 4px; }
 [data-id="res-hams"] { color: #e0b040; font-size: 22px; }
 .ht-hunter { display: flex; align-items: flex-end; gap: 10px; }
-.ht-hunter img { width: 34%; max-width: 170px; aspect-ratio: 2 / 3; object-fit: contain; object-position: bottom; flex: none; }
-.ht-hunter .ht-bubble { position: relative; flex: 1; margin-bottom: 18%; padding: 10px 14px; border-radius: 16px; background: #f3ecd8; color: #2a2742; }
+.ht-hunter img { width: 62%; max-width: 320px; aspect-ratio: 1; margin-right: -12%;   /* UAT beta 2: ~40 % bigger again; the square picture has empty sides, the bubble may reach over them */
+   object-fit: contain; object-position: bottom; flex: none; }
+.ht-hunter .ht-bubble { position: relative; z-index: 1; flex: 1; margin-bottom: 18%; padding: 10px 14px; border-radius: 16px; background: #f3ecd8; color: #2a2742; }
 .ht-hunter .ht-bubble::before { content: ""; position: absolute; left: -10px; bottom: 16px; border: 10px solid transparent; border-right-color: #f3ecd8; border-left: 0; }
 .ht-bubble .who { font-size: 13px; font-weight: 700; opacity: .7; }
 .ht-bubble p { margin: 2px 0 0; font-size: 20px; font-weight: 700; }
 .ht-res { text-align: center; }
 .ht-res .big { font-size: 22px; }
 .ht-res .big b { font-size: 42px; color: #e0b040; }
+.ht-res [data-id="res-reward"] b { color: #e0b040; font-size: 1.2em; }
 .ht-wrong .ov-row { padding: 2px 0; }
 `;
 
@@ -122,14 +124,14 @@ export function openHuntGame(root, opts) {
     wrap.append(h("div", { class: "ht-hunter", "data-id": "hunter" }, pic,
       h("div", { class: "ht-bubble" }, giver ? h("div", { class: "who" }, fillText(giver.name, stageVars(view.catalog))) : null, h("p", { "data-id": "ask" }, entry.ask || "Kam dnes vyrazíme?"))));
     wrap.append(h("div", { class: "card" },
-      h("p", { class: "ht-hams", "data-id": "hams" }, h("b", {}, String(ki.balance || 0)), ` šunek — do zlaťáku chybí ${ki.to_next ?? info.reward.hams_per_coin}`),
+      h("p", { class: "ht-hams", "data-id": "hams" }, "V zásobě: ", h("b", {}, String(ki.balance || 0)), hamIcon(), ` Prodáš je v obchodě, ${ki.per_coin || info.reward.hams_per_coin} za zlaťák.`),   // #226: hams are kept and sold in the shop
       h("p", { class: "muted", "data-id": "help" }, entry.help || "Vypočítej, kde je zvíře, jak daleko máš střílet a odkud fouká vítr. Když to zvládneš, zastihneš kořist nekrytou. Natáhni luk, počkej, zamiř a vystřel, než uteče! Lovit můžeš kolikrát chceš, ale z každého loviště dostaneš šunku jen jednou za den.")));
     const open = ki.reward_open || {}, done = ki.done_today || {};
     const gr = info.grounds || {};
     wrap.append(h("div", { class: "ops" }, info.ops.map((op) => h("button", { class: gr[op] ? "op ground" : "op", "data-op": op, "data-ground": gr[op] ? gr[op].id : null,
       style: groundStyle(gr[op]), onclick: () => play(op) },
       gr[op] ? h("span", { class: "gname" }, gr[op].name) : null,
-      h("span", { class: "sym" }, OP_SYMBOL[op]), h("span", { class: "nm" }, OP_NAME[op]),
+      h("span", { class: "sym" }, OP_SYMBOL[op]), gr[op] ? null : h("span", { class: "nm" }, OP_NAME[op]),   // a ground: just its name and the sign
       done[op] ? h("i", { class: "done", "data-id": `done-${op}`, title: "dnes splněno" }, "✓") : null,
       open[op] === false ? h("small", { class: "muted", "data-id": `noham-${op}` }, "dnes už bez šunky") : null))));
     if (ctx.error) wrap.append(h("div", { class: "card", "data-id": "error" }, ctx.error));
@@ -145,7 +147,9 @@ export function openHuntGame(root, opts) {
 
   /** Addendum 10 (#189): the hams by a number are a picture, not a word (the same drawn ham as the counter of the scene). */
   function hamIcon() {
-    return h("span", { class: "sc-score-icon ht-ham", "aria-label": "šunky" }, h("div", { class: "sc-shape ham" }, h("i", { class: "meat" }), h("i", { class: "bone" })));
+    const d = h("div", { class: "sc-shape ham" });
+    d.innerHTML = HAM_SVG;                                                       // UAT beta 2: the drawn ham (lib/dom.js)
+    return h("span", { class: "sc-score-icon ht-ham", "aria-label": "šunky" }, d);
   }
 
   function result(res) {
@@ -155,11 +159,11 @@ export function openHuntGame(root, opts) {
     wrap.append(
       h("div", { class: "ht-head" }, h("h2", {}, `${s.quit ? "Konec lovu" : "Hotovo!"} ${s.ground && s.ground.name ? `${s.ground.name} · ` : ""}${OP_SYMBOL[s.op]} ${OP_NAME[s.op]}`), h("button", { class: "ht-x", "data-act": "hunt-close", "aria-label": "Zavřít", onclick: close }, icon("mdi:close", 28))),
       h("div", { class: "card" },
-        h("p", { class: "big" }, h("b", { "data-id": "res-hits" }, String(s.hits)), ` správně z ${s.quit ? s.answered : s.size}`),
-        s.shots ? h("p", { "data-id": "res-shots" }, `Zásahy: ${s.shots.hit}, vedle: ${s.shots.miss}`) : null,
+        h("p", { class: "big", "data-id": "res-right" }, h("b", {}, "Správně ", h("span", { "data-id": "res-hits" }, String(s.hits)), `/${s.quit ? s.answered : s.size}`)),   // UAT beta 2: the whole line stands out
+        s.shots ? h("p", { "data-id": "res-shots" }, `Zásahy ${s.shots.hit}/${s.shots.hit + s.shots.miss}`) : null,
         h("p", { "data-id": "res-reward" }, r.eligible
-          ? [h("b", { "data-id": "res-hams" }, String(won || 0)), hamIcon(), `${r.coins ? ` → ${r.coins === 1 ? "zlaťák" : `${r.coins} zlaťáky`}!` : ""} Do zlaťáku chybí ${r.to_next}.`]
-          : `Tohle kolo bylo bez šunky (dnes už jednou). Do zlaťáku chybí ${r.to_next}.`)),   // addendum 10: no count = singular, no gender
+          ? ["Získáno: ", h("b", { "data-id": "res-hams" }, String(won || 0)), hamIcon(), ` (celkem ${r.balance}`, hamIcon(), ")"]
+          : ["Tohle kolo bylo bez šunky (dnes už jednou). Celkem ", String(r.balance), hamIcon()])),   // #226: the stock, sold in the shop
       s.wrong.length ? h("div", { class: "card ht-wrong", "data-id": "res-wrong" }, h("p", {}, "Tohle si ještě procvič:"),
         s.wrong.map((w) => h("div", { class: "ov-row" }, h("b", {}, `${w.text} = ${w.answer}`)))) : h("div", { class: "card" }, "Bez jediné chyby!"),
       h("div", { class: "row", style: { justifyContent: "center" } },

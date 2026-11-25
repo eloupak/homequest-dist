@@ -8,10 +8,13 @@ export const CSS_L = `
 .op .nm { font-size: 15px; }
 .op .done { position: absolute; top: 6px; right: 8px; font-style: normal; color: #7be07b; font-size: 20px; }
 .op.ground { min-height: 104px; overflow: hidden; background: #3d3868 var(--gbg, none) center / cover no-repeat; text-shadow: 0 1px 3px #000c; }
-.op.ground::before { content: ""; position: absolute; inset: 0; background: linear-gradient(#0000 25%, #14122acc); pointer-events: none; }
+.op.ground::before { content: ""; position: absolute; inset: 0; background: linear-gradient(#14122ab3, #14122a33 42%, #0000 55%, #14122acc); pointer-events: none; }
+.op.ground { justify-content: flex-start; padding: 10px 6px 26px; }
 .op.ground > * { position: relative; }
-.op .gname { font-size: 20px; }
-.op.ground .sym { font-size: 26px; }
+.op.ground > .done { position: absolute; }
+.op.ground > small { position: absolute; left: 4px; right: 4px; bottom: 6px; }
+.op .gname { font-size: 20px; color: #fff; text-shadow: 0 0 2px #000, 0 1px 3px #000, 0 0 8px #000c; }   /* readable over a bright sky */
+.op.ground .sym { font-size: 26px; text-shadow: 0 0 2px #000, 0 1px 3px #000, 0 0 8px #000c; }
 .ov-op { padding: 8px 0; border-bottom: 1px solid #3a3658; }
 .ov-op:last-child { border: 0; }
 .ov-op h3 { margin: 0 0 4px; font-size: 16px; }
@@ -75,6 +78,7 @@ export const CSS_L = `
 .sc-tg[data-state="wait"] .sc-shape { animation: sc-bob 1.4s ease-in-out infinite; }
 @keyframes sc-bob { 50% { transform: translateY(-3%); } }
 .sc-hero { position: absolute; z-index: 7; pointer-events: none; will-change: transform; }
+.sc-hero.sc-fist { z-index: 8; }                                                     /* #226 point 2: the fist over the bow (the bow's SVG is between) */
 .sc-hero .hq-hero, .sc-hero .guest { position: absolute; inset: 0; width: 100%; height: 100%; }
 .sc-hero .guest { inset: 20%; width: auto; height: auto; border-radius: 50%; background: #8a86b8; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 30px; }
 .sc-bow { position: absolute; left: 0; top: 0; z-index: 8; will-change: transform; pointer-events: none; overflow: visible; }
@@ -105,8 +109,7 @@ export const CSS_L = `
 .hare .ear.l { left: 58%; transform: rotate(-8deg); } .hare .ear.r { left: 72%; transform: rotate(12deg); }
 .hare .eye { left: 76%; bottom: 52%; width: 7%; height: 7%; border-radius: 50%; background: #2a2742; }
 .hare .tail { left: 6%; bottom: 14%; width: 18%; height: 22%; border-radius: 50%; background: #fff; }
-.ham .meat { position: absolute; left: 14%; top: 14%; width: 74%; height: 72%; border-radius: 50% 50% 46% 46%; background: radial-gradient(circle at 36% 30%, #f6a4a0, #d9605a); }
-.ham .bone { position: absolute; right: 0; top: 40%; width: 34%; height: 20%; border-radius: 10px; background: #f3ecd8; box-shadow: 0 0 0 2px #cfc3a0; }
+.ham svg { display: block; width: 100%; height: 100%; }   /* UAT beta 2: the drawn ham (lib/dom.js HAM_SVG) */
 .arrow .shaft { position: absolute; left: 0; right: 14%; top: 30%; height: 40%; background: #f2d9a0; border: 1px solid #5a3a14; border-radius: 3px; box-sizing: border-box; }
 .arrow .head { position: absolute; right: 0; top: 0; bottom: 0; width: 16%; background: #cfd3da; clip-path: polygon(0 0, 100% 50%, 0 100%); }
 .arrow .fletch { position: absolute; left: 0; top: 10%; bottom: 10%; width: 14%; background: #d9503a; clip-path: polygon(0 0, 100% 30%, 100% 70%, 0 100%); }

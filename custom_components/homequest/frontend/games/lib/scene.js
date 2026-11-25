@@ -3,7 +3,7 @@
  * (shoot: draw the bow and loose the arrow), the loot the target turns into (leaps in an arc into the score). Positions are fractions of the scene box.
  * Placeholders are CSS shapes; `cfg.sprites[name][state]` (a file) replaces a shape when finished art exists. The pure helpers at the top are unit tested. */
 
-import { h } from "../../lib/dom.js";
+import { HAM_SVG, h } from "../../lib/dom.js";
 
 export const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
@@ -98,7 +98,7 @@ export function boxFit(art, w, h) {
  * Everything in scene px; up is negative y. aim = the `aim` section of hunt.yaml: pull_max (the longest pull, x the unit U), min_power (a shorter
  * pull does not shoot), gravity (x the scene height per s^2), range (the longest shot at 45 degrees, x the scene width), preview (seconds of the
  * flight shown as dots while aiming: the help with aiming), hit_scale (x the hit zone of every animal: generous for small children). */
-export const AIM_DEFAULTS = { pull_max: 0.32, min_power: 0.18, gravity: 1.3, range: 1.5, preview: 0.32, hit_scale: 1.25, angle_min: -75, angle_max: 25, show_ms: 1100, lurk: 0.45, window_ms: 3000, flight_speed: 2.0, flight_max_ms: 650 };
+export const AIM_DEFAULTS = { pull_max: 0.32, min_power: 0.18, gravity: 1.3, range: 1.5, preview: 0.32, hit_scale: 1.1, hit_scale_y: 0.9, top_out: true, angle_min: -75, angle_max: 25, show_ms: 1100, lurk: 0.45, window_ms: 3000, flight_speed: 2.0, flight_max_ms: 650 };
 
 /** The pull of a finger (from where it was put down to where it is now) -> {power 0..1, angle in radians, the arrow flies away from the pull}.
  *  The angle is kept towards the target side (right): -75..+25 degrees by default. */
@@ -131,14 +131,25 @@ export function flightAt(from, power, angle, fp, t) {
   return { x: from.x + v * Math.cos(angle) * t, y: from.y + v * Math.sin(angle) * t + 0.5 * fp.g * t * t };
 }
 
-/** Flies the arrow until it hits the circle `zone` {x, y, r}, leaves the scene (W x H) or falls under `floor` -> {hit, t, points}. */
-export function simulateShot(from, power, angle, fp, zone, W, H, floor = H, dt = 1 / 120) {
+/** #226 point 5: is the point inside the hit zone? An ellipse {x, y, rx, ry} (the shape of the animal), or the old circle {x, y, r}. */
+export function inZone(p, zone) {
+  if (!zone) return false;
+  const rx = zone.rx || zone.r, ry = zone.ry || zone.r;
+  if (!(rx > 0) || !(ry > 0)) return false;
+  const dx = (p.x - zone.x) / rx, dy = (p.y - zone.y) / ry;
+  return dx * dx + dy * dy <= 1;
+}
+
+/** Flies the arrow's tip (#226 point 5: the counted point is the tip, the arrow is drawn so) until it is in `zone` (inZone), leaves the scene
+ *  (W x H) or falls under `floor` -> {hit, t, points}. top: the height above which the arrow is lost (#226: 0 = a shot out of the top of the
+ *  screen is a miss, the child cannot see it come down; -H = the old rule). */
+export function simulateShot(from, power, angle, fp, zone, W, H, floor = H, top = -H, dt = 1 / 120) {
   const pts = [];
   for (let t = 0; t < 4; t += dt) {
     const p = flightAt(from, power, angle, fp, t);
     pts.push({ ...p, t });
-    if (zone && Math.hypot(p.x - zone.x, p.y - zone.y) <= zone.r) return { hit: true, t, points: pts };
-    if (p.x > W + 40 || p.x < -40 || p.y > floor || p.y < -H) return { hit: false, t, points: pts };
+    if (inZone(p, zone)) return { hit: true, t, points: pts };
+    if (p.x > W + 40 || p.x < -40 || p.y > floor || p.y < top) return { hit: false, t, points: pts };
   }
   return { hit: false, t: 4, points: pts };
 }
@@ -160,7 +171,7 @@ const SHAPES = {
   hare: () => h("div", { class: "sc-shape hare" }, h("i", { class: "ear l" }), h("i", { class: "ear r" }), h("i", { class: "head" }), h("i", { class: "body" }), h("i", { class: "eye" }), h("i", { class: "tail" })),
   deer: () => h("div", { class: "sc-shape deer" }, h("i", { class: "body" }), h("i", { class: "neck" }), h("i", { class: "head" }), h("i", { class: "ear l" }), h("i", { class: "ear r" }), h("i", { class: "eye" }), h("i", { class: "rump" })),
   boar: () => h("div", { class: "sc-shape boar" }, h("i", { class: "body" }), h("i", { class: "head" }), h("i", { class: "snout" }), h("i", { class: "tusk" }), h("i", { class: "ear" }), h("i", { class: "eye" }), h("i", { class: "mane" })),
-  ham: () => h("div", { class: "sc-shape ham" }, h("i", { class: "meat" }), h("i", { class: "bone" })),
+  ham: () => { const d = h("div", { class: "sc-shape ham" }); d.innerHTML = HAM_SVG; return d; },   // UAT beta 2: the drawn ham (lib/dom.js)
   arrow: () => h("div", { class: "sc-shape arrow" }, h("i", { class: "shaft" }), h("i", { class: "head" }), h("i", { class: "fletch" })),
 };
 
@@ -194,6 +205,8 @@ export class Scene {
     this.hare.setAttribute("data-state", "hidden");
     this.target = h("div", { class: "sc-target" }, this.hare);
     this.heroBox = h("div", { class: "sc-hero", "data-pose": "idle" }, heroNode, ...Object.entries(this.poses).map(([k, p]) => { p.node.dataset.aimPose = k; p.node.hidden = true; return p.node; }));
+    // #226 point 2: the fists of the aim poses over the bow (same box as the hero, above the bow's SVG, under the arrow)
+    this.fistBox = h("div", { class: "sc-hero sc-fist", "data-id": "fist" }, ...Object.entries(this.poses).filter(([, p]) => p.fist).map(([k, p]) => { p.fist.dataset.aimPose = k; p.fist.hidden = true; return p.fist; }));
     this._baseHero = heroNode;
     if (heroNode) heroNode.hidden = false;                                         // addendum 7 (#189): the stage keeps the hero node between rounds; the last round hid it behind an aim pose
     this._baseGrip = body && cfg.bow.grip_canvas ? cfg.bow.grip_canvas[body] : null;
@@ -221,7 +234,7 @@ export class Scene {
     this.plus = h("div", { class: "sc-plus", "data-id": "plus" });
     this.timerBar = h("div", { class: "sc-timer", "data-id": "aim-timer", hidden: true }, h("i"));     // addendum 5: the time left to shoot once the animal is out
     this.photo = h("div", { class: "sc-photo", "data-id": "ground-photo" });            // #191: the picture of the hunting ground (missing = the drawn meadow)
-    this.el.append(h("div", { class: "sc-sky" }), this.trees, h("div", { class: "sc-ground" }), this.photo, this.target, ...this.coverEls.values(), this.heroBox, this.bowSvg, this.arrow, this.loot, this.plus, this.scoreEl, this.eq, this.hint, this.timerBar);
+    this.el.append(h("div", { class: "sc-sky" }), this.trees, h("div", { class: "sc-ground" }), this.photo, this.target, ...this.coverEls.values(), this.heroBox, this.bowSvg, this.fistBox, this.arrow, this.loot, this.plus, this.scoreEl, this.eq, this.hint, this.timerBar);
     host.replaceChildren(this.el);
     this._loadArt();
     for (const files of Object.values(cfg.sprites || {})) if (files && typeof files === "object") Object.values(files).forEach((f) => typeof f === "string" && this._preload(f));   // #211
@@ -257,7 +270,7 @@ export class Scene {
     if (key === this.heroPose || (key && !this.poses[key])) return;
     this.heroPose = key;
     if (this._baseHero) this._baseHero.hidden = !!key;
-    for (const [k, p] of Object.entries(this.poses)) p.node.hidden = k !== key;
+    for (const [k, p] of Object.entries(this.poses)) { p.node.hidden = k !== key; if (p.fist) p.fist.hidden = k !== key; }
     if (this.body) this.cfg.bow.grip_canvas = { ...(this.cfg.bow.grip_canvas || {}), [this.body]: key ? this.poses[key].grip : this._baseGrip };
     this.heroBox.setAttribute("data-aim-pose", key || "");
   }
@@ -346,6 +359,7 @@ export class Scene {
     }
     const hh = this.cfg.hero.size * H;
     Object.assign(this.heroBox.style, { left: `${this.cfg.hero.x * W - hh / 2}px`, top: `${this.cfg.hero.y * H - hh}px`, width: `${hh}px`, height: `${hh}px` });
+    Object.assign(this.fistBox.style, { left: this.heroBox.style.left, top: this.heroBox.style.top, width: this.heroBox.style.width, height: this.heroBox.style.height });
     const aw = Math.max(40, this.U * 0.2);
     Object.assign(this.arrow.style, { width: `${aw}px`, height: `${aw * 0.2}px` });
     const art = this.cfg.art || {}, ok = this.artOk || {};
@@ -524,7 +538,7 @@ export class Scene {
       this._setState(this.hare, "flee");
       this._log("flee");
       await Promise.all([
-        this._anim(this.arrow, [{ opacity: 1 }, { opacity: 0 }], 250, { delay: dur(150, sp) }),
+        this._anim(this.arrow, [{ opacity: 1 }, { opacity: 0 }], 250, { delay: dur(150, sp), fill: "none" }),
         this._flee(c, rest),
       ]);
       this._log("fled");
@@ -727,15 +741,30 @@ export class Scene {
     });
   }
 
-  /** The hit zone in scene px: a circle around the visible part of the animal (above its cover), the radius from its size, `hit` and aim.hit_scale. */
+  /** The hit zone in scene px (#226 point 5): an ellipse over the visible part of the animal (above its cover): half its width x `hit` x
+   *  aim.hit_scale across, half the visible height x aim.hit_scale_y up and down, so it no longer reaches into the air over a tall deer.
+   *  r = the larger half axis (the tests aim "over the head" with it). */
   hitZone() {
     const c = this.cover, a = this.animal || {};
     if (!c) return null;
     const er = this.el.getBoundingClientRect(), r = this.hare.getBoundingClientRect();
     const coverTop = c.y * this.H - c.h * this.H;
-    const top = r.top - er.top, bottom = Math.min(r.bottom - er.top, coverTop + c.h * this.H * 0.25);
+    const top = r.top - er.top, bottom = Math.max(top + 1, Math.min(r.bottom - er.top, coverTop + c.h * this.H * 0.25));
     const w = this._animalSize ? this._animalSize.w : r.width;
-    return { x: r.left - er.left + r.width / 2, y: (top + Math.max(top + 1, bottom)) / 2, r: (w / 2) * (a.hit || 1) * this.aimCfg.hit_scale };
+    const rx = (w / 2) * (a.hit || 1) * this.aimCfg.hit_scale, ry = ((bottom - top) / 2) * (this.aimCfg.hit_scale_y || 1);
+    return { x: r.left - er.left + r.width / 2, y: (top + bottom) / 2, rx, ry, r: Math.max(rx, ry) };
+  }
+
+  /** #226 point 5: the top of the flight (aim.top_out: a shot out of the top of the screen is lost, else the old rule -H). */
+  _flightTop() {
+    return this.aimCfg.top_out === false ? -this.H : 0;
+  }
+
+  /** #226 point 5: the arrow element placed so that its tip (the right end) is at `p`, turned by `ang` about its tail. */
+  _arrowTip(p, ang, aw) {
+    const ah = this.arrow.offsetHeight || aw * 0.2;
+    this.arrow.style.transformOrigin = "0 50%";                           // it turns about its tail (the left end, as while aiming)
+    return `translate(${p.x - Math.cos(ang) * aw}px, ${p.y - Math.sin(ang) * aw - ah / 2}px) rotate(${ang}rad)`;
   }
 
   _from() {
@@ -766,6 +795,7 @@ export class Scene {
     const aw = parseFloat(this.arrow.style.width) || 60, from = this._from();
     const back = { x: from.x - Math.cos(angle) * pull, y: from.y - Math.sin(angle) * pull };
     const hand = power > 0 && this._stringHand();
+    for (const a of this.arrow.getAnimations?.() || []) a.cancel();           // UAT beta 2: a held fade (fill forwards) would hide the arrow for good
     this.arrow.style.opacity = "1";
     this.arrow.style.transformOrigin = "0 50%";
     if (hand) {                                                                   // #189: the nock in the drawn hand, the arrow over the fist, a little past the bow
@@ -855,14 +885,14 @@ export class Scene {
     this.el.setAttribute("data-state", "flight");
     this._log("release");
     const fp = flightParams(this.aimCfg, this.W, this.H), zone = this.hitZone(), from = this._from();
-    const sim = simulateShot(from, power, angle, fp, zone, this.W, this.H, this.H * 0.98);
+    const sim = simulateShot(from, power, angle, fp, zone, this.W, this.H, this.H * 0.98, this._flightTop());
     this._tween(this.cfg.hero.release_ms, (k) => { this._drawBow(power * this.U * 0.09 * (1 - k)); });
     const aw = parseFloat(this.arrow.style.width) || 60;
     const total = Math.max(0.05, sim.t);
     await this._tween(flightShowMs(total, this.aimCfg), (k) => {
       const t = k * total, p = flightAt(from, power, angle, fp, t), v = power * fp.vmax;
       const ang = Math.atan2(v * Math.sin(angle) + fp.g * t, v * Math.cos(angle));
-      this.arrow.style.transform = `translate(${p.x - aw * (sim.hit ? 0.8 : 0.5)}px, ${p.y - aw * 0.1}px) rotate(${ang}rad)`;
+      this.arrow.style.transform = this._arrowTip(p, ang, aw);             // #226: the tip is the counted point, at every angle
     });
     this.heroBox.setAttribute("data-pose", "idle");
     if (Object.keys(this.poses).length) this._setHeroPose(pickAimPose(Object.keys(this.poses), angle, false));   // #189: the string hand comes back
@@ -917,7 +947,7 @@ export class Scene {
     this.el.setAttribute("data-state", "flee");
     this._setState(this.hare, "flee");
     this._log("flee");
-    await Promise.all([arrow ? this._anim(this.arrow, [{ opacity: 1 }, { opacity: 0 }], 300, { delay: dur(150, this.speed) }) : null, this._flee(this.cover, this._rest || 0)]);
+    await Promise.all([arrow ? this._anim(this.arrow, [{ opacity: 1 }, { opacity: 0 }], 300, { delay: dur(150, this.speed), fill: "none" }) : null, this._flee(this.cover, this._rest || 0)]);
     this._log("fled");
     this._settle();
   }

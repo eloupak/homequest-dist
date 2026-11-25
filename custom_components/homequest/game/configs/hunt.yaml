@@ -31,7 +31,8 @@ learning:
     sets_per_op: 1                          # also: hams are paid for the first finished set of each operation per day only (4 operations x 10 = at most 40 hams a day)
   reward:
     hams_per_hit: 1                         # a ham for every right answer (the set always has set_size problems, a wrong one counts)
-    hams_per_coin: 25                       # the balance of hams (all operations together) turns into a coin per this many; 50 = two coins
+    hams_per_coin: 25                       # #226: the shop buys hams in whole lots of this many (25 hams = 1 coin, 60 -> 50 sold for 2, 10 stay)
+    sell_min_stage: 3                       # #226: the ham shows in the shop from this fortress stage on (and from hams_per_coin hams)
 
 # who may go hunting (#189): the fortress stage reached (the index in story.yaml fortress.stages) and an item the child owns (it need not be worn)
 entry:
@@ -80,7 +81,9 @@ aim:
   gravity: 1.3
   range: 1.5
   preview: 0.32
-  hit_scale: 1.25
+  hit_scale: 1.1                             # #226 point 5: x the half width of the animal (was 1.25 on a circle); tune at the UAT
+  hit_scale_y: 0.9                           # #226: x half the visible height of the animal (the zone is an ellipse, no longer reaches over its head)
+  top_out: true                              # #226: a shot out of the top of the screen is a miss (false = the old rule, lost only at a screen height above)
   angle_min: -75
   angle_max: 25
   show_ms: 1100

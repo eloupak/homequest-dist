@@ -145,10 +145,30 @@ def done_today(data: dict, kid: str, day: str, cfg: dict) -> dict:
 
 # ---- hams and coins --------------------------------------------------------------------------------------------------------------------
 def ham_state(kd: dict, cfg: dict) -> dict:
-    """The ham balance of a child and what is missing to the next coin."""
+    """The ham stock of a child (#226: hams are kept and sold in the shop), what is missing to the next coin and what can be sold now
+    (whole `hams_per_coin` only: sell_hams of them for sell_coins coins, the rest stays)."""
     per = int(cfg["learning"]["reward"]["hams_per_coin"])
     bal = int(kd.get("hams", 0))
-    return {"balance": bal, "per_coin": per, "to_next": per - bal % per if per else 0}
+    coins = bal // per if per else 0
+    return {"balance": bal, "per_coin": per, "to_next": per - bal % per if per else 0, "sell_hams": coins * per, "sell_coins": coins}
+
+
+def sell_min_stage(cfg: dict) -> int:
+    """#226: the fortress stage from which the shop buys hams (hunt.yaml reward.sell_min_stage, else the stage of the hunt itself)."""
+    rc = cfg["learning"]["reward"]
+    return int(rc.get("sell_min_stage", (cfg.get("entry") or {}).get("min_stage") or 0))
+
+
+def sell_hams(kd: dict, cfg: dict) -> dict:
+    """#226 (addendum 7): the shop buys the hams in whole `hams_per_coin` (25 hams = 1 coin), the rest stays in the stock. The coins go to
+    kd["pending_coins"] at once (paid by the caller through the HomeQuest store and settled, as before), so a repeated or failed payment
+    never pays twice and never loses the hams. Fewer than hams_per_coin -> LearnError (the shop does not show the ham then)."""
+    st = ham_state(kd, cfg)
+    if st["sell_coins"] <= 0:
+        raise LearnError("invalid", f"fewer than {st['per_coin']} hams")
+    kd["hams"] = st["balance"] - st["sell_hams"]
+    kd["pending_coins"] = int(kd.get("pending_coins", 0)) + st["sell_coins"]
+    return {"sold": st["sell_hams"], "coins": st["sell_coins"], **ham_state(kd, cfg)}
 
 
 def reward_open(kd: dict, op: str, day: str, ground: str | None = None) -> bool:
@@ -159,18 +179,14 @@ def reward_open(kd: dict, op: str, day: str, ground: str | None = None) -> bool:
 
 
 def reward(kd: dict, op: str, day: str, hits: int, cfg: dict, won: int | None = None, ground: str | None = None) -> dict:
-    """Finished set -> hams (1 per right answer, only if the day's reward of this operation is still open) into the child's balance; every `hams_per_coin` hams
-    become a coin (kd["pending_coins"], paid by the caller through the HomeQuest store and then settled). Returns what the child sees.
+    """Finished set -> hams (1 per right answer, only if the day's reward of this operation is still open) into the child's stock. Since #226
+    the hams stay in the stock (they do not spoil) until the child sells them in the shop (sell_hams); `coins` is always 0. Returns what the child sees.
     won: the aiming hunt (#188): the hams of the animals hit instead of hits x hams_per_hit (the same daily rule)."""
     rc = cfg["learning"]["reward"]
     eligible = reward_open(kd, op, day, ground)
     hams = (int(won) if won is not None else int(hits) * int(rc["hams_per_hit"])) if eligible else 0
-    per = int(rc["hams_per_coin"])
-    bal = int(kd.get("hams", 0)) + hams
-    coins = bal // per
-    kd["hams"] = bal - coins * per
-    kd["pending_coins"] = int(kd.get("pending_coins", 0)) + coins
-    return {"eligible": eligible, "hams": hams, "coins": coins, **ham_state(kd, cfg)}
+    kd["hams"] = int(kd.get("hams", 0)) + hams
+    return {"eligible": eligible, "hams": hams, "coins": 0, **ham_state(kd, cfg)}
 
 
 def pending_coins(data: dict) -> dict[str, int]:
@@ -381,6 +397,12 @@ class LearningHub:
         self.rng = rng or random.Random()
         self.sets: dict[str, LearnSet] = {}
         self._n = 0
+
+    def sell(self, kid: str) -> dict:
+        """#226: sell the child's hams in whole hams_per_coin (see sell_hams), saved at once."""
+        out = sell_hams(_kid(self.data, kid), self.cfg)
+        self.save(self.data)
+        return out
 
     def start(self, kid: str, op: str, mode: str | None = None) -> LearnSet:
         if op not in self.cfg["learning"]["ops"]:

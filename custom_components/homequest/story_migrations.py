@@ -377,6 +377,59 @@ def fortress4_threshold(text: str) -> tuple[str, int, list[str]]:
     return text[: t.start()] + t.group(1) + str(F4_NEW) + text[t.end():], 1, []
 
 
+# ---- v1.9 (#227): four optional daily tasks for both children (shown every day, not in the day's progress; the parent changes them in Rodič) ----
+OPTIONAL_TASKS = [
+    {"id": "optional_dishwasher", "name": "Vyndat myčku", "icon": "mdi:dishwasher", "period": "daily", "reward": 1, "optional": True},
+    {"id": "optional_trash", "name": "Vynést koš", "icon": "mdi:delete-empty", "period": "daily", "reward": 1, "optional": True},
+    {"id": "optional_recycling", "name": "Vynést tříděný odpad", "icon": "mdi:recycle", "period": "daily", "reward": 1, "optional": True},
+    {"id": "optional_toilet_paper", "name": "Doplnit toaletní papír", "icon": "mdi:paper-roll", "period": "daily", "reward": 1, "optional": True},
+]
+OPTIONAL_NOTE = "v1.9 (#227): optional daily task"
+
+
+def _min_daily_reward(text: str) -> int:
+    """The smallest reward of an active daily task in the catalog text (one-line or block items); 1 when none is found."""
+    import yaml
+    try:
+        tasks = (yaml.safe_load(text) or {}).get("tasks") or []
+    except yaml.YAMLError:
+        return 1
+    rs = [int(t.get("reward", 1)) for t in tasks if isinstance(t, dict) and t.get("period", "daily") == "daily"
+          and not t.get("archived") and t.get("enabled", True) is not False and isinstance(t.get("reward", 1), int)]
+    return min(rs) if rs else 1
+
+
+def optional_tasks(text: str) -> tuple[str, int, list[str]]:
+    """v1.9 (#227): the four optional daily tasks at the end of `tasks:` (in the form of the catalog: one-line or block items), the reward of
+    the smallest active daily task; a task id the catalog has already is left (also when the family changed it)."""
+    missing = [t for t in OPTIONAL_TASKS if not re.search(r"^ *- (?:\{ *)?id: *" + t["id"] + r"\b", text, re.M)]
+    if not missing:
+        return text, 0, []
+    head = re.search(r"^tasks:[ \t]*(?:#.*)?$", text, re.M)
+    if not head:
+        return text, 0, ["no tasks: section in the catalog - the optional tasks not added"]
+    nxt = re.compile(r"^[A-Za-z_][\w-]*:", re.M).search(text, head.end())
+    end = nxt.start() if nxt else len(text)
+    body = text[head.end():end]
+    items = re.findall(r"^( *)- (\{ *)?id:", body, re.M)                 # the task items (not the lines of a `days:` list)
+    if not items:
+        return text, 0, ["the tasks: section has no items - the optional tasks not added"]
+    ind, one_line = items[-1][0], bool(items[-1][1])
+    reward = _min_daily_reward(text)
+    add = ""
+    for t in missing:
+        t = {**t, "reward": reward}
+        if one_line:
+            add += f"{ind}- {{ " + ", ".join(f"{k}: {_scalar(v) if k != 'icon' else chr(34) + v + chr(34)}" for k, v in t.items()) + f" }}   # {OPTIONAL_NOTE}\n"
+        else:
+            kv = list(t.items())
+            add += f"{ind}- {kv[0][0]}: {_scalar(kv[0][1])}\n" + "".join(f"{ind}  {k}: {_scalar(v)}\n" for k, v in kv[1:])
+    cut = head.end() + len(body.rstrip("\n")) + 1                     # after the last line of the section (blank lines stay after it)
+    cut = min(cut, end)
+    pre = text[:cut] if text[:cut].endswith("\n") else text[:cut] + "\n"
+    return pre + add + text[cut:], len(missing), []
+
+
 STEPS: list[Step] = [
     Step("v1.7-cast-ids", "story.yaml", cast_ids),
     Step("v1.7-shop-off", "catalog.yaml", shop_off),
@@ -386,6 +439,7 @@ STEPS: list[Step] = [
     Step("v1.9-hunter-hats", "catalog.yaml", hunter_hats),
     Step("v1.9-mikado", "catalog.yaml", mikado),
     Step("v1.9-fortress-4-threshold", "story.yaml", fortress4_threshold),
+    Step("v1.9-optional-tasks", "catalog.yaml", optional_tasks),
 ]
 
 

@@ -20,9 +20,10 @@ import { renderQuests } from "./views/quests.js";
 import { renderPinPad } from "./views/pin.js";            // #129 (15): the PIN settings are hidden (not used); the pad stays while a PIN is set
 import { bgExists, introDialog, renderQuest, stageDialog } from "./views/quest.js";
 import { renderPrep, siegeMode, victoryFlow } from "./views/siege.js";
+import { itemGift } from "./views/transition.js";       // #226 point 6: "Máš luk!"
 import { layoutReport, reportLines, viewportHeight } from "./lib/layout.js";
 import { compatInfo, compatLines } from "./lib/compat.js";
-import { reportUrl } from "./lib/report.js";
+import { REPORT_REPO, reportUrl } from "./lib/report.js";
 import { reportFacts } from "./views/parent.js";
 import { UPRIGHT_CSS, uprightGuard } from "./lib/upright.js";
 import { barGain, introSeen, markIntroSeen, markStageSeen, serverSeen, shouldAutoIntro, stageAt, stageSeen, stageToCelebrate } from "./lib/story.js";
@@ -216,8 +217,7 @@ class HomeQuestPanel extends HTMLElement {
 
   _diagReportUrl(lines = this._diagLines()) {
     const ctx = this.view ? this._ctx() : { view: {}, haVersion: "", lang: "" };
-    const repo = (ctx.view.settings || {}).report_repo || "eloupak/homequest-dist";      // a child's view has no settings: the default
-    return reportUrl(repo, reportFacts(ctx), lines);
+    return reportUrl(REPORT_REPO, reportFacts(ctx), lines);      // #175 addendum 1: the one private repository
   }
 
   async _copyDiag(btn) {
@@ -308,7 +308,7 @@ class HomeQuestPanel extends HTMLElement {
     await this._ensureStage(view);
     const prev = this.view;
     this.view = view;
-    this.sound.available = SOUND_IN_PROD || view.env === "test";
+    this.sound.available = SOUND_IN_PROD;                          // UAT beta 2: the sound stays off everywhere, no speaker in the header (TEST too)
     if (view.env === "test" && !this._soundMapAsked) {            // the test instance: the variants chosen in the sound lab
       this._soundMapAsked = true;
       this.api.call("sound_map").then((r) => this.sound.setMap(r.map), () => {});
@@ -466,6 +466,25 @@ class HomeQuestPanel extends HTMLElement {
     this._renderNav(ctx, needHero, siege || (waiting ? { waiting } : null) || (!kid ? { nokid: true } : null));
     this._renderSheet();
     this._maybeIntro(ctx, needHero);
+    this._maybeBowHunt(ctx, needHero);
+  }
+
+  /** #226 point 6: after the child's first purchase of the hunt's item (the server sets kid.seen.bow_hunt = "pending") one window
+   *  "Máš luk! Lovec … tě čeká v záložce Quest." (the item gift window); closing it tells the server (story_seen bow_hunt). */
+  _maybeBowHunt(ctx, needHero) {
+    const kid = ctx.kid;
+    if (!kid || needHero || this._introOpen || this._bowHuntOpen || !kid.seen || kid.seen.bow_hunt !== "pending") return;
+    if ((this._bowHuntDone = this._bowHuntDone || new Set()).has(ctx.kidId)) return;      // shown on this panel already (the server may lag)
+    const hv = ctx.view.hunt;
+    const item = ctx.items[(hv && hv.needs_item) || "bow_short"];
+    const name = (hv && hv.hunter) || "";                                                 // the story variable lovec (1st case), set by the parent
+    const kidId = ctx.kidId;
+    this._bowHuntOpen = true;
+    this._layer.append(itemGift(ctx, item, (name ? `Máš luk! Lovec ${name} tě čeká v záložce Quest. Vyraz na lov!` : "Máš luk! Lovec tě čeká v záložce Quest. Vyraz na lov!"), () => {
+      this._bowHuntOpen = false;
+      this._bowHuntDone.add(kidId);
+      this._ctx().act("story_seen", { what: "bow_hunt" }, { quiet: true });
+    }, { sub: null, ok: "Jdu na to!" }));
   }
 
   /* ------------------------------------------------------------- intro */

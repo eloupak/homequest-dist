@@ -106,6 +106,14 @@ export function aimPoseGrips(ix, spec, angles = [0, 25, 50]) {
   return out;
 }
 
+/** #226 point 2: the pose set of the worn outfit in `pose` has its fist cut out (manifest overlays.fist, the import does it for aim*). */
+export function hasFist(ix, spec, pose) {
+  if (!hasPose(ix, spec, pose)) return false;
+  const body = BODY_ART[spec.hero.body] || spec.hero.body;
+  const e = findEntry(ix, "layer", "set", `${setArtOf(ix, spec.items[spec.equipped.outfit], body)}.${pose}`, body, "front");
+  return !!(e && e.overlays && e.overlays.fist);
+}
+
 /** True when the hero of `spec` can be drawn in `pose` (a pose set of the worn outfit with a grip, and the weapon in that pose if one is worn). */
 export function hasPose(ix, spec, pose) {
   if (!pose || !spec || !spec.hero) return false;
@@ -184,6 +192,10 @@ function buildSetLayers(ix, spec, plainSet, body, outfitId) {
   const hdx = rodMode && Number.isFinite(Number(setEntry.head_dx)) ? Number(setEntry.head_dx) : 0;
   const atHead = (entry) => (entry && hdx ? entry.x + hdx : null);
   const ov = setEntry.overlays || {};
+  if (spec.fistOnly) {                                     // #226 point 2: only the fist of the pose (the hunt lays it over its own bow)
+    if (rodMode && ov.fist) add(ov.fist, null, "fist", 100);
+    return out;
+  }
   // addendum 5 point 9: a weapon held at a slant (manifest hold_tilt, e.g. the bow): the set picture with the fist turned the same way
   const tiltW = rodMode && poseWeapon && poseWeapon.hold_tilt ? poseWeapon.hold_tilt : 0;
   const tiltSet = tiltW && setEntry.tilt ? setEntry.tilt[String(tiltW)] : null;

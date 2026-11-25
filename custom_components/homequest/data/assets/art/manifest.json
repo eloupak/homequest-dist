@@ -5057,6 +5057,15 @@
     "rod_px": 47109
    },
    "kind": "layer",
+   "overlays": {
+    "fist": {
+     "file": "layers/set/hunter_1.aim0_drawn_boy_front.fist.webp",
+     "h": 69,
+     "w": 86,
+     "x": 761,
+     "y": 220
+    }
+   },
    "pose": "aim0_drawn",
    "revision": 1,
    "slot": "set",
@@ -5110,6 +5119,15 @@
     "rod_px": 42557
    },
    "kind": "layer",
+   "overlays": {
+    "fist": {
+     "file": "layers/set/hunter_1.aim0_drawn_girl_front.fist.webp",
+     "h": 60,
+     "w": 82,
+     "x": 742,
+     "y": 243
+    }
+   },
    "pose": "aim0_drawn",
    "revision": 1,
    "slot": "set",
@@ -5163,6 +5181,15 @@
     "rod_px": 47199
    },
    "kind": "layer",
+   "overlays": {
+    "fist": {
+     "file": "layers/set/hunter_1.aim0_relaxed_boy_front.fist.webp",
+     "h": 70,
+     "w": 85,
+     "x": 763,
+     "y": 218
+    }
+   },
    "pose": "aim0_relaxed",
    "revision": 1,
    "slot": "set",
@@ -5216,6 +5243,15 @@
     "rod_px": 41397
    },
    "kind": "layer",
+   "overlays": {
+    "fist": {
+     "file": "layers/set/hunter_1.aim0_relaxed_girl_front.fist.webp",
+     "h": 59,
+     "w": 82,
+     "x": 742,
+     "y": 244
+    }
+   },
    "pose": "aim0_relaxed",
    "revision": 1,
    "slot": "set",
@@ -5269,6 +5305,15 @@
     "rod_px": 12654
    },
    "kind": "layer",
+   "overlays": {
+    "fist": {
+     "file": "layers/set/hunter_1.aim25_drawn_boy_front.fist.webp",
+     "h": 70,
+     "w": 81,
+     "x": 733,
+     "y": 134
+    }
+   },
    "pose": "aim25_drawn",
    "revision": 1,
    "slot": "set",
@@ -5322,6 +5367,15 @@
     "rod_px": 15376
    },
    "kind": "layer",
+   "overlays": {
+    "fist": {
+     "file": "layers/set/hunter_1.aim25_drawn_girl_front.fist.webp",
+     "h": 68,
+     "w": 78,
+     "x": 714,
+     "y": 162
+    }
+   },
    "pose": "aim25_drawn",
    "revision": 1,
    "slot": "set",
@@ -5375,6 +5429,15 @@
     "rod_px": 13744
    },
    "kind": "layer",
+   "overlays": {
+    "fist": {
+     "file": "layers/set/hunter_1.aim25_relaxed_boy_front.fist.webp",
+     "h": 68,
+     "w": 84,
+     "x": 747,
+     "y": 169
+    }
+   },
    "pose": "aim25_relaxed",
    "revision": 1,
    "slot": "set",
@@ -5428,6 +5491,15 @@
     "rod_px": 17127
    },
    "kind": "layer",
+   "overlays": {
+    "fist": {
+     "file": "layers/set/hunter_1.aim25_relaxed_girl_front.fist.webp",
+     "h": 66,
+     "w": 78,
+     "x": 712,
+     "y": 187
+    }
+   },
    "pose": "aim25_relaxed",
    "revision": 1,
    "slot": "set",
@@ -5481,6 +5553,15 @@
     "rod_px": 11461
    },
    "kind": "layer",
+   "overlays": {
+    "fist": {
+     "file": "layers/set/hunter_1.aim50_drawn_boy_front.fist.webp",
+     "h": 73,
+     "w": 79,
+     "x": 703,
+     "y": 113
+    }
+   },
    "pose": "aim50_drawn",
    "revision": 1,
    "slot": "set",
@@ -5534,6 +5615,15 @@
     "rod_px": 14816
    },
    "kind": "layer",
+   "overlays": {
+    "fist": {
+     "file": "layers/set/hunter_1.aim50_drawn_girl_front.fist.webp",
+     "h": 72,
+     "w": 76,
+     "x": 675,
+     "y": 139
+    }
+   },
    "pose": "aim50_drawn",
    "revision": 1,
    "slot": "set",
@@ -5587,6 +5677,15 @@
     "rod_px": 12685
    },
    "kind": "layer",
+   "overlays": {
+    "fist": {
+     "file": "layers/set/hunter_1.aim50_relaxed_boy_front.fist.webp",
+     "h": 73,
+     "w": 81,
+     "x": 685,
+     "y": 115
+    }
+   },
    "pose": "aim50_relaxed",
    "revision": 1,
    "slot": "set",
@@ -5640,6 +5739,15 @@
     "rod_px": 13322
    },
    "kind": "layer",
+   "overlays": {
+    "fist": {
+     "file": "layers/set/hunter_1.aim50_relaxed_girl_front.fist.webp",
+     "h": 72,
+     "w": 74,
+     "x": 708,
+     "y": 107
+    }
+   },
    "pose": "aim50_relaxed",
    "revision": 1,
    "slot": "set",
@@ -11633,7 +11741,7 @@
   },
   "layer:weapon:bow_short.vert:boy:front": {
    "body": "boy",
-   "cylinder": true,
+   "cylinder": false,
    "file": "layers/weapon/bow_short.vert_boy_front.webp",
    "grip": [
     36.1,
@@ -11657,7 +11765,7 @@
   },
   "layer:weapon:bow_short.vert:girl:front": {
    "body": "girl",
-   "cylinder": true,
+   "cylinder": false,
    "file": "layers/weapon/bow_short.vert_girl_front.webp",
    "grip": [
     45.7,
@@ -14035,7 +14143,7 @@
   },
   "layer:weapon_top:bow_short.vert:boy:front": {
    "body": "boy",
-   "cylinder": true,
+   "cylinder": false,
    "file": "layers/weapon_top/bow_short.vert_boy_front.webp",
    "grip": [
     36.1,
@@ -14059,7 +14167,7 @@
   },
   "layer:weapon_top:bow_short.vert:girl:front": {
    "body": "girl",
-   "cylinder": true,
+   "cylinder": false,
    "file": "layers/weapon_top/bow_short.vert_girl_front.webp",
    "grip": [
     45.7,
@@ -15735,6 +15843,6 @@
    "taupe": "#B68B6C"
   }
  },
- "updated": 1795280874,
+ "updated": 1795498845,
  "version": 1
 }

@@ -25,7 +25,6 @@ from homeassistant.util import dt as dt_util, slugify
 from . import access, art, bootstrap, logic, setup, story_migrations, story_texts, story_vars, todo_items, upgrade
 from .catalog import catalog_for_client, parse_catalog, preview_items, with_kids, with_previews
 from .const import (
-    REPORT_REPO_DEFAULT,
     UPDATE_URL,
     ASSETS_DIR,
     CATALOG_FILE,
@@ -70,6 +69,15 @@ class Identity:
         self.is_admin = is_admin
         self.kid_id = kid_id
         self.via = via
+
+
+def _hunt_needs_item() -> str | None:
+    """#226: hunt.yaml entry.needs_item (blocking file read: run in the executor); None when the hunt's configuration cannot be read."""
+    try:
+        from .game.learning import load_config
+        return ((load_config().get("entry") or {}).get("needs_item")) or None
+    except Exception:  # noqa: BLE001 - the game runs without the hunt
+        return None
 
 
 class HomeQuestManager:
@@ -130,6 +138,7 @@ class HomeQuestManager:
         await self.async_load_story()                 # optional: a broken story.yaml never stops the game
         saved = await self._store.async_load()
         self.state = saved if isinstance(saved, dict) else logic.new_state()
+        self._hunt_item_cfg = await self.hass.async_add_executor_job(_hunt_needs_item)   # #226: known before the migrations (the hunt loads later)
         pkg = Path(__file__).parent
         self.version, has_data = await self.hass.async_add_executor_job(lambda: (bootstrap.package_version(pkg / "manifest.json"), (pkg / "data").is_dir()))
         for key in ("backup_failed", "migration_failed", "panel_failed", "restart_required"):   # raised again below when still true
@@ -145,9 +154,11 @@ class HomeQuestManager:
             logic.migrate_tasks(self.state, self.catalog, self._now()[1])
             logic.migrate_seen(self.state, self.story, self._now()[1])
             logic.migrate_amulet_worn(self.state, self.story, self._now()[1])
+            logic.migrate_bow_hunt_seen(self.state, self._hunt_item())       # #226 point 6: who owns the bow has seen "Máš luk!"
             if logic.MIGRATION_RECENT not in self.state.get("migrations", []) and self.state.get("task_templates"):
                 await self.hass.async_add_executor_job(self._backup_state, logic.MIGRATION_RECENT)   # #129: templates -> recently added
             logic.migrate_recent_tasks(self.state, self._now()[1])
+            logic.drop_report_repo(self.state)                              # #175 addendum 1: the old setting, quietly
             await self._migrate_story_file()                                # v1.5: real places of the story -> variables (#128)
             await self._run_file_migrations()                               # v1.7: the data steps of the releases (#140)
             self._sync()
@@ -532,9 +543,6 @@ class HomeQuestManager:
         except Exception as err:  # noqa: BLE001 - one phone must not stop the game or the other phones
             _LOGGER.warning("task notification to notify.%s failed: %s", target, err)
 
-    async def async_set_report_repo(self, repo: Any) -> dict[str, Any]:
-        return await self._mutate(lambda ts: logic.set_report_repo(self.state, repo))
-
     async def async_set_notify_targets(self, targets: Any) -> dict[str, Any]:
         return await self._mutate(lambda ts: logic.set_notify_targets(self.state, targets))
 
@@ -601,6 +609,18 @@ class HomeQuestManager:
             return
         if changed:
             self._notify()
+
+    def _hunt_item(self) -> str | None:
+        """#226 point 6: the item the hunt needs (hunt.yaml entry.needs_item): from the running hunt, else as read at setup."""
+        hub = self.hass.data.get(DOMAIN + "_learning")
+        if hub is not None:
+            return (hub.cfg.get("entry") or {}).get("needs_item") or None
+        return getattr(self, "_hunt_item_cfg", None)
+
+    def _has_art(self):
+        """#230: art.supports_item over the current manifest (the same rule the shop uses to hide an item)."""
+        idx = art.index(self._art_manifest)
+        return lambda item, body_type: art.supports_item(idx, item, body_type)
 
     def art_status(self) -> dict[str, Any]:
         return art.evaluate(self.catalog, self._art_manifest, self.state)
@@ -745,7 +765,7 @@ class HomeQuestManager:
             "today": dt_util.now().date().isoformat(),
             "catalog": self._client_catalog(ident.is_admin),
             "tasks_info": {k: v for k, v in logic.tasks_view(self.state, self.catalog, dt_util.now().date(), self._workday(), ident.is_admin).items() if k != "tasks"},
-            "art": self.art_status(),
+            "art": art.for_client(self.art_status()),      # #229: only version + effective, no list of missing pictures
             "story": story_vars.fill_story(story_texts.apply(self.story, self.state.get("story_texts")), self.story_values()) if self.story else None,   # own paragraphs (v1.6), places and characters filled in (#128)
             "settings": self._settings_view() if ident.is_admin else None,
             "started": bool(self.state.get("started_at")),     # v1.6: before the parent's "Spustit hru" a child sees "Tvrz se staví"
@@ -766,15 +786,20 @@ class HomeQuestManager:
         hub = self.hass.data.get(DOMAIN + "_learning")
         if hub is None:
             return None
-        from .game.learning import entry_status
+        from .game.learning import _kid, entry_status, ham_state, sell_min_stage
         e = hub.cfg.get("entry") or {}
         stage = logic.fortress_stage(self.state, self.story)
         kids = {}
         for k in kid_ids:
             ok, why = entry_status(hub.cfg, stage, (self.state.get("kids", {}).get(k) or {}).get("inventory"))
-            kids[k] = {"open": ok, "reason": why}
+            hs = ham_state(_kid(hub.data, k), hub.cfg)
+            shop = stage >= sell_min_stage(hub.cfg)
+            kids[k] = {"open": ok, "reason": why, "hams": hs["balance"],                  # #226: the ham in the shop: stage and whole lots of 25
+                       "shop": shop, "per_coin": hs["per_coin"],                         # UAT beta 2: the count shows from the stage on, also under 25
+                       "sell": {"hams": hs["sell_hams"], "coins": hs["sell_coins"]} if shop and hs["sell_coins"] > 0 else None}
         return {"min_stage": int(e.get("min_stage") or 0), "needs_item": e.get("needs_item"), "label": e.get("label") or "Na lov",
-                "locked_item": e.get("locked_item") or "", "kids": kids}
+                "locked_item": e.get("locked_item") or "", "kids": kids,
+                "hunter": str(self.story_values().get("lovec") or "")}         # #226 point 6: the hunter's name (story variable lovec, 1st case)
 
     def _settings_view(self) -> dict[str, Any]:
         """The parent's settings of v1.5 (#128): the phones for the task notifications and the story variables."""
@@ -783,8 +808,6 @@ class HomeQuestManager:
         return {
             "story_texts": {"own": len(own), "stale": sum(1 for p in story_texts.settings_view(self.story, own) if p["stale"]), "orphans": len(story_texts.orphans(self.story, own))},
             "notify_targets": list(self.state.get("notify_targets") or []),
-            "report_repo": self.state.get("report_repo") or REPORT_REPO_DEFAULT,      # #175: Nahlásit problém
-            "report_repo_default": REPORT_REPO_DEFAULT,
             "ha_task_reward": todo_items.ha_reward(self.state),                 # v1.8 (#166): a task added in a child's HA list
             "story_vars": {
                 "values": self.story_values(),
@@ -1029,18 +1052,20 @@ class HomeQuestManager:
 
     # ---- parent: daily task settings, holidays, one-off tasks, templates
 
-    async def async_add_task(self, name: Any, reward: Any, period: Any, kids: Any = None, single: Any = False, days: Any = None) -> dict[str, Any]:
+    async def async_add_task(self, name: Any, reward: Any, period: Any, kids: Any = None, single: Any = False, days: Any = None,
+                             optional: Any = False, source: Any = None) -> dict[str, Any]:
         """#129: one-off or daily; a daily task enters the catalog the rules use at once (with_parent_tasks)."""
         def run(ts: str) -> dict[str, Any]:
-            res = logic.add_task(self.state, self.catalog, name, reward, period, ts, kids, bool(single), days, self._now()[0])
+            res = logic.add_task(self.state, self.catalog, name, reward, period, ts, kids, bool(single), days, self._now()[0], bool(optional), source)
             self._apply_kids()
             self._sync()                                    # a new daily task of today reaches the children at once
             return res
         return await self._mutate(run)
 
-    async def async_update_task(self, task_id: str, name: Any = None, reward: Any = None, kids: Any = None, single: Any = None, days: Any = None) -> dict[str, Any]:
+    async def async_update_task(self, task_id: str, name: Any = None, reward: Any = None, kids: Any = None, single: Any = None, days: Any = None,
+                                optional: Any = None) -> dict[str, Any]:
         def run(ts: str) -> dict[str, Any]:
-            res = logic.update_task(self.state, self.catalog, task_id, ts, name, reward, kids, single, days)
+            res = logic.update_task(self.state, self.catalog, task_id, ts, name, reward, kids, single, days, optional)
             self._apply_kids()
             return res
         return await self._mutate(run)
@@ -1172,7 +1197,8 @@ class HomeQuestManager:
 
     async def async_buy(self, kid_id: str, item_id: str) -> dict[str, Any]:
         res = await self._mutate(
-            lambda ts: logic.buy(self.state, self.catalog, kid_id, item_id, ts, logic.fortress_stage(self.state, self.story))
+            lambda ts: logic.buy(self.state, self.catalog, kid_id, item_id, ts, logic.fortress_stage(self.state, self.story),
+                                 self._has_art(), self._hunt_item())   # #230: no picture = not for sale; #226: the first bow -> "Máš luk!"
         )
         self.hass.bus.async_fire(
             EVENT_PURCHASE,

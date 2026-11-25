@@ -2,8 +2,6 @@
 
 DOMAIN = "homequest"
 VERSION = "0.1.0"
-# #175: "Nahlásit problém" opens a new issue here unless the parent sets another GitHub repository (Nastavení hry → Kam hlásit problémy)
-REPORT_REPO_DEFAULT = "eloupak/homequest-dist"
 
 STORAGE_KEY = "homequest.state"
 STORAGE_VERSION = 1

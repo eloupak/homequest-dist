@@ -89,7 +89,7 @@ async def ws_scene_seen(mgr: HomeQuestManager, ident: Identity, connection: Any,
     return await mgr.async_scene_seen(mgr.require_kid(ident), msg["stage"], msg["what"])
 
 
-@websocket_api.websocket_command({vol.Required("type"): "homequest/story_seen", vol.Required("what"): vol.In(("intro", "stage")), vol.Optional("index"): int, **KID})
+@websocket_api.websocket_command({vol.Required("type"): "homequest/story_seen", vol.Required("what"): vol.In(("intro", "stage", "bow_hunt")), vol.Optional("index"): int, **KID})
 @_handler()
 async def ws_story_seen(mgr: HomeQuestManager, ident: Identity, connection: Any, msg: dict) -> Any:
     """The intro / a stage celebration seen to the end on this device: kept on the server, so another phone does not play it again (v1.4.0)."""

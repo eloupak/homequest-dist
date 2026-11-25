@@ -31,8 +31,10 @@ SCHEMAS: dict[str, dict] = {
     "shot": {vol.Required("set_id"): str, vol.Required("hit"): bool},
     "quit": {vol.Required("set_id"): str},
     "overview": {vol.Optional("top"): int},
+    "sell_hams": {},                                                    # #226
 }
 ADMIN_ONLY = {"overview"}
+HAM_CHANGES = {"shot", "answer", "quit", "sell_hams"}             # commands after which the ham stock may differ
 
 
 def _hub(hass: HomeAssistant) -> LearningHub:
@@ -54,7 +56,7 @@ def _command(cmd: str):
         if ident.kid_id is not None:
             data["kid_id"] = ident.kid_id
         try:
-            result = handle(hub, cmd, data, mgr.catalog["kids"], as_kid, _entry(mgr, hub.cfg))
+            result = handle(hub, cmd, data, mgr.catalog["kids"], as_kid, _entry(mgr, hub.cfg), fortress_stage(mgr.state, mgr.story))
         except LearnError as err:
             connection.send_error(msg["id"], err.code, err.message)
             return None
@@ -65,6 +67,8 @@ def _command(cmd: str):
                 continue
             settle_coins(hub.data, kid, n)
             hub.save(hub.data)
+        if cmd in HAM_CHANGES:
+            mgr._notify()                                              # #226: the ham in the shop follows the stock (async_adjust notifies only on coins)
         return result
 
     run.__name__ = f"ws_learn_{cmd}"

@@ -368,6 +368,10 @@ def parse_catalog(
         if not isinstance(archived, bool):
             errors.append(f"tasks '{task_id}': archived must be true or false")
             archived = False
+        optional = entry.get("optional", False)                  # #227: a daily task done only some days (not in the day's progress)
+        if not isinstance(optional, bool):
+            errors.append(f"tasks '{task_id}': optional must be true or false")
+            optional = False
         cat["tasks"][task_id] = {
             "id": task_id,
             "name": need_name("tasks", task_id, entry),
@@ -381,6 +385,7 @@ def parse_catalog(
             "archived": archived,                                         # gone from the lists, the name stays for the history
             "kids": [k for k in kids if k in cat["kids"]] if cat["kids"] else [k for k in kids if isinstance(k, str)],
             "kids_set": kids_set,
+            "optional": bool(optional and period == "daily"),
         }
 
     return cat, errors, warnings

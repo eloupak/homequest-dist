@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .learning import LearnError, LearningHub, _kid, animals, default_mode, done_today, ham_state, overview, public, public_ground, reward_open
+from .learning import LearnError, LearningHub, _kid, animals, default_mode, done_today, ham_state, overview, public, public_ground, reward_open, sell_min_stage
 
 
 def _kid_ids(kids: dict, msg: dict, as_kid: str | None = None) -> str:
@@ -27,8 +27,8 @@ def _own_set(hub: LearningHub, msg: dict, as_kid: str | None) -> None:
         raise LearnError("forbidden", "not your hunt")
 
 
-def handle(hub: LearningHub, cmd: str, msg: dict, kids: dict, as_kid: str | None = None, entry: dict | None = None) -> dict[str, Any]:
-    """kids: the catalog's kids {id: {name, ...}}. Raises LearnError."""
+def handle(hub: LearningHub, cmd: str, msg: dict, kids: dict, as_kid: str | None = None, entry: dict | None = None, stage: int | None = None) -> dict[str, Any]:
+    """kids: the catalog's kids {id: {name, ...}}. stage: the fortress stage reached (sell_hams waits for sell_min_stage; None = not checked). Raises LearnError."""
     cfg = hub.cfg
     if cmd == "state":
         day = hub.today()
@@ -61,6 +61,11 @@ def handle(hub: LearningHub, cmd: str, msg: dict, kids: dict, as_kid: str | None
     if cmd == "quit":                                                   # addendum 7 (#189): the cross = the end of the round now
         _own_set(hub, msg, as_kid)
         return hub.quit(msg["set_id"])
+    if cmd == "sell_hams":                                              # #226: the ham in the shop
+        kid = _kid_ids(kids, msg, as_kid)
+        if stage is not None and stage < sell_min_stage(cfg):
+            raise LearnError("locked", "the shop buys hams from a higher fortress stage")
+        return hub.sell(kid)
     if cmd == "overview":
         if as_kid is not None:
             raise LearnError("forbidden", "the overview is for parents")

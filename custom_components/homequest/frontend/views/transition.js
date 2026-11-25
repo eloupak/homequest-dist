@@ -56,7 +56,7 @@ export function coinGift(ctx, coins, onDone) {
  *  a missing item = nothing to show.
  *  #185 addendum 11: an outfit (a set has no picture of its own) = the child's hero (head and shoulders) wearing it, composed like the cards of
  *  the feather choice (BUST_HAT); any other item = its thumbnail. A picture that is missing or fails to load = no frame at all (name and text only). */
-export function itemGift(ctx, item, note, onDone) {
+export function itemGift(ctx, item, note, onDone, opts = {}) {
   let done = false;
   const finish = () => { if (done) return; done = true; overlay.remove(); if (onDone) onDone(); };
   const pic = giftPicture(ctx, item);
@@ -65,8 +65,8 @@ export function itemGift(ctx, item, note, onDone) {
       h("div", { class: "note" }, note || "Dar"),
       pic,
       h("div", { class: "name", "data-id": "gift-name" }, item ? item.name : ""),
-      h("div", { class: "muted" }, "Hrdina ji má hned na sobě. Převléknout se můžeš v Hrdinovi."),
-      h("button", { class: "btn", "data-act": "gift-ok", onclick: finish }, "Díky!")));
+      opts.sub === null ? null : h("div", { class: "muted", "data-id": "gift-sub" }, opts.sub || "Hrdina ji má hned na sobě. Převléknout se můžeš v Hrdinovi."),
+      h("button", { class: "btn", "data-act": "gift-ok", onclick: finish }, opts.ok || "Díky!")));   // #226: opts {sub (null = none), ok} for "Máš luk!"
   return overlay;
 }
 

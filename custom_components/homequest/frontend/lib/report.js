@@ -2,6 +2,9 @@
  * Assistant, the browser / system and the language. Never a child's, parent's or place's name, nor install_id (a family-data rule).
  * The parent writes what happened. Pure, tested in node (tests/js/report.test.mjs). */
 
+/** #175 addendum 1 (2026-11-15): every report goes to the one private repository (Inara answers there); no setting. */
+export const REPORT_REPO = "eloupak/homequest-feedback";
+
 export const REPORT_TEXTS = {
   cs: {
     title: "Problém: ",

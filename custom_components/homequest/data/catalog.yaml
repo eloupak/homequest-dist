@@ -612,3 +612,39 @@ tasks:
   days:
   - workday
   - free
+- id: optional_dishwasher
+  name: Vyndat myčku
+  icon: mdi:dishwasher
+  period: daily
+  reward: 1
+  days:
+  - workday
+  - free
+  optional: true
+- id: optional_trash
+  name: Vynést koš
+  icon: mdi:delete-empty
+  period: daily
+  reward: 1
+  days:
+  - workday
+  - free
+  optional: true
+- id: optional_recycling
+  name: Vynést tříděný odpad
+  icon: mdi:recycle
+  period: daily
+  reward: 1
+  days:
+  - workday
+  - free
+  optional: true
+- id: optional_toilet_paper
+  name: Doplnit toaletní papír
+  icon: mdi:paper-roll
+  period: daily
+  reward: 1
+  days:
+  - workday
+  - free
+  optional: true

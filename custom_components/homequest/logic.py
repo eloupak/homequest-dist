@@ -9,7 +9,7 @@ from __future__ import annotations
 import re
 import uuid
 from datetime import date, datetime, timedelta
-from typing import Any
+from typing import Any, Callable
 
 from . import story_vars as _story_vars
 from .const import (
@@ -301,6 +301,7 @@ def effective_task(state: dict[str, Any], task: dict[str, Any]) -> dict[str, Any
     ov = (state.get("task_settings") or {}).get(task["id"])
     out = dict(task)
     out.setdefault("days", list(DAY_TYPES))
+    out["optional"] = bool(task.get("optional"))                 # #227: shown every day, not counted in the day's progress
     if ov:
         if ov.get("kids"):                                       # the parent's "for whom" wins over the catalog's list; no setting = the catalog's (all children)
             out["kids"] = [k for k in (state.get("kids") or {}) if k in ov["kids"]] or list(task["kids"])
@@ -308,6 +309,8 @@ def effective_task(state: dict[str, Any], task: dict[str, Any]) -> dict[str, Any
             out["days"] = [d for d in DAY_TYPES if d in ov["days"]]
         if ov.get("single"):
             out["single"] = True                                 # "Pouze 1": the first child to finish a daily task owns it
+        if "optional" in ov:
+            out["optional"] = bool(ov["optional"])               # #227: the parent's "Volitelný" wins over the catalog's
         if ov.get("enabled") is False:                           # an old "off" switch: no kind of day
             out["days"] = []
     out["enabled"] = bool(task.get("enabled", True)) and bool(out["days"])   # a daily task with no kind of day is off
@@ -648,7 +651,7 @@ def _stored_kids(catalog: dict[str, Any], kids: Any) -> list[str] | None:
     return None if chosen is None or len(chosen) == len(catalog["kids"]) else chosen
 
 
-def add_oneoff(state: dict[str, Any], catalog: dict[str, Any], name: Any, reward: Any, single: Any, ts: str, kids: Any = None) -> dict[str, Any]:
+def add_oneoff(state: dict[str, Any], catalog: dict[str, Any], name: Any, reward: Any, single: Any, ts: str, kids: Any = None, source: Any = None) -> dict[str, Any]:
     """The parent assigns a one-off task to the children (all of them, or the chosen ones); it is also kept as a template.
     `single` stays what it was: anybody of the assigned children may do it, but only one of them."""
     name, reward, single = _oneoff_fields(name, reward, single)
@@ -658,6 +661,8 @@ def add_oneoff(state: dict[str, Any], catalog: dict[str, Any], name: Any, reward
     o = {"id": oid, "name": name, "reward": reward, "single": single, "status": "active", "created_at": ts, "finished_at": None, "done_by": {}}
     if only:
         o["kids"] = only
+    if isinstance(source, str) and source:
+        o["source"] = source[:40]                                # #228: the "Naposledy přidané" entry it was added from (the duplicate check)
     state.setdefault("oneoffs", {})[oid] = o
     remember_task(state, {"name": name, "reward": reward, "period": "oneoff", "single": single, "kids": only}, ts)
     _prune_oneoffs(state)
@@ -711,9 +716,17 @@ def remember_task(state: dict[str, Any], entry: dict[str, Any], ts: str = "") ->
         e["kids"] = list(entry["kids"])
     if e["period"] == "daily":
         e["days"] = list(entry.get("days") or DAY_TYPES)
-    rec = [r for r in state.get("recent_tasks", []) if {k: v for k, v in r.items() if k not in ("id", "at")} != e]
-    seq = state["recent_seq"] = int(state.get("recent_seq", 0)) + 1
-    state["recent_tasks"] = ([{"id": f"rec_{seq}", **e, "at": ts}] + rec)[:RECENT_MAX]
+    if entry.get("optional"):
+        e["optional"] = True                                       # #227
+    same = lambda r: {k: v for k, v in r.items() if k not in ("id", "at")} == e     # noqa: E731
+    old = next((r for r in state.get("recent_tasks", []) if same(r)), None)
+    rec = [r for r in state.get("recent_tasks", []) if not same(r)]
+    if old is not None:
+        rid = old["id"]                                            # #228: the same task keeps its id (one-off tasks point to it as their source)
+    else:
+        seq = state["recent_seq"] = int(state.get("recent_seq", 0)) + 1
+        rid = f"rec_{seq}"
+    state["recent_tasks"] = ([{"id": rid, **e, "at": ts}] + rec)[:RECENT_MAX]
 
 
 def migrate_recent_tasks(state: dict[str, Any], ts: str) -> bool:
@@ -740,7 +753,7 @@ def with_parent_tasks(catalog: dict[str, Any], state: dict[str, Any]) -> dict[st
     kids = list(catalog["kids"])
     for cid, c in (state.get("custom_tasks") or {}).items():
         tasks[cid] = {"id": cid, "name": c["name"], "icon": CUSTOM_ICON, "period": "daily", "reward": c["reward"], "enabled": True, "round": None,
-                      "days": list(DAY_TYPES), "note": "", "archived": False, "kids": kids, "kids_set": False, "custom": True}
+                      "days": list(DAY_TYPES), "note": "", "archived": False, "kids": kids, "kids_set": False, "custom": True, "optional": False}
     for tid, ov in (state.get("task_settings") or {}).items():
         if tid in tasks and ("name" in ov or "reward" in ov):
             tasks[tid] = {**tasks[tid], **{k: ov[k] for k in ("name", "reward") if k in ov}}
@@ -754,12 +767,12 @@ def _days_of(days: Any) -> list[str]:
 
 
 def add_task(state: dict[str, Any], catalog: dict[str, Any], name: Any, reward: Any, period: Any, ts: str, kids: Any = None, single: Any = False,
-             days: Any = None, today: date | None = None) -> dict[str, Any]:
+             days: Any = None, today: date | None = None, optional: Any = False, source: Any = None) -> dict[str, Any]:
     """#129 "Přidat úkol": a one-off task (as before) or a new daily task. A new daily task joins today's list at once when today's kind of day
     is one of its days (adding takes nothing from the children; every other change of the daily tasks counts from the next day).
     The caller puts the new daily task into its catalog (with_parent_tasks) before the next sync."""
     if period == "oneoff":
-        return add_oneoff(state, catalog, name, reward, single, ts, kids)
+        return add_oneoff(state, catalog, name, reward, single, ts, kids, source)
     if period != "daily":
         raise HomeQuestError(ERR_INVALID_PARAMS, "period must be daily or oneoff")
     name, reward, single = _oneoff_fields(name, reward, single)
@@ -779,6 +792,7 @@ def add_task(state: dict[str, Any], catalog: dict[str, Any], name: Any, reward: 
         ov = state.setdefault("task_settings", {}).setdefault(cid, {})
         ov.pop("kids", None)
         ov.pop("single", None)
+        ov.pop("optional", None)
     else:
         seq = state["custom_seq"] = int(state.get("custom_seq", 0)) + 1
         cid = f"custom_{seq}"
@@ -789,18 +803,20 @@ def add_task(state: dict[str, Any], catalog: dict[str, Any], name: Any, reward: 
         ov["kids"] = only
     if single:
         ov["single"] = True
+    if optional:
+        ov["optional"] = True                                     # #227
     plan = state.get("day_plan")
     if plan and plan.get("date") == (today.isoformat() if today else ts[:10]) and plan.get("type") in days and cid not in plan["tasks"]:
         plan["tasks"] = [*plan["tasks"], cid]
         plan.setdefault("kids", {})[cid] = only or [k for k in catalog["kids"]]
         if single:
             plan.setdefault("single", []).append(cid)
-    remember_task(state, {"name": name, "reward": reward, "period": "daily", "single": single, "kids": only, "days": days}, ts)
+    remember_task(state, {"name": name, "reward": reward, "period": "daily", "single": single, "kids": only, "days": days, "optional": bool(optional)}, ts)
     return {"task_id": cid}
 
 
 def update_task(state: dict[str, Any], catalog: dict[str, Any], task_id: str, ts: str, name: Any = None, reward: Any = None, kids: Any = None,
-                single: Any = None, days: Any = None) -> dict[str, Any]:
+                single: Any = None, days: Any = None, optional: Any = None) -> dict[str, Any]:
     """#129 "Upravit úkoly" → Uložit: name, reward, for whom, "Pouze 1" and (daily) the kinds of day. A daily task counts from the next day
     (the name and the reward at once); an active one-off task at once."""
     o = (state.get("oneoffs") or {}).get(task_id)
@@ -829,6 +845,8 @@ def update_task(state: dict[str, Any], catalog: dict[str, Any], task_id: str, ts
         base = {"name": n, "reward": r}
         for k, v in base.items():
             ov[k] = v
+    if optional is not None:
+        ov["optional"] = bool(optional)                           # #227: at once (it changes only where the task is listed and the progress)
     if days is not None:
         d = _days_of(days)
         set_task(state, catalog, task_id, "workday" in d, "free" in d, kids, single)
@@ -943,9 +961,12 @@ def reset_hero(
 
 
 def buy(
-    state: dict[str, Any], catalog: dict[str, Any], kid_id: str, item_id: str, ts: str, stage: int | None = None
+    state: dict[str, Any], catalog: dict[str, Any], kid_id: str, item_id: str, ts: str, stage: int | None = None,
+    has_art: Callable[[dict[str, Any], str], bool] | None = None, hunt_item: str | None = None,
 ) -> dict[str, Any]:
-    """stage: the fortress stage reached (fortress_stage); an item with min_stage above it is not for sale yet (#187). None = not checked."""
+    """stage: the fortress stage reached (fortress_stage); an item with min_stage above it is not for sale yet (#187). None = not checked.
+    has_art(item, body_type): False = the item has no picture for the hero's body and is not for sale (#230, art.supports_item). None = not checked.
+    hunt_item: the item the hunt needs (hunt.yaml entry.needs_item): its first purchase sets kid.seen.bow_hunt = "pending" (#226 point 6)."""
     kid = _kid(state, kid_id)
     item = _item(catalog, item_id)
     if not item["shop"]:
@@ -954,6 +975,8 @@ def buy(
         raise HomeQuestError(ERR_NOT_FOUND, "item is not for sale yet (the fortress has not reached its stage)")
     if kid["hero"] is None:
         raise HomeQuestError(ERR_INVALID_STATE, "create a hero first")
+    if has_art is not None and not has_art(item, kid["hero"].get("body", "male")):
+        raise HomeQuestError(ERR_NOT_FOUND, "item is not for sale (no picture yet)")
     dye = item["slot"] == DYE_SLOT
     if dye and kid["hero"].get("hair_color") == item["color"]:
         raise HomeQuestError(ERR_ALREADY_OWNED, "the hero has this hair colour already")
@@ -970,6 +993,9 @@ def buy(
         kid["hero"]["hair_color"] = item["color"]      # a bottle of dye is used up at once: the colour is on the hero, nothing is kept
     else:
         kid["inventory"].append(item_id)
+        if hunt_item and item_id == hunt_item:                          # #226 point 6: "Máš luk!" once, after the first purchase only
+            seen = kid.setdefault("seen", {"intro": False, "stage": 0})
+            seen.setdefault("bow_hunt", "pending")                      # not again after a refund and a new purchase (the key stays)
     _history(kid, ts, type="bought", item=item_id, coins=-item["price"])
     return {"kid_id": kid_id, "item_id": item_id, "item": item}
 
@@ -1315,8 +1341,10 @@ def mark_story_seen(state: dict[str, Any], story: dict[str, Any] | None, kid_id:
         if index is None or not 0 <= int(index) < len(stages):
             raise HomeQuestError(ERR_INVALID_PARAMS, "index: a stage of the fortress")
         seen["stage"] = max(int(seen.get("stage", 0)), int(index))
+    elif what == "bow_hunt":                                           # #226 point 6: the "Máš luk!" window was closed
+        seen["bow_hunt"] = True
     else:
-        raise HomeQuestError(ERR_INVALID_PARAMS, "what: intro or stage")
+        raise HomeQuestError(ERR_INVALID_PARAMS, "what: intro, stage or bow_hunt")
     return {"kid_id": kid_id, "seen": dict(seen)}
 
 
@@ -1395,6 +1423,22 @@ def claim_siege_gift(state: dict[str, Any], story: dict[str, Any] | None, kid_id
 # item per colour from story.yaml (siege.gives) and a child owns the one of its kid["trophies"]. Equipped as kid["equipped"]["neck"].
 
 TROPHY_SLOT = "neck"
+MIGRATION_BOW_HUNT = "v1.9-bow-hunt-seen"
+
+
+def migrate_bow_hunt_seen(state: dict[str, Any], hunt_item: str | None) -> bool:
+    """One-off (#226 point 6, v1.9.0-beta.2): a child who owns the hunt's item already (bought with beta 1) does not get "Máš luk!" afterwards.
+    Coins, items and history are not touched."""
+    done = state.setdefault("migrations", [])
+    if MIGRATION_BOW_HUNT in done or not hunt_item:                # without the hunt's item it waits (not marked done)
+        return False
+    for kid in state.get("kids", {}).values():
+        if hunt_item in (kid.get("inventory") or []):
+            kid.setdefault("seen", {"intro": False, "stage": 0})["bow_hunt"] = True
+    done.append(MIGRATION_BOW_HUNT)
+    return True
+
+
 MIGRATION_AMULET_WORN = "v1.4-amulet-worn"
 
 
@@ -1487,23 +1531,10 @@ def set_notify_targets(state: dict[str, Any], targets: Any) -> dict[str, Any]:
     return {"notify_targets": clean}
 
 
-_REPO_RE = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})/[A-Za-z0-9._-]{1,100}$")
-
-
-def set_report_repo(state: dict[str, Any], repo: Any) -> dict[str, Any]:
-    """#175: where "Nahlásit problém" opens a new issue - a GitHub repository "owner/name"; "" or None = the default (REPORT_REPO_DEFAULT)."""
-    if repo is None or (isinstance(repo, str) and not repo.strip()):
-        state.pop("report_repo", None)
-        return {"report_repo": None}
-    if not isinstance(repo, str):
-        raise HomeQuestError(ERR_INVALID_PARAMS, "repo: owner/name of a GitHub repository")
-    clean = repo.strip().removeprefix("https://").removeprefix("github.com/").strip("/")
-    if clean.endswith("/issues"):
-        clean = clean[: -len("/issues")]
-    if not _REPO_RE.match(clean):
-        raise HomeQuestError(ERR_INVALID_PARAMS, "repo: owner/name of a GitHub repository")
-    state["report_repo"] = clean
-    return {"report_repo": clean}
+def drop_report_repo(state: dict[str, Any]) -> bool:
+    """#175 addendum 1: the setting "Kam hlásit problémy" is gone (reports go to one fixed repository); a value saved by v1.7-v1.9
+    is dropped quietly on load, nothing else changes. True when there was one."""
+    return state.pop("report_repo", None) is not None
 
 
 def _coins_word(n: int) -> str:

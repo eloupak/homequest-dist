@@ -107,3 +107,34 @@ def evaluate(catalog: dict[str, Any], manifest: dict[str, Any] | None, state: di
         "version": int((manifest or {}).get("updated", 0)),
         "has_manifest": manifest is not None,
     }
+
+
+CLIENT_KEYS = ("version", "effective")     # #229: what the panels read from view.art (homequest-app.js: version; games/learning/swing lab: effective)
+
+
+def for_client(ev: dict[str, Any]) -> dict[str, Any]:
+    """#229: the part of evaluate() sent to the panels. The lists of missing pictures (`missing`, `blocking`) stay on the server."""
+    return {k: ev[k] for k in CLIENT_KEYS if k in ev}
+
+
+def _has(idx: set[tuple], slot: str, art_id: str, body: str) -> bool:
+    """The front picture of a layer for this body (or for any body); a set delivered only in its poses counts by its vert pose (layers.js indexManifest)."""
+    ids = (art_id, f"{art_id}.vert") if slot == "set" else (art_id,)
+    return any(("layer", slot, i, b, "front") in idx for i in ids for b in (body, None))
+
+
+def supports_item(idx: set[tuple], item: dict[str, Any], body_type: str) -> bool:
+    """#230: can the item be drawn on this body? The same rule as supportsItem in frontend/lib/layers.js (the shop hides what this says no to,
+    the server refuses to sell it): no picture = not for sale. A bottle of dye and a trophy with its own picture are always fine."""
+    body = BODY_ART.get(body_type, body_type)
+    slot, art_id = item["slot"], item.get("art") or item["id"]
+    if slot == DYE_SLOT or item.get("picture"):
+        return True
+    if slot in LAYERED_SLOTS and any(k[0] == "layer" and k[1] == "set" for k in idx):
+        return False                          # replaced by whole-outfit sets
+    if slot == "back" and _has(idx, "back", f"{art_id}.vert", body):
+        return True                           # #130 two-layer cape
+    if slot == "outfit":
+        fb = item.get("art_fallback")
+        return _has(idx, "set", art_id, body) or bool(fb and _has(idx, "set", fb, body))
+    return _has(idx, ART_SLOT.get(slot, slot), art_id, body)

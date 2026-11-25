@@ -5,7 +5,7 @@ import { h } from "../../lib/dom.js";
 import { heroSpec } from "../../views/common.js";
 import { buildPad, press } from "../lib/numpad.js";
 import { Scene } from "../lib/scene.js";
-import { aimPoseGrips, poseGrip } from "../../lib/layers.js";
+import { aimPoseGrips, hasFist, poseGrip } from "../../lib/layers.js";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -29,7 +29,10 @@ function heroNode(ctx, kid, outfit, pose = "reach", quiver = null) {
       for (const [p, g] of Object.entries(aimPoseGrips(ctx.stage.ix, spec))) {
         const n = ctx.stage.hero(`hunt-${kid.id}-${p}`, { ...spec, pose: p });
         n.style.setProperty("--delay", "0s");                          // the same idle bob as the others, so a swap does not jump
-        poses[p] = { node: n, grip: g };
+        // #226 point 2: the fist of the pose alone (manifest overlays.fist), laid by the scene over its bow so the fingers wrap it
+        const fist = hasFist(ctx.stage.ix, spec, p) ? ctx.stage.hero(`hunt-${kid.id}-${p}-fist`, { ...spec, pose: p, fistOnly: true }) : null;
+        if (fist) fist.style.setProperty("--delay", "0s");
+        poses[p] = { node: n, grip: g, fist };
       }
       if (Object.keys(poses).length) node.style.setProperty("--delay", "0s");
       return { node, grip, poses };

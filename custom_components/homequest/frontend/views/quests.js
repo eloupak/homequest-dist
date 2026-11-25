@@ -15,10 +15,14 @@ export function renderQuests(ctx) {
   // today's daily tasks (the server only gives the ones of today's kind of day); the one-off tasks of the parent are shown until they are done
   // by today's plan (a task that is archived but still runs today, e.g. after a release, is shown); without a plan: the tasks that are not archived
   const plan = info.day_plan ? new Set(info.day_plan) : null;
-  const daily = cat.tasks
+  const eff = new Map((info.tasks || []).map((t) => [t.id, t]));              // #227: the parent's "Volitelný" is in the effective tasks
+  const isOptional = (t) => !!(eff.has(t.id) ? eff.get(t.id).optional : t.optional);
+  const todays = cat.tasks
     .filter((t) => t.period === "daily" && (plan ? plan.has(t.id) : !t.archived) && kid.tasks[t.id])
     .map((task) => ({ task, st: kid.tasks[task.id] }))
     .sort(sort);
+  const daily = todays.filter((e) => !isOptional(e.task));                    // the day's progress and "všechno splněno" count only these
+  const extra = todays.filter((e) => isOptional(e.task));
   const oneoff = (info.oneoffs || [])
     .filter((o) => o.status === "active" && kid.tasks[o.id] && kid.tasks[o.id].status !== "approved")
     .map((o) => ({ task: { id: o.id, name: o.name, reward: o.reward, icon: "mdi:star-circle" }, st: kid.tasks[o.id] }))
@@ -59,8 +63,8 @@ export function renderQuests(ctx) {
     for (const e of items) sec.append(questCard(ctx, e));
     return sec;
   };
-  root.append(...[list("Dnes", daily), list("Jednorázové", oneoff)].filter(Boolean));
-  if (!daily.length && !oneoff.length) root.append(h("div", { class: "empty" }, "Zatím tu nejsou žádné úkoly."));
+  root.append(...[list("Dnes", daily), list("Příležitost", extra), list("Občas", oneoff)].filter(Boolean));
+  if (!daily.length && !extra.length && !oneoff.length) root.append(h("div", { class: "empty" }, "Zatím tu nejsou žádné úkoly."));
   return root;
 }
 

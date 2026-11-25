@@ -43,6 +43,11 @@ button { font: inherit; color: inherit; cursor: pointer; border: 0; }
 ha-icon { --mdc-icon-size: 28px; }
 .coin { width: 1.15em; height: 1.15em; vertical-align: -0.2em; }
 .coin-wrap { display: inline-block; line-height: 1; }
+.ham-wrap { position: relative; display: inline-block; width: 1.15em; height: 1.15em; vertical-align: -0.2em; }   /* #226: the ham of the hunt */
+.ham-wrap svg { display: block; width: 100%; height: 100%; }
+.hambtn { display: inline-flex; align-items: center; gap: 4px; font-size: 22px; font-weight: bold; color: var(--gold);   /* UAT beta 2: on the dark page, not the dark ink */ background: rgba(255,255,255,0.08); border: 2px solid var(--gold); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.hambtn .ham-wrap { width: 1.4em; height: 1.4em; }
+.hamq b { font-size: 1.15em; }
 
 /* ---- layout ---- */
 header {
@@ -123,6 +128,7 @@ nav button ha-icon { --mdc-icon-size: 28px; }
 .avatar canvas { width: 100%; height: 100%; image-rendering: pixelated; display: block; }
 .herohead h2 { font-size: 22px; color: var(--ink); }
 .coins { font-size: 26px; font-weight: bold; color: var(--ink); display: inline-flex; align-items: center; gap: 6px; }
+.inv-head .coins { color: var(--gold); }   /* UAT beta 2: the shop header is on the dark page (the hero and quest cards keep the ink) */
 .coins.bump { animation: bump 0.7s ease; }
 @keyframes bump { 0% { transform: scale(1); } 30% { transform: scale(1.35); } 100% { transform: scale(1); } }
 .progress { margin-top: 10px; }
@@ -482,6 +488,7 @@ nav:empty { border-top: 0; }
 .parent-ui .p-seg button { flex: 1; min-height: 44px; border-radius: 8px; background: transparent; color: var(--hq-p-muted); font-weight: 600; font-size: 15px; }
 .parent-ui .p-seg button[aria-selected="true"] { background: var(--hq-p-surface); color: var(--hq-p-text); box-shadow: 0 1px 2px #0003; }
 .parent-ui .p-seg.locked button[aria-selected="false"] { opacity: .4; }
+.parent-ui .p-seg.no-oneoff button[data-seg-id="oneoff"] { opacity: .4; }   /* UAT beta 2: a daily task may switch Dnes <-> Příležitost only */
 .parent-ui .p-btn { min-height: 44px; padding: 0 16px; border-radius: 10px; background: var(--hq-p-chip); color: var(--hq-p-text); font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--hq-p-line); }
 .parent-ui .p-btn.primary { background: var(--hq-p-primary); color: var(--hq-p-primary-text); border-color: transparent; }
 .parent-ui .p-btn.ghost { background: transparent; border-color: transparent; }
