@@ -5,7 +5,8 @@ children, the example story with made-up places, the art). Pure Python, no HA im
   replaced; a new story or catalog content reaches an install only through migrations, see story_migrations.py).
 - Assets: every file of the package that the install lacks is copied (amulets, story pictures, new art); an existing file is never overwritten.
 - Art manifest: the items of the package are merged by the rules of artsync (a new item or a higher revision wins; the install's newer item,
-  a same-revision refit and the global fields stay) - this is what tools/promote_art.py did by hand before v1.7.
+  the global fields stay;
+  since v1.9.1 also a same-revision refit of the package, an install makes no art of its own) - this is what tools/promote_art.py did by hand before v1.7.
 An install without `data/` in the integration (the private deploy.sh flow) is not touched.
 """
 from __future__ import annotations
@@ -57,8 +58,8 @@ def install_defaults(pkg_data: Path, data_dir: Path) -> dict[str, Any]:
             report["assets_added"] += 1
     if not manifest_new and (pkg_assets / ART_MANIFEST).is_file():
         prod_art, pkg_art = str(assets / "art"), str(pkg_assets / "art")
-        promote, _skipped, _warn = artsync.plan(prod_art, pkg_art)
-        promote = [p for p in promote if "refit" not in p[1]]        # never overwrite an existing file of the same revision
+        promote, _skipped, _warn = artsync.plan(prod_art, pkg_art, refit_always=True)   # v1.9.1: a refit (same revision, new content)
+                                                                                         # reaches the install too (the bow fix of 1.9 did not)
         if promote:
             artsync.apply(prod_art, pkg_art, promote)
             report["art_promoted"] = [k for k, _, _ in promote]

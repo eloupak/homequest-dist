@@ -260,7 +260,7 @@ select.field option:hover, select.field option:focus, select.field option:checke
 @supports not (width: 1cqw) {
   .scene { width: max(100%, 66.667vh); }
   .scene-box.tab .scene { width: 100%; }
-  .hero-zoom .hq-hero { width: min(100vw, 100vh); }
+  .hero-zoom .hq-hero { width: min(100vw, 88vh); margin-bottom: min(12vw, 12vh); }
   .hero-zoom canvas { width: min(100vw, 100vh); height: min(100vw, 100vh); }
 }
 /* progress of the fortress */
@@ -353,7 +353,7 @@ select.field option:hover, select.field option:focus, select.field option:checke
 /* ---- the hero on the whole screen (tap on a hero) ---- */
 .hero-zoom { position: fixed; inset: 0; z-index: 80; background: var(--bg); display: flex; align-items: center; justify-content: center; container-type: size; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); box-sizing: border-box; cursor: zoom-out; animation: hq-zoom-in 0.2s ease-out both; transform-origin: var(--ox, 50%) var(--oy, 50%); -webkit-tap-highlight-color: transparent; }
 .hero-zoom .zoomstage { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
-.hero-zoom .hq-hero { width: min(100cqw, 100cqh); max-width: none; height: auto; }
+.hero-zoom .hq-hero { width: min(100cqw, 88cqh); max-width: none; height: auto; margin-bottom: min(12cqw, 12cqh); }   /* v1.9.1: the feet reach ~6 % below the square box */
 .hero-zoom canvas { width: min(100cqw, 100cqh); height: min(100cqw, 100cqh); image-rendering: pixelated; }
 @keyframes hq-zoom-in { from { opacity: 0; transform: scale(0.35); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .hero-zoom { animation: none; } }
@@ -408,7 +408,7 @@ select.field option:hover, select.field option:focus, select.field option:checke
 /* ---- illustrated hero (lib/layers.js adds the animation CSS) ---- */
 .hq-hero { width: 240px; }
 .hq-hero.portrait { width: 96px; }
-.herostage .hq-hero:not(.portrait) { width: clamp(150px, calc(100vw - 208px), 280px); }
+.herostage .hq-hero:not(.portrait) { width: clamp(150px, calc(100vw - 208px), 280px); margin-bottom: calc(clamp(150px, calc(100vw - 208px), 280px) * 0.06); }   /* v1.9.1: the boy's soles reach ~6 % below the box */
 .avatar .hq-hero { width: 100%; height: 100%; aspect-ratio: auto; }
 .choice .hq-hero.portrait { width: 96px; margin-bottom: 4px; border-radius: 10px; background: var(--stage); }
 .icard .thumb, .slot .thumb { object-fit: contain; image-rendering: auto; }

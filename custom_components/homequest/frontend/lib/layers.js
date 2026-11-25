@@ -478,6 +478,7 @@ export class IllustratedStage {
 
   _layerEls(spec, view, expression) {
     const layers = buildLayers(this.ix, spec, view, expression);
+    this._feetY = feetY(layers);
     return layers.map((l) => {
       const e = l.entry;
       const img = document.createElement("img");
@@ -528,7 +529,7 @@ export class IllustratedStage {
       layers.className = "hq-layers";
       fig.append(shadow, layers);
       root.append(fig);
-      e = { root, fig, layers, view: null, sig: null, timer: null, crop: null, size: null };
+      e = { root, fig, layers, shadow, view: null, sig: null, timer: null, crop: null, size: null };
       this.entries.set(k, e);
       root.style.setProperty("--delay", `${-(Math.random() * 4).toFixed(2)}s`);
     }
@@ -558,6 +559,7 @@ export class IllustratedStage {
 
   _fill(e, spec, view, expression) {
     const els = this._layerEls(spec, view, expression);
+    e.shadow.style.top = this._feetY ? `${((this._feetY / CANVAS) * 100 - 4).toFixed(2)}%` : "";   // v1.9.1: under the real soles (the boy's poses reach y ~1080)
     const pet = this._petEl(spec, view);
     e.layers.replaceChildren(...els);
     e.root.querySelectorAll(".hq-pet").forEach((p) => p.remove());
@@ -599,6 +601,17 @@ export class IllustratedStage {
     };
     return img;
   }
+}
+
+/** v1.9.1: the lowest point of the figure (the set, else the body) in canvas px, or null; the shadow sits there. */
+export function feetY(layers) {
+  let y = null;
+  for (const l of layers) {
+    if (l.slot !== "set" && l.slot !== "body" && l.slot !== "feet") continue;
+    const b = (l.y == null ? l.entry.y : l.y) + l.entry.h;
+    if (y == null || b > y) y = b;
+  }
+  return y;
 }
 
 /** #121: the levitating item = a box at the layer's place (the <img> fills it) with a soft halo behind; CSS floats the box.

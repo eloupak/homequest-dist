@@ -1932,7 +1932,7 @@
     "dy": -0.3589,
     "scale": 0.0979
    },
-   "figure_h": 963,
+   "figure_h": 970,
    "file": "layers/set/cloth_0.angle_boy_front.webp",
    "grip": {
     "angle": 12.35,
@@ -1953,7 +1953,7 @@
     "top_len": 299.5,
     "width": 16.5
    },
-   "h": 964,
+   "h": 971,
    "hands": {
     "fist": {
      "point": [
@@ -2090,48 +2090,48 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 963,
+   "figure_h": 970,
    "file": "layers/set/cloth_0.raise_boy_front.webp",
    "grip": {
     "angle": -62.93,
     "bottom": [
-     260.7,
-     165.9
+     259.4,
+     166.0
     ],
-    "bottom_len": 72.8,
-    "gap": 43.7,
+    "bottom_len": 73.3,
+    "gap": 44.0,
     "point": [
-     344.9,
-     122.8
+     344.2,
+     122.7
     ],
     "top": [
-     565.5,
-     10.0
+     566.4,
+     9.2
     ],
-    "top_len": 225.9,
-    "width": 19.0
+    "top_len": 227.5,
+    "width": 19.1
    },
-   "h": 964,
+   "h": 972,
    "hands": {
     "fist": {
      "point": [
-      344.9,
-      122.8
+      344.2,
+      122.7
      ]
     },
     "lhand": {
      "forearm": [
-      691.0,
-      502.1
+      691.1,
+      501.5
      ],
      "point": [
-      715.1,
-      578.6
+      716.4,
+      579.0
      ]
     }
    },
    "head": [
-    509.5,
+    510.0,
     60,
     193
    ],
@@ -2141,7 +2141,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 11445
+    "rod_px": 11419
    },
    "kind": "layer",
    "overlays": {
@@ -2149,7 +2149,7 @@
      "file": "layers/set/cloth_0.raise_boy_front.lhand.webp",
      "h": 67,
      "w": 52,
-     "x": 687,
+     "x": 689,
      "y": 549
     }
    },
@@ -2157,9 +2157,9 @@
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 445,
-   "x": 294,
-   "y": 60,
+   "w": 448,
+   "x": 293,
+   "y": 59,
    "z": 20
   },
   "layer:set:cloth_0.raise:girl:front": {
@@ -2200,12 +2200,12 @@
     },
     "lhand": {
      "forearm": [
-      697.3,
-      503.6
+      696.6,
+      502.4
      ],
      "point": [
-      731.5,
-      578.6
+      731.4,
+      578.2
      ]
     }
    },
@@ -2220,7 +2220,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 12417
+    "rod_px": 12376
    },
    "kind": "layer",
    "overlays": {
@@ -2229,7 +2229,7 @@
      "h": 67,
      "w": 50,
      "x": 702,
-     "y": 551
+     "y": 550
     }
    },
    "pose": "raise",
@@ -2244,7 +2244,7 @@
   "layer:set:cloth_0.swing:boy:front": {
    "body": "boy",
    "drift": {
-    "dx": 0.0407,
+    "dx": 0.0359,
     "dy": -0.3589,
     "scale": 0.0856
    },
@@ -2257,49 +2257,49 @@
      799.1
     ],
     "bottom_len": 292.1,
-    "gap": 22.8,
+    "gap": 24.9,
     "point": [
-     334.7,
-     535.7
+     335.2,
+     534.8
     ],
     "top": [
      361.8,
-     488.2
+     488.3
     ],
-    "top_len": 43.2,
+    "top_len": 41.1,
     "width": 20.8
    },
    "h": 962,
    "hands": {
     "fist": {
      "point": [
-      334.7,
-      535.7
+      335.2,
+      534.8
      ]
     },
     "lhand": {
      "forearm": [
-      687.3,
-      504.0
+      687.1,
+      503.3
      ],
      "point": [
-      703.0,
-      579.0
+      703.2,
+      578.3
      ]
     }
    },
    "head": [
     513.5,
     60,
-    196
+    195
    ],
-   "head_score": 0.871,
+   "head_score": 0.878,
    "id": "cloth_0.swing",
    "key": "layer:set:cloth_0.swing:boy:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 13539
+    "rod_px": 13519
    },
    "kind": "layer",
    "overlays": {
@@ -2330,40 +2330,40 @@
    "figure_h": 940,
    "file": "layers/set/cloth_0.swing_girl_front.webp",
    "grip": {
-    "angle": -30.29,
+    "angle": -30.28,
     "bottom": [
-     193.2,
+     193.3,
      777.5
     ],
     "bottom_len": 281.8,
-    "gap": 14.3,
+    "gap": 16.3,
     "point": [
-     339.0,
-     528.1
+     339.5,
+     527.2
     ],
     "top": [
      368.6,
      477.4
     ],
-    "top_len": 51.6,
+    "top_len": 49.6,
     "width": 21.8
    },
    "h": 941,
    "hands": {
     "fist": {
      "point": [
-      339.0,
-      528.1
+      339.5,
+      527.2
      ]
     },
     "lhand": {
      "forearm": [
-      698.2,
-      504.5
+      697.6,
+      503.4
      ],
      "point": [
-      724.4,
-      577.4
+      723.2,
+      579.0
      ]
     }
    },
@@ -2378,16 +2378,16 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 14500
+    "rod_px": 14471
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/cloth_0.swing_girl_front.lhand.webp",
-     "h": 60,
+     "h": 61,
      "w": 44,
      "x": 698,
-     "y": 550
+     "y": 549
     }
    },
    "pose": "swing",
@@ -2406,7 +2406,7 @@
     "dy": -0.1483,
     "scale": 0.1847
    },
-   "figure_h": 964,
+   "figure_h": 1019,
    "file": "layers/set/cloth_0.vert_boy_front.webp",
    "grip": {
     "angle": 0.12,
@@ -2427,7 +2427,7 @@
     "top_len": 397.3,
     "width": 25.6
    },
-   "h": 965,
+   "h": 1020,
    "hands": {
     "fist": {
      "point": [
@@ -2475,7 +2475,7 @@
    "tilt": {
     "20": {
      "file": "layers/set/cloth_0.vert_boy_front.tilt20.webp",
-     "h": 965,
+     "h": 1020,
      "w": 462,
      "x": 268,
      "y": 59
@@ -2655,8 +2655,8 @@
     },
     "lhand": {
      "forearm": [
-      678.6,
-      481.8
+      678.3,
+      481.2
      ],
      "point": [
       693.8,
@@ -2704,7 +2704,7 @@
     "dy": -0.3301,
     "scale": 0.1142
    },
-   "figure_h": 963,
+   "figure_h": 980,
    "file": "layers/set/heavy_1.angle_boy_front.webp",
    "grip": {
     "angle": 13.11,
@@ -2725,7 +2725,7 @@
     "top_len": 305.0,
     "width": 19.3
    },
-   "h": 964,
+   "h": 981,
    "hands": {
     "fist": {
      "point": [
@@ -2735,12 +2735,12 @@
     },
     "lhand": {
      "forearm": [
-      678.9,
-      500.4
+      679.2,
+      500.9
      ],
      "point": [
-      705.0,
-      580.3
+      705.1,
+      580.6
      ]
     }
    },
@@ -2755,7 +2755,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 22838
+    "rod_px": 22819
    },
    "kind": "layer",
    "overlays": {
@@ -2791,11 +2791,11 @@
      361.2,
      609.8
     ],
-    "bottom_len": 127.9,
-    "gap": 33.0,
+    "bottom_len": 125.8,
+    "gap": 35.1,
     "point": [
-     322.4,
-     470.8
+     322.7,
+     471.7
     ],
     "top": [
      219.3,
@@ -2808,18 +2808,18 @@
    "hands": {
     "fist": {
      "point": [
-      322.4,
-      470.8
+      322.7,
+      471.7
      ]
     },
     "lhand": {
      "forearm": [
-      695.1,
-      503.9
+      666.4,
+      456.8
      ],
      "point": [
-      725.6,
-      580.3
+      692.6,
+      497.8
      ]
     }
    },
@@ -2834,16 +2834,16 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 25264
+    "rod_px": 25237
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_1.angle_girl_front.lhand.webp",
-     "h": 66,
-     "w": 45,
-     "x": 699,
-     "y": 551
+     "h": 69,
+     "w": 91,
+     "x": 643,
+     "y": 470
     }
    },
    "pose": "angle",
@@ -2862,48 +2862,48 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 963,
+   "figure_h": 971,
    "file": "layers/set/heavy_1.raise_boy_front.webp",
    "grip": {
     "angle": -60.1,
     "bottom": [
-     262.9,
-     161.7
+     260.7,
+     162.9
     ],
-    "bottom_len": 72.7,
-    "gap": 39.5,
+    "bottom_len": 73.2,
+    "gap": 41.8,
     "point": [
-     343.1,
-     115.6
+     342.3,
+     116.0
     ],
     "top": [
-     544.0,
-     0.0
+     543.8,
+     0.1
     ],
-    "top_len": 212.0,
-    "width": 18.1
+    "top_len": 211.4,
+    "width": 18.3
    },
-   "h": 965,
+   "h": 972,
    "hands": {
     "fist": {
      "point": [
-      343.1,
-      115.6
+      342.3,
+      116.0
      ]
     },
     "lhand": {
      "forearm": [
-      675.9,
-      501.5
+      682.6,
+      509.4
      ],
      "point": [
-      704.5,
-      580.2
+      704.9,
+      580.3
      ]
     }
    },
    "head": [
-    510.5,
+    509.5,
     60,
     193
    ],
@@ -2913,7 +2913,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 10330
+    "rod_px": 10304
    },
    "kind": "layer",
    "overlays": {
@@ -2921,7 +2921,7 @@
      "file": "layers/set/heavy_1.raise_boy_front.lhand.webp",
      "h": 67,
      "w": 50,
-     "x": 678,
+     "x": 679,
      "y": 549
     }
    },
@@ -2929,9 +2929,9 @@
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 435,
-   "x": 293,
-   "y": 59,
+   "w": 438,
+   "x": 291,
+   "y": 60,
    "z": 20
   },
   "layer:set:heavy_1.raise:girl:front": {
@@ -2944,9 +2944,9 @@
    "figure_h": 951,
    "file": "layers/set/heavy_1.raise_girl_front.webp",
    "grip": {
-    "angle": -59.58,
+    "angle": -59.59,
     "bottom": [
-     258.8,
+     258.7,
      172.6
     ],
     "bottom_len": 68.5,
@@ -2972,12 +2972,12 @@
     },
     "lhand": {
      "forearm": [
-      668.3,
-      456.5
+      668.4,
+      455.7
      ],
      "point": [
-      695.4,
-      495.3
+      695.7,
+      495.2
      ]
     }
    },
@@ -2992,7 +2992,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 10247
+    "rod_px": 10223
    },
    "kind": "layer",
    "overlays": {
@@ -3016,70 +3016,70 @@
   "layer:set:heavy_1.swing:boy:front": {
    "body": "boy",
    "drift": {
-    "dx": 0.0407,
+    "dx": 0.0383,
     "dy": -0.3301,
-    "scale": 0.1108
+    "scale": 0.1008
    },
-   "figure_h": 963,
+   "figure_h": 967,
    "file": "layers/set/heavy_1.swing_boy_front.webp",
    "grip": {
     "angle": -31.36,
     "bottom": [
-     179.4,
-     815.5
+     182.0,
+     807.8
     ],
-    "bottom_len": 311.8,
-    "gap": 21.2,
+    "bottom_len": 308.8,
+    "gap": 21.0,
     "point": [
-     347.2,
-     540.2
+     348.2,
+     535.1
     ],
     "top": [
-     378.4,
-     488.9
+     379.2,
+     484.3
     ],
-    "top_len": 49.4,
-    "width": 22.1
+    "top_len": 48.9,
+    "width": 21.9
    },
-   "h": 964,
+   "h": 969,
    "hands": {
     "fist": {
      "point": [
-      347.2,
-      540.2
+      348.2,
+      535.1
      ]
     },
     "lhand": {
      "forearm": [
-      683.9,
-      500.8
+      684.5,
+      501.7
      ],
      "point": [
-      711.3,
-      581.3
+      709.7,
+      579.4
      ]
     }
    },
    "head": [
-    512.2,
+    511.5,
     60,
-    195
+    193
    ],
-   "head_score": 0.884,
+   "head_score": 0.889,
    "id": "heavy_1.swing",
    "key": "layer:set:heavy_1.swing:boy:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 14820
+    "rod_px": 14806
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_1.swing_boy_front.lhand.webp",
-     "h": 69,
-     "w": 55,
-     "x": 683,
+     "h": 67,
+     "w": 54,
+     "x": 681,
      "y": 549
     }
    },
@@ -3087,9 +3087,9 @@
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 437,
-   "x": 301,
-   "y": 60,
+   "w": 432,
+   "x": 303,
+   "y": 59,
    "z": 20
   },
   "layer:set:heavy_1.swing:girl:front": {
@@ -3102,7 +3102,7 @@
    "figure_h": 936,
    "file": "layers/set/heavy_1.swing_girl_front.webp",
    "grip": {
-    "angle": -30.36,
+    "angle": -30.37,
     "bottom": [
      200.7,
      776.3
@@ -3131,26 +3131,26 @@
     "lhand": {
      "forearm": [
       665.0,
-      454.3
+      453.6
      ],
      "point": [
-      689.0,
-      491.5
+      689.5,
+      491.4
      ]
     }
    },
    "head": [
-    508.0,
+    508.5,
     60,
     193
    ],
-   "head_score": 0.863,
+   "head_score": 0.864,
    "id": "heavy_1.swing",
    "key": "layer:set:heavy_1.swing:girl:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 14013
+    "rod_px": 13985
    },
    "kind": "layer",
    "overlays": {
@@ -3178,7 +3178,7 @@
     "dy": -0.244,
     "scale": 0.1684
    },
-   "figure_h": 964,
+   "figure_h": 1016,
    "file": "layers/set/heavy_1.vert_boy_front.webp",
    "grip": {
     "angle": 0.07,
@@ -3199,7 +3199,7 @@
     "top_len": 382.0,
     "width": 26.8
    },
-   "h": 965,
+   "h": 1017,
    "hands": {
     "fist": {
      "point": [
@@ -3247,7 +3247,7 @@
    "tilt": {
     "20": {
      "file": "layers/set/heavy_1.vert_boy_front.tilt20.webp",
-     "h": 965,
+     "h": 1017,
      "w": 468,
      "x": 269,
      "y": 59
@@ -3472,7 +3472,7 @@
   "layer:set:heavy_2.angle:boy:front": {
    "body": "boy",
    "drift": {
-    "dx": 0.0287,
+    "dx": 0.0311,
     "dy": -0.3206,
     "scale": 0.0598
    },
@@ -3507,12 +3507,12 @@
     },
     "lhand": {
      "forearm": [
-      662.6,
-      451.3
+      700.0,
+      531.7
      ],
      "point": [
-      682.8,
-      489.8
+      703.7,
+      580.9
      ]
     }
    },
@@ -3526,17 +3526,17 @@
    "key": "layer:set:heavy_2.angle:boy:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 0,
-    "rod_px": 16170
+    "green_left": 3,
+    "rod_px": 16145
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_2.angle_boy_front.lhand.webp",
-     "h": 70,
-     "w": 81,
-     "x": 638,
-     "y": 461
+     "h": 63,
+     "w": 50,
+     "x": 677,
+     "y": 549
     }
    },
    "pose": "angle",
@@ -3586,12 +3586,12 @@
     },
     "lhand": {
      "forearm": [
-      692.1,
-      502.7
+      665.8,
+      456.4
      ],
      "point": [
-      723.5,
-      578.7
+      690.6,
+      499.5
      ]
     }
    },
@@ -3605,17 +3605,17 @@
    "key": "layer:set:heavy_2.angle:girl:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 0,
-    "rod_px": 24543
+    "green_left": 2,
+    "rod_px": 24520
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_2.angle_girl_front.lhand.webp",
-     "h": 63,
-     "w": 45,
-     "x": 697,
-     "y": 551
+     "h": 69,
+     "w": 88,
+     "x": 644,
+     "y": 471
     }
    },
    "pose": "angle",
@@ -3634,48 +3634,48 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 963,
+   "figure_h": 970,
    "file": "layers/set/heavy_2.raise_boy_front.webp",
    "grip": {
     "angle": -64.15,
     "bottom": [
-     244.6,
-     170.1
+     243.3,
+     171.2
     ],
-    "bottom_len": 67.4,
-    "gap": 42.9,
+    "bottom_len": 67.9,
+    "gap": 45.2,
     "point": [
-     324.6,
-     131.4
+     324.7,
+     131.7
     ],
     "top": [
-     520.0,
-     36.7
+     520.7,
+     36.8
     ],
-    "top_len": 195.8,
-    "width": 17.4
+    "top_len": 195.1,
+    "width": 17.6
    },
-   "h": 965,
+   "h": 973,
    "hands": {
     "fist": {
      "point": [
-      324.6,
-      131.4
+      324.7,
+      131.7
      ]
     },
     "lhand": {
      "forearm": [
-      678.8,
-      503.2
+      659.8,
+      457.2
      ],
      "point": [
-      694.1,
-      579.2
+      679.6,
+      499.6
      ]
     }
    },
    "head": [
-    510.0,
+    510.5,
     60,
     193
    ],
@@ -3685,24 +3685,24 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 9331
+    "rod_px": 9303
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_2.raise_boy_front.lhand.webp",
-     "h": 65,
-     "w": 54,
-     "x": 666,
-     "y": 549
+     "h": 67,
+     "w": 79,
+     "x": 637,
+     "y": 472
     }
    },
    "pose": "raise",
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 448,
-   "x": 272,
+   "w": 451,
+   "x": 271,
    "y": 59,
    "z": 20
   },
@@ -3732,7 +3732,7 @@
      31.8
     ],
     "top_len": 200.1,
-    "width": 18.1
+    "width": 18.0
    },
    "h": 954,
    "hands": {
@@ -3744,12 +3744,12 @@
     },
     "lhand": {
      "forearm": [
-      699.2,
-      503.7
+      674.8,
+      458.9
      ],
      "point": [
-      729.0,
-      580.5
+      698.5,
+      501.8
      ]
     }
    },
@@ -3764,16 +3764,16 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 9716
+    "rod_px": 9682
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_2.raise_girl_front.lhand.webp",
      "h": 67,
-     "w": 47,
-     "x": 702,
-     "y": 551
+     "w": 84,
+     "x": 655,
+     "y": 475
     }
    },
    "pose": "raise",
@@ -3792,7 +3792,7 @@
     "dy": -0.3589,
     "scale": 0.0768
    },
-   "figure_h": 964,
+   "figure_h": 967,
    "file": "layers/set/heavy_2.swing_boy_front.webp",
    "grip": {
     "angle": -28.91,
@@ -3801,34 +3801,34 @@
      790.5
     ],
     "bottom_len": 290.0,
-    "gap": 20.6,
+    "gap": 22.6,
     "point": [
-     330.3,
-     527.6
+     330.8,
+     526.7
     ],
     "top": [
-     353.9,
+     354.0,
      484.8
     ],
-    "top_len": 38.6,
+    "top_len": 36.5,
     "width": 21.5
    },
-   "h": 965,
+   "h": 969,
    "hands": {
     "fist": {
      "point": [
-      330.3,
-      527.6
+      330.8,
+      526.7
      ]
     },
     "lhand": {
      "forearm": [
-      704.6,
-      526.1
+      705.8,
+      533.5
      ],
      "point": [
       707.4,
-      580.6
+      580.7
      ]
     }
    },
@@ -3843,7 +3843,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 13839
+    "rod_px": 13826
    },
    "kind": "layer",
    "overlays": {
@@ -3902,12 +3902,12 @@
     },
     "lhand": {
      "forearm": [
-      665.5,
-      453.6
+      665.9,
+      452.6
      ],
      "point": [
-      687.5,
-      490.7
+      687.1,
+      489.5
      ]
     }
    },
@@ -3916,22 +3916,22 @@
     59,
     193
    ],
-   "head_score": 0.862,
+   "head_score": 0.863,
    "id": "heavy_2.swing",
    "key": "layer:set:heavy_2.swing:girl:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 15882
+    "rod_px": 15870
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_2.swing_girl_front.lhand.webp",
      "h": 69,
-     "w": 87,
-     "x": 643,
-     "y": 463
+     "w": 88,
+     "x": 641,
+     "y": 461
     }
    },
    "pose": "swing",
@@ -4248,7 +4248,7 @@
     "dy": -0.3206,
     "scale": 0.12
    },
-   "figure_h": 963,
+   "figure_h": 964,
    "file": "layers/set/heavy_3.angle_boy_front.webp",
    "grip": {
     "angle": 14.2,
@@ -4269,7 +4269,7 @@
     "top_len": 295.6,
     "width": 19.9
    },
-   "h": 965,
+   "h": 966,
    "hands": {
     "fist": {
      "point": [
@@ -4279,12 +4279,12 @@
     },
     "lhand": {
      "forearm": [
-      646.5,
-      457.6
+      657.6,
+      468.5
      ],
      "point": [
-      680.7,
-      500.4
+      680.8,
+      500.3
      ]
     }
    },
@@ -4299,14 +4299,14 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 1,
-    "rod_px": 18031
+    "rod_px": 18024
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_3.angle_boy_front.lhand.webp",
      "h": 70,
-     "w": 72,
+     "w": 75,
      "x": 642,
      "y": 470
     }
@@ -4358,19 +4358,19 @@
     },
     "lhand": {
      "forearm": [
-      647.7,
-      442.8
+      662.2,
+      457.8
      ],
      "point": [
-      669.5,
-      470.9
+      670.8,
+      471.5
      ]
     }
    },
    "head": [
     509.0,
     60,
-    194
+    195
    ],
    "head_score": 0.859,
    "id": "heavy_3.angle",
@@ -4378,15 +4378,15 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 24888
+    "rod_px": 24879
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_3.angle_girl_front.lhand.webp",
      "h": 69,
-     "w": 73,
-     "x": 631,
+     "w": 69,
+     "x": 636,
      "y": 440
     }
    },
@@ -4406,48 +4406,48 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 963,
+   "figure_h": 970,
    "file": "layers/set/heavy_3.raise_boy_front.webp",
    "grip": {
     "angle": -64.03,
     "bottom": [
-     241.5,
-     173.0
+     239.4,
+     174.2
     ],
-    "bottom_len": 68.0,
-    "gap": 42.5,
+    "bottom_len": 68.5,
+    "gap": 45.0,
     "point": [
-     321.7,
-     133.9
+     321.2,
+     134.4
     ],
     "top": [
-     524.8,
-     35.0
+     525.0,
+     35.1
     ],
-    "top_len": 204.6,
-    "width": 17.2
+    "top_len": 204.2,
+    "width": 17.3
    },
-   "h": 965,
+   "h": 973,
    "hands": {
     "fist": {
      "point": [
-      321.7,
-      133.9
+      321.2,
+      134.4
      ]
     },
     "lhand": {
      "forearm": [
-      652.5,
-      467.0
+      653.8,
+      472.0
      ],
      "point": [
-      669.0,
-      496.1
+      672.6,
+      502.0
      ]
     }
    },
    "head": [
-    510.0,
+    510.5,
     60,
     193
    ],
@@ -4457,24 +4457,24 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 8797
+    "rod_px": 8774
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_3.raise_boy_front.lhand.webp",
      "h": 67,
-     "w": 68,
-     "x": 634,
-     "y": 467
+     "w": 70,
+     "x": 638,
+     "y": 473
     }
    },
    "pose": "raise",
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 475,
-   "x": 269,
+   "w": 479,
+   "x": 267,
    "y": 59,
    "z": 20
   },
@@ -4490,7 +4490,7 @@
    "grip": {
     "angle": -61.8,
     "bottom": [
-     261.6,
+     261.5,
      179.2
     ],
     "bottom_len": 70.5,
@@ -4516,12 +4516,12 @@
     },
     "lhand": {
      "forearm": [
-      724.5,
-      546.6
+      610.8,
+      534.8
      ],
      "point": [
-      728.9,
-      584.3
+      631.4,
+      571.7
      ]
     }
    },
@@ -4536,16 +4536,16 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 10091
+    "rod_px": 10069
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_3.raise_girl_front.lhand.webp",
-     "h": 65,
-     "w": 43,
-     "x": 703,
-     "y": 551
+     "h": 67,
+     "w": 57,
+     "x": 599,
+     "y": 544
     }
    },
    "pose": "raise",
@@ -4579,7 +4579,7 @@
      527.7
     ],
     "top": [
-     354.1,
+     354.2,
      487.5
     ],
     "top_len": 35.5,
@@ -4595,12 +4595,12 @@
     },
     "lhand": {
      "forearm": [
-      707.2,
-      534.5
+      654.8,
+      455.1
      ],
      "point": [
-      702.2,
-      569.6
+      676.9,
+      486.3
      ]
     }
    },
@@ -4615,16 +4615,16 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 13210
+    "rod_px": 13190
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_3.swing_boy_front.lhand.webp",
      "h": 67,
-     "w": 54,
-     "x": 679,
-     "y": 542
+     "w": 68,
+     "x": 643,
+     "y": 456
     }
    },
    "pose": "swing",
@@ -4674,12 +4674,12 @@
     },
     "lhand": {
      "forearm": [
-      605.6,
-      522.0
+      704.9,
+      529.7
      ],
      "point": [
-      626.7,
-      560.6
+      720.3,
+      570.1
      ]
     }
    },
@@ -4693,17 +4693,17 @@
    "key": "layer:set:heavy_3.swing:girl:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 1,
-    "rod_px": 14498
+    "green_left": 0,
+    "rod_px": 14489
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/heavy_3.swing_girl_front.lhand.webp",
-     "h": 67,
-     "w": 57,
-     "x": 593,
-     "y": 534
+     "h": 60,
+     "w": 44,
+     "x": 693,
+     "y": 543
     }
    },
    "pose": "swing",
@@ -5020,34 +5020,34 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 962,
+   "figure_h": 970,
    "file": "layers/set/hunter_1.aim0_drawn_boy_front.webp",
    "grip": {
     "angle": -0.01,
     "bottom": [
-     814.7,
-     1022.8
+     817.3,
+     1029.9
     ],
-    "bottom_len": 748.5,
-    "gap": 42.8,
+    "bottom_len": 753.7,
+    "gap": 43.1,
     "point": [
-     814.8,
-     252.9
+     817.4,
+     254.7
     ],
     "top": [
-     814.8,
+     817.4,
      2.0
     ],
-    "top_len": 229.6,
-    "width": 25.0
+    "top_len": 231.1,
+    "width": 25.1
    },
-   "h": 965,
+   "h": 971,
    "head": [
-    509.5,
+    510.5,
     60,
     193
    ],
-   "head_dx": -5.5,
+   "head_dx": -5.0,
    "head_score": 1.0,
    "id": "hunter_1.aim0_drawn",
    "key": "layer:set:hunter_1.aim0_drawn:boy:front",
@@ -5062,17 +5062,17 @@
      "file": "layers/set/hunter_1.aim0_drawn_boy_front.fist.webp",
      "h": 69,
      "w": 86,
-     "x": 761,
-     "y": 220
+     "x": 764,
+     "y": 222
     }
    },
    "pose": "aim0_drawn",
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 550,
-   "x": 297,
-   "y": 59,
+   "w": 554,
+   "x": 296,
+   "y": 60,
    "z": 20
   },
   "layer:set:hunter_1.aim0_drawn:girl:front": {
@@ -5144,34 +5144,34 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 963,
+   "figure_h": 970,
    "file": "layers/set/hunter_1.aim0_relaxed_boy_front.webp",
    "grip": {
     "angle": -0.0,
     "bottom": [
-     816.4,
-     1022.8
+     818.0,
+     1029.9
     ],
-    "bottom_len": 748.5,
-    "gap": 42.8,
+    "bottom_len": 753.7,
+    "gap": 43.1,
     "point": [
-     816.4,
-     252.9
+     818.0,
+     254.7
     ],
     "top": [
-     816.5,
+     818.1,
      0.6
     ],
-    "top_len": 231.0,
-    "width": 25.0
+    "top_len": 232.6,
+    "width": 25.1
    },
-   "h": 965,
+   "h": 972,
    "head": [
-    510.5,
-    59,
-    192
+    510.0,
+    60,
+    193
    ],
-   "head_dx": -4.5,
+   "head_dx": -5.0,
    "head_score": 1.0,
    "id": "hunter_1.aim0_relaxed",
    "key": "layer:set:hunter_1.aim0_relaxed:boy:front",
@@ -5184,18 +5184,18 @@
    "overlays": {
     "fist": {
      "file": "layers/set/hunter_1.aim0_relaxed_boy_front.fist.webp",
-     "h": 70,
+     "h": 73,
      "w": 85,
-     "x": 763,
-     "y": 218
+     "x": 765,
+     "y": 219
     }
    },
    "pose": "aim0_relaxed",
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 528,
-   "x": 320,
+   "w": 532,
+   "x": 318,
    "y": 59,
    "z": 20
   },
@@ -5268,34 +5268,34 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 963,
+   "figure_h": 971,
    "file": "layers/set/hunter_1.aim25_drawn_boy_front.webp",
    "grip": {
     "angle": 19.79,
     "bottom": [
-     856.8,
-     365.2
+     858.7,
+     366.7
     ],
-    "bottom_len": 190.1,
-    "gap": 42.7,
+    "bottom_len": 191.4,
+    "gap": 43.0,
     "point": [
-     785.1,
-     166.3
+     786.6,
+     166.5
     ],
     "top": [
-     728.1,
-     7.7
+     729.1,
+     6.8
     ],
-    "top_len": 147.1,
-    "width": 20.5
+    "top_len": 148.1,
+    "width": 20.6
    },
-   "h": 965,
+   "h": 972,
    "head": [
     510.5,
-    60,
-    193
+    59,
+    192
    ],
-   "head_dx": -10.5,
+   "head_dx": -11.0,
    "head_score": 1.0,
    "id": "hunter_1.aim25_drawn",
    "key": "layer:set:hunter_1.aim25_drawn:boy:front",
@@ -5309,8 +5309,8 @@
     "fist": {
      "file": "layers/set/hunter_1.aim25_drawn_boy_front.fist.webp",
      "h": 70,
-     "w": 81,
-     "x": 733,
+     "w": 82,
+     "x": 734,
      "y": 134
     }
    },
@@ -5318,8 +5318,8 @@
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 541,
-   "x": 273,
+   "w": 545,
+   "x": 271,
    "y": 59,
    "z": 20
   },
@@ -5392,34 +5392,34 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 963,
+   "figure_h": 970,
    "file": "layers/set/hunter_1.aim25_relaxed_boy_front.webp",
    "grip": {
     "angle": 19.25,
     "bottom": [
-     863.4,
-     383.9
+     865.4,
+     386.6
     ],
-    "bottom_len": 173.2,
-    "gap": 42.8,
+    "bottom_len": 174.4,
+    "gap": 43.1,
     "point": [
-     799.3,
-     200.1
+     800.8,
+     201.5
     ],
     "top": [
-     732.4,
-     8.5
+     733.5,
+     8.7
     ],
-    "top_len": 181.5,
-    "width": 21.0
+    "top_len": 182.7,
+    "width": 21.2
    },
-   "h": 965,
+   "h": 972,
    "head": [
-    510.0,
+    509.5,
     60,
     193
    ],
-   "head_dx": -4.5,
+   "head_dx": -5.0,
    "head_score": 1.0,
    "id": "hunter_1.aim25_relaxed",
    "key": "layer:set:hunter_1.aim25_relaxed:boy:front",
@@ -5432,19 +5432,19 @@
    "overlays": {
     "fist": {
      "file": "layers/set/hunter_1.aim25_relaxed_boy_front.fist.webp",
-     "h": 68,
-     "w": 84,
-     "x": 747,
-     "y": 169
+     "h": 69,
+     "w": 85,
+     "x": 748,
+     "y": 170
     }
    },
    "pose": "aim25_relaxed",
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 513,
-   "x": 318,
-   "y": 59,
+   "w": 516,
+   "x": 317,
+   "y": 60,
    "z": 20
   },
   "layer:set:hunter_1.aim25_relaxed:girl:front": {
@@ -5516,34 +5516,34 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 962,
+   "figure_h": 970,
    "file": "layers/set/hunter_1.aim50_drawn_boy_front.webp",
    "grip": {
     "angle": 34.08,
     "bottom": [
-     848.6,
-     287.5
+     850.5,
+     289.5
     ],
-    "bottom_len": 154.0,
-    "gap": 38.5,
+    "bottom_len": 155.0,
+    "gap": 38.8,
     "point": [
-     751.5,
-     144.1
+     752.7,
+     145.1
     ],
     "top": [
-     657.3,
-     4.7
+     657.8,
+     4.8
     ],
-    "top_len": 149.0,
-    "width": 20.9
+    "top_len": 150.0,
+    "width": 21.0
    },
-   "h": 965,
+   "h": 971,
    "head": [
     510.0,
     60,
     193
    ],
-   "head_dx": -5.0,
+   "head_dx": -5.5,
    "head_score": 1.0,
    "id": "hunter_1.aim50_drawn",
    "key": "layer:set:hunter_1.aim50_drawn:boy:front",
@@ -5556,19 +5556,19 @@
    "overlays": {
     "fist": {
      "file": "layers/set/hunter_1.aim50_drawn_boy_front.fist.webp",
-     "h": 73,
-     "w": 79,
-     "x": 703,
-     "y": 113
+     "h": 74,
+     "w": 80,
+     "x": 704,
+     "y": 114
     }
    },
    "pose": "aim50_drawn",
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 502,
-   "x": 280,
-   "y": 59,
+   "w": 506,
+   "x": 278,
+   "y": 60,
    "z": 20
   },
   "layer:set:hunter_1.aim50_drawn:girl:front": {
@@ -5640,34 +5640,34 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 962,
+   "figure_h": 970,
    "file": "layers/set/hunter_1.aim50_relaxed_boy_front.webp",
    "grip": {
     "angle": 45.38,
     "bottom": [
-     855.0,
-     266.1
+     857.9,
+     268.0
     ],
-    "bottom_len": 151.8,
-    "gap": 40.6,
+    "bottom_len": 152.9,
+    "gap": 40.9,
     "point": [
-     732.5,
-     145.1
+     734.5,
+     146.2
     ],
     "top": [
-     586.6,
-     1.2
+     587.6,
+     1.3
     ],
-    "top_len": 184.6,
-    "width": 20.4
+    "top_len": 185.9,
+    "width": 20.5
    },
-   "h": 965,
+   "h": 971,
    "head": [
-    510.0,
+    510.5,
     60,
     193
    ],
-   "head_dx": -6.0,
+   "head_dx": -5.5,
    "head_score": 1.0,
    "id": "hunter_1.aim50_relaxed",
    "key": "layer:set:hunter_1.aim50_relaxed:boy:front",
@@ -5680,19 +5680,19 @@
    "overlays": {
     "fist": {
      "file": "layers/set/hunter_1.aim50_relaxed_boy_front.fist.webp",
-     "h": 73,
+     "h": 74,
      "w": 81,
-     "x": 685,
-     "y": 115
+     "x": 687,
+     "y": 116
     }
    },
    "pose": "aim50_relaxed",
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 449,
-   "x": 317,
-   "y": 59,
+   "w": 452,
+   "x": 316,
+   "y": 60,
    "z": 20
   },
   "layer:set:hunter_1.aim50_relaxed:girl:front": {
@@ -5764,7 +5764,7 @@
     "dy": -0.3589,
     "scale": 0.0879
    },
-   "figure_h": 963,
+   "figure_h": 965,
    "file": "layers/set/hunter_1.angle_boy_front.webp",
    "grip": {
     "angle": 12.38,
@@ -5785,7 +5785,7 @@
     "top_len": 297.7,
     "width": 16.8
    },
-   "h": 964,
+   "h": 966,
    "hands": {
     "fist": {
      "point": [
@@ -5922,48 +5922,48 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 963,
+   "figure_h": 970,
    "file": "layers/set/hunter_1.raise_boy_front.webp",
    "grip": {
     "angle": -62.78,
     "bottom": [
-     263.0,
-     164.1
+     260.7,
+     165.3
     ],
-    "bottom_len": 70.6,
-    "gap": 43.6,
+    "bottom_len": 71.1,
+    "gap": 43.9,
     "point": [
-     345.2,
-     121.8
+     343.5,
+     122.7
     ],
     "top": [
-     566.5,
-     8.0
+     566.4,
+     8.1
     ],
-    "top_len": 227.0,
-    "width": 19.5
+    "top_len": 228.6,
+    "width": 19.6
    },
-   "h": 965,
+   "h": 971,
    "hands": {
     "fist": {
      "point": [
-      345.2,
-      121.8
+      343.5,
+      122.7
      ]
     },
     "lhand": {
      "forearm": [
-      692.4,
-      502.4
+      691.2,
+      501.7
      ],
      "point": [
-      715.3,
-      579.1
+      715.5,
+      579.8
      ]
     }
    },
    "head": [
-    510.0,
+    509.5,
     60,
     193
    ],
@@ -5981,7 +5981,7 @@
      "file": "layers/set/hunter_1.raise_boy_front.lhand.webp",
      "h": 67,
      "w": 53,
-     "x": 687,
+     "x": 688,
      "y": 549
     }
    },
@@ -5989,9 +5989,9 @@
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 445,
-   "x": 295,
-   "y": 59,
+   "w": 448,
+   "x": 293,
+   "y": 60,
    "z": 20
   },
   "layer:set:hunter_1.raise:girl:front": {
@@ -6080,7 +6080,7 @@
     "dy": -0.1531,
     "scale": 0.1847
    },
-   "figure_h": 963,
+   "figure_h": 1019,
    "file": "layers/set/hunter_1.reach_boy_front.webp",
    "grip": {
     "angle": -0.0,
@@ -6101,7 +6101,7 @@
     "top_len": 242.0,
     "width": 24.9
    },
-   "h": 965,
+   "h": 1021,
    "head": [
     511.0,
     60,
@@ -6342,7 +6342,7 @@
     "dy": -0.1483,
     "scale": 0.1847
    },
-   "figure_h": 964,
+   "figure_h": 1019,
    "file": "layers/set/hunter_1.vert_boy_front.webp",
    "grip": {
     "angle": 0.03,
@@ -6363,7 +6363,7 @@
     "top_len": 398.8,
     "width": 25.6
    },
-   "h": 965,
+   "h": 1020,
    "hands": {
     "fist": {
      "point": [
@@ -6411,7 +6411,7 @@
    "tilt": {
     "20": {
      "file": "layers/set/hunter_1.vert_boy_front.tilt20.webp",
-     "h": 965,
+     "h": 1020,
      "w": 463,
      "x": 268,
      "y": 59
@@ -6518,7 +6518,7 @@
     "dy": -0.3589,
     "scale": 0.0829
    },
-   "figure_h": 963,
+   "figure_h": 964,
    "file": "layers/set/light_1.angle_boy_front.webp",
    "grip": {
     "angle": 12.38,
@@ -6539,7 +6539,7 @@
     "top_len": 297.1,
     "width": 18.3
    },
-   "h": 965,
+   "h": 966,
    "hands": {
     "fist": {
      "point": [
@@ -6553,8 +6553,8 @@
       504.5
      ],
      "point": [
-      704.7,
-      579.8
+      704.6,
+      579.9
      ]
     }
    },
@@ -6569,7 +6569,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 21910
+    "rod_px": 21898
    },
    "kind": "layer",
    "overlays": {
@@ -6628,12 +6628,12 @@
     },
     "lhand": {
      "forearm": [
-      696.5,
-      504.0
+      695.8,
+      502.9
      ],
      "point": [
       723.5,
-      576.3
+      575.5
      ]
     }
    },
@@ -6648,16 +6648,16 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 24226
+    "rod_px": 24213
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/light_1.angle_girl_front.lhand.webp",
-     "h": 61,
-     "w": 43,
-     "x": 697,
-     "y": 549
+     "h": 62,
+     "w": 44,
+     "x": 696,
+     "y": 548
     }
    },
    "pose": "angle",
@@ -6676,48 +6676,48 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 963,
+   "figure_h": 970,
    "file": "layers/set/light_1.raise_boy_front.webp",
    "grip": {
     "angle": -63.15,
     "bottom": [
-     257.8,
-     164.2
+     256.5,
+     164.4
     ],
-    "bottom_len": 72.3,
-    "gap": 41.3,
+    "bottom_len": 72.8,
+    "gap": 43.7,
     "point": [
-     340.7,
-     122.2
+     340.9,
+     121.6
     ],
     "top": [
-     559.7,
-     11.4
+     560.5,
+     10.5
     ],
-    "top_len": 224.8,
-    "width": 18.9
+    "top_len": 224.3,
+    "width": 19.0
    },
-   "h": 964,
+   "h": 973,
    "hands": {
     "fist": {
      "point": [
-      340.7,
-      122.2
+      340.9,
+      121.6
      ]
     },
     "lhand": {
      "forearm": [
-      688.4,
-      502.9
+      688.5,
+      502.3
      ],
      "point": [
-      711.5,
-      578.5
+      713.1,
+      578.4
      ]
     }
    },
    "head": [
-    510.0,
+    511.0,
     60,
     193
    ],
@@ -6727,7 +6727,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 11342
+    "rod_px": 11310
    },
    "kind": "layer",
    "overlays": {
@@ -6735,7 +6735,7 @@
      "file": "layers/set/light_1.raise_boy_front.lhand.webp",
      "h": 67,
      "w": 52,
-     "x": 683,
+     "x": 685,
      "y": 549
     }
    },
@@ -6743,9 +6743,9 @@
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 445,
-   "x": 290,
-   "y": 60,
+   "w": 448,
+   "x": 289,
+   "y": 59,
    "z": 20
   },
   "layer:set:light_1.raise:girl:front": {
@@ -6786,12 +6786,12 @@
     },
     "lhand": {
      "forearm": [
-      694.0,
-      505.5
+      693.4,
+      504.4
      ],
      "point": [
-      720.9,
-      581.1
+      721.1,
+      580.2
      ]
     }
    },
@@ -6806,16 +6806,16 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 11881
+    "rod_px": 11863
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/light_1.raise_girl_front.lhand.webp",
-     "h": 65,
-     "w": 45,
-     "x": 695,
-     "y": 551
+     "h": 66,
+     "w": 46,
+     "x": 694,
+     "y": 550
     }
    },
    "pose": "raise",
@@ -6837,7 +6837,7 @@
    "figure_h": 933,
    "file": "layers/set/light_1.swing_boy_front.webp",
    "grip": {
-    "angle": -29.46,
+    "angle": -29.47,
     "bottom": [
      200.8,
      776.9
@@ -6870,7 +6870,7 @@
      ],
      "point": [
       701.9,
-      571.9
+      572.1
      ]
     }
    },
@@ -6885,7 +6885,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 13805
+    "rod_px": 13779
    },
    "kind": "layer",
    "overlays": {
@@ -6911,78 +6911,78 @@
    "drift": {
     "dx": 0.0116,
     "dy": 0.1481,
-    "scale": 0.09
+    "scale": 0.0854
    },
-   "figure_h": 932,
+   "figure_h": 928,
    "file": "layers/set/light_1.swing_girl_front.webp",
    "grip": {
     "angle": -30.39,
     "bottom": [
-     205.1,
-     768.4
+     206.9,
+     765.2
     ],
-    "bottom_len": 275.7,
-    "gap": 16.1,
+    "bottom_len": 274.5,
+    "gap": 18.0,
     "point": [
-     348.6,
-     523.7
+     350.3,
+     520.6
     ],
     "top": [
-     376.5,
-     476.1
+     377.6,
+     474.1
     ],
-    "top_len": 47.2,
-    "width": 21.4
+    "top_len": 45.0,
+    "width": 21.3
    },
-   "h": 934,
+   "h": 931,
    "hands": {
     "fist": {
      "point": [
-      348.6,
-      523.7
+      350.3,
+      520.6
      ]
     },
     "lhand": {
      "forearm": [
-      693.2,
-      498.7
+      692.2,
+      495.7
      ],
      "point": [
-      720.5,
-      571.3
+      719.9,
+      568.2
      ]
     }
    },
    "head": [
-    508.5,
+    509.0,
     60,
     194
    ],
-   "head_score": 0.865,
+   "head_score": 0.868,
    "id": "light_1.swing",
    "key": "layer:set:light_1.swing:girl:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 14058
+    "rod_px": 14033
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/light_1.swing_girl_front.lhand.webp",
-     "h": 61,
-     "w": 45,
+     "h": 62,
+     "w": 44,
      "x": 693,
-     "y": 544
+     "y": 541
     }
    },
    "pose": "swing",
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 427,
-   "x": 311,
-   "y": 60,
+   "w": 425,
+   "x": 312,
+   "y": 59,
    "z": 20
   },
   "layer:set:light_1.vert:boy:front": {
@@ -6992,7 +6992,7 @@
     "dy": -0.1531,
     "scale": 0.1847
    },
-   "figure_h": 963,
+   "figure_h": 1016,
    "file": "layers/set/light_1.vert_boy_front.webp",
    "grip": {
     "angle": 0.43,
@@ -7013,7 +7013,7 @@
     "top_len": 318.2,
     "width": 24.9
    },
-   "h": 965,
+   "h": 1018,
    "hands": {
     "fist": {
      "point": [
@@ -7061,7 +7061,7 @@
    "tilt": {
     "20": {
      "file": "layers/set/light_1.vert_boy_front.tilt20.webp",
-     "h": 965,
+     "h": 1018,
      "w": 464,
      "x": 268,
      "y": 59
@@ -7286,11 +7286,11 @@
   "layer:set:light_2.angle:boy:front": {
    "body": "boy",
    "drift": {
-    "dx": 0.0215,
+    "dx": 0.0239,
     "dy": -0.3445,
     "scale": 0.1008
    },
-   "figure_h": 963,
+   "figure_h": 971,
    "file": "layers/set/light_2.angle_boy_front.webp",
    "grip": {
     "angle": 15.01,
@@ -7311,7 +7311,7 @@
     "top_len": 305.0,
     "width": 18.5
    },
-   "h": 965,
+   "h": 973,
    "hands": {
     "fist": {
      "point": [
@@ -7321,17 +7321,17 @@
     },
     "lhand": {
      "forearm": [
-      654.5,
-      452.8
+      709.3,
+      539.0
      ],
      "point": [
-      678.6,
-      492.2
+      716.8,
+      577.7
      ]
     }
    },
    "head": [
-    511.0,
+    511.5,
     60,
     193
    ],
@@ -7340,17 +7340,17 @@
    "key": "layer:set:light_2.angle:boy:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 0,
-    "rod_px": 17056
+    "green_left": 4,
+    "rod_px": 17039
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/light_2.angle_boy_front.lhand.webp",
      "h": 67,
-     "w": 75,
-     "x": 639,
-     "y": 464
+     "w": 51,
+     "x": 689,
+     "y": 549
     }
    },
    "pose": "angle",
@@ -7400,11 +7400,11 @@
     },
     "lhand": {
      "forearm": [
-      663.4,
-      451.7
+      663.7,
+      451.1
      ],
      "point": [
-      688.1,
+      688.2,
       490.1
      ]
     }
@@ -7414,13 +7414,13 @@
     60,
     195
    ],
-   "head_score": 0.859,
+   "head_score": 0.86,
    "id": "light_2.angle",
    "key": "layer:set:light_2.angle:girl:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 23685
+    "rod_px": 23666
    },
    "kind": "layer",
    "overlays": {
@@ -7448,48 +7448,48 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 962,
+   "figure_h": 970,
    "file": "layers/set/light_2.raise_boy_front.webp",
    "grip": {
     "angle": -63.15,
     "bottom": [
-     244.5,
-     166.3
+     242.3,
+     167.6
     ],
-    "bottom_len": 71.2,
-    "gap": 44.0,
+    "bottom_len": 71.8,
+    "gap": 44.4,
     "point": [
-     327.6,
-     124.2
+     326.2,
+     125.1
     ],
     "top": [
-     529.5,
-     22.0
+     529.7,
+     22.1
     ],
-    "top_len": 204.2,
-    "width": 17.0
+    "top_len": 205.9,
+    "width": 17.1
    },
-   "h": 965,
+   "h": 971,
    "hands": {
     "fist": {
      "point": [
-      327.6,
-      124.2
+      326.2,
+      125.1
      ]
     },
     "lhand": {
      "forearm": [
-      709.0,
-      536.4
+      710.4,
+      538.0
      ],
      "point": [
-      716.7,
-      577.5
+      718.3,
+      578.3
      ]
     }
    },
    "head": [
-    509.5,
+    510.0,
     60,
     193
    ],
@@ -7498,16 +7498,16 @@
    "key": "layer:set:light_2.raise:boy:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 2,
-    "rod_px": 9040
+    "green_left": 0,
+    "rod_px": 9017
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/light_2.raise_boy_front.lhand.webp",
      "h": 67,
-     "w": 54,
-     "x": 687,
+     "w": 55,
+     "x": 688,
      "y": 549
     }
    },
@@ -7515,9 +7515,9 @@
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 458,
-   "x": 283,
-   "y": 59,
+   "w": 462,
+   "x": 281,
+   "y": 60,
    "z": 20
   },
   "layer:set:light_2.raise:girl:front": {
@@ -7530,10 +7530,10 @@
    "figure_h": 951,
    "file": "layers/set/light_2.raise_girl_front.webp",
    "grip": {
-    "angle": -62.7,
+    "angle": -62.71,
     "bottom": [
-     261.3,
-     158.7
+     261.2,
+     158.6
     ],
     "bottom_len": 71.4,
     "gap": 44.1,
@@ -7542,7 +7542,7 @@
      115.8
     ],
     "top": [
-     573.2,
+     573.3,
      -2.3
     ],
     "top_len": 235.5,
@@ -7558,11 +7558,11 @@
     },
     "lhand": {
      "forearm": [
-      668.3,
-      460.1
+      668.2,
+      459.4
      ],
      "point": [
-      696.7,
+      696.8,
       503.1
      ]
     }
@@ -7578,7 +7578,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 11790
+    "rod_px": 11759
    },
    "kind": "layer",
    "overlays": {
@@ -7602,47 +7602,47 @@
   "layer:set:light_2.swing:boy:front": {
    "body": "boy",
    "drift": {
-    "dx": 0.0263,
+    "dx": 0.0287,
     "dy": -0.3301,
     "scale": 0.1108
    },
-   "figure_h": 963,
+   "figure_h": 979,
    "file": "layers/set/light_2.swing_boy_front.webp",
    "grip": {
-    "angle": -30.04,
+    "angle": -30.05,
     "bottom": [
      178.2,
      807.3
     ],
     "bottom_len": 288.5,
-    "gap": 21.2,
+    "gap": 23.3,
     "point": [
-     328.0,
-     548.4
+     328.5,
+     547.5
     ],
     "top": [
      357.0,
      498.2
     ],
-    "top_len": 47.4,
+    "top_len": 45.2,
     "width": 20.6
    },
-   "h": 965,
+   "h": 981,
    "hands": {
     "fist": {
      "point": [
-      328.0,
-      548.4
+      328.5,
+      547.5
      ]
     },
     "lhand": {
      "forearm": [
-      655.4,
-      455.3
+      712.8,
+      540.5
      ],
      "point": [
-      680.9,
-      496.7
+      719.7,
+      578.9
      ]
     }
    },
@@ -7657,16 +7657,16 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 12549
+    "rod_px": 12517
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/light_2.swing_boy_front.lhand.webp",
      "h": 67,
-     "w": 76,
-     "x": 641,
-     "y": 469
+     "w": 53,
+     "x": 692,
+     "y": 549
     }
    },
    "pose": "swing",
@@ -7683,52 +7683,52 @@
    "drift": {
     "dx": 0.0093,
     "dy": 0.162,
-    "scale": 0.102
+    "scale": 0.1164
    },
-   "figure_h": 935,
+   "figure_h": 948,
    "file": "layers/set/light_2.swing_girl_front.webp",
    "grip": {
     "angle": -29.86,
     "bottom": [
-     197.0,
-     781.6
+     192.5,
+     791.5
     ],
-    "bottom_len": 287.1,
-    "gap": 20.4,
+    "bottom_len": 290.8,
+    "gap": 20.6,
     "point": [
-     344.9,
-     523.8
+     342.4,
+     530.3
     ],
     "top": [
-     372.6,
-     475.8
+     370.3,
+     481.7
     ],
-    "top_len": 45.2,
-    "width": 21.0
+    "top_len": 45.8,
+    "width": 21.3
    },
-   "h": 937,
+   "h": 949,
    "hands": {
     "fist": {
      "point": [
-      344.9,
-      523.8
+      342.4,
+      530.3
      ]
     },
     "lhand": {
      "forearm": [
-      666.2,
-      450.9
+      665.5,
+      451.7
      ],
      "point": [
-      689.2,
-      485.7
+      690.0,
+      490.4
      ]
     }
    },
    "head": [
-    509.0,
+    508.5,
     60,
-    192
+    196
    ],
    "head_score": 0.87,
    "id": "light_2.swing",
@@ -7736,25 +7736,25 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 14188
+    "rod_px": 14172
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/light_2.swing_girl_front.lhand.webp",
-     "h": 67,
-     "w": 83,
+     "h": 70,
+     "w": 86,
      "x": 643,
-     "y": 456
+     "y": 460
     }
    },
    "pose": "swing",
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 437,
-   "x": 304,
-   "y": 59,
+   "w": 443,
+   "x": 301,
+   "y": 60,
    "z": 20
   },
   "layer:set:light_2.vert:boy:front": {
@@ -7764,7 +7764,7 @@
     "dy": -0.2632,
     "scale": 0.1367
    },
-   "figure_h": 963,
+   "figure_h": 996,
    "file": "layers/set/light_2.vert_boy_front.webp",
    "grip": {
     "angle": 0.5,
@@ -7785,7 +7785,7 @@
     "top_len": 394.5,
     "width": 26.8
    },
-   "h": 964,
+   "h": 998,
    "hands": {
     "fist": {
      "point": [
@@ -7833,7 +7833,7 @@
    "tilt": {
     "20": {
      "file": "layers/set/light_2.vert_boy_front.tilt20.webp",
-     "h": 964,
+     "h": 998,
      "w": 471,
      "x": 266,
      "y": 60
@@ -8065,22 +8065,22 @@
    "figure_h": 950,
    "file": "layers/set/light_3.angle_boy_front.webp",
    "grip": {
-    "angle": 6.23,
+    "angle": 6.24,
     "bottom": [
-     373.3,
-     972.3
+     373.2,
+     971.8
     ],
-    "bottom_len": 522.3,
-    "gap": 46.6,
+    "bottom_len": 520.3,
+    "gap": 48.6,
     "point": [
      314.1,
-     430.0
+     430.4
     ],
     "top": [
      278.8,
      107.8
     ],
-    "top_len": 300.9,
+    "top_len": 300.3,
     "width": 23.3
    },
    "h": 952,
@@ -8088,24 +8088,24 @@
     "fist": {
      "point": [
       314.1,
-      430.0
+      430.4
      ]
     },
     "lhand": {
      "forearm": [
-      656.0,
-      458.0
+      703.1,
+      540.1
      ],
      "point": [
-      682.3,
-      501.0
+      706.9,
+      578.0
      ]
     }
    },
    "head": [
     512.5,
     60,
-    196
+    193
    ],
    "head_score": 0.916,
    "id": "light_3.angle",
@@ -8113,16 +8113,16 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 40939
+    "rod_px": 40909
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/light_3.angle_boy_front.lhand.webp",
-     "h": 70,
-     "w": 87,
-     "x": 637,
-     "y": 471
+     "h": 67,
+     "w": 52,
+     "x": 679,
+     "y": 549
     }
    },
    "pose": "angle",
@@ -8137,79 +8137,79 @@
   "layer:set:light_3.angle:girl:front": {
    "body": "girl",
    "drift": {
-    "dx": 0.0023,
+    "dx": 0.0046,
     "dy": 0.2222,
-    "scale": 0.1442
+    "scale": 0.1392
    },
-   "figure_h": 962,
+   "figure_h": 973,
    "file": "layers/set/light_3.angle_girl_front.webp",
    "grip": {
     "angle": 16.45,
     "bottom": [
-     364.4,
-     604.6
+     365.5,
+     602.2
     ],
-    "bottom_len": 124.6,
-    "gap": 31.7,
+    "bottom_len": 122.0,
+    "gap": 33.7,
     "point": [
-     324.6,
-     469.9
+     326.2,
+     469.0
     ],
     "top": [
-     212.1,
-     88.7
+     213.8,
+     88.3
     ],
-    "top_len": 381.7,
-    "width": 24.6
+    "top_len": 380.1,
+    "width": 24.5
    },
-   "h": 964,
+   "h": 975,
    "hands": {
     "fist": {
      "point": [
-      324.6,
-      469.9
+      326.2,
+      469.0
      ]
     },
     "lhand": {
      "forearm": [
-      686.5,
-      504.7
+      657.0,
+      452.6
      ],
      "point": [
-      712.0,
-      582.7
+      685.1,
+      493.9
      ]
     }
    },
    "head": [
-    508.5,
-    61,
-    197
+    509.0,
+    60,
+    195
    ],
-   "head_score": 0.847,
+   "head_score": 0.851,
    "id": "light_3.angle",
    "key": "layer:set:light_3.angle:girl:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 24083
+    "rod_px": 24061
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/light_3.angle_girl_front.lhand.webp",
      "h": 69,
-     "w": 46,
-     "x": 687,
-     "y": 551
+     "w": 84,
+     "x": 637,
+     "y": 464
     }
    },
    "pose": "angle",
    "revision": 4,
    "slot": "set",
    "view": "front",
-   "w": 441,
-   "x": 292,
+   "w": 439,
+   "x": 293,
    "y": 60,
    "z": 20
   },
@@ -8220,48 +8220,48 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 963,
+   "figure_h": 970,
    "file": "layers/set/light_3.raise_boy_front.webp",
    "grip": {
-    "angle": -63.25,
+    "angle": -63.26,
     "bottom": [
-     234.0,
-     172.6
+     231.8,
+     174.0
     ],
-    "bottom_len": 77.6,
-    "gap": 44.1,
+    "bottom_len": 78.3,
+    "gap": 44.4,
     "point": [
-     323.0,
-     127.8
+     321.5,
+     128.8
     ],
     "top": [
-     525.5,
-     25.7
+     525.7,
+     25.8
     ],
-    "top_len": 204.8,
-    "width": 19.4
+    "top_len": 206.5,
+    "width": 19.6
    },
-   "h": 968,
+   "h": 973,
    "hands": {
     "fist": {
      "point": [
-      323.0,
-      127.8
+      321.5,
+      128.8
      ]
     },
     "lhand": {
      "forearm": [
-      704.3,
-      538.3
+      658.1,
+      456.2
      ],
      "point": [
-      713.3,
-      579.3
+      701.4,
+      502.1
      ]
     }
    },
    "head": [
-    509.5,
+    510.0,
     60,
     193
    ],
@@ -8270,26 +8270,26 @@
    "key": "layer:set:light_3.raise:boy:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 1,
-    "rod_px": 10841
+    "green_left": 0,
+    "rod_px": 10820
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/light_3.raise_boy_front.lhand.webp",
      "h": 67,
-     "w": 52,
-     "x": 684,
-     "y": 549
+     "w": 88,
+     "x": 637,
+     "y": 473
     }
    },
    "pose": "raise",
    "revision": 2,
    "slot": "set",
    "view": "front",
-   "w": 458,
-   "x": 278,
-   "y": 56,
+   "w": 462,
+   "x": 276,
+   "y": 59,
    "z": 20
   },
   "layer:set:light_3.raise:girl:front": {
@@ -8307,11 +8307,11 @@
      265.4,
      166.1
     ],
-    "bottom_len": 68.9,
-    "gap": 40.5,
+    "bottom_len": 66.9,
+    "gap": 42.6,
     "point": [
-     345.3,
-     126.5
+     344.4,
+     127.0
     ],
     "top": [
      550.6,
@@ -8324,18 +8324,18 @@
    "hands": {
     "fist": {
      "point": [
-      345.3,
-      126.5
+      344.4,
+      127.0
      ]
     },
     "lhand": {
      "forearm": [
-      692.7,
-      504.7
+      663.8,
+      455.1
      ],
      "point": [
-      716.1,
-      581.0
+      690.2,
+      495.8
      ]
     }
    },
@@ -8350,16 +8350,16 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 10963
+    "rod_px": 10927
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/light_3.raise_girl_front.lhand.webp",
-     "h": 60,
-     "w": 44,
-     "x": 692,
-     "y": 551
+     "h": 67,
+     "w": 81,
+     "x": 645,
+     "y": 468
     }
    },
    "pose": "raise",
@@ -8376,9 +8376,9 @@
    "drift": {
     "dx": 0.0096,
     "dy": -0.2727,
-    "scale": 0.0668
+    "scale": 0.0663
    },
-   "figure_h": 959,
+   "figure_h": 958,
    "file": "layers/set/light_3.swing_boy_front.webp",
    "grip": {
     "angle": -28.75,
@@ -8399,7 +8399,7 @@
     "top_len": 41.0,
     "width": 24.4
    },
-   "h": 960,
+   "h": 959,
    "hands": {
     "fist": {
      "point": [
@@ -8409,12 +8409,12 @@
     },
     "lhand": {
      "forearm": [
-      683.4,
-      500.8
+      704.9,
+      542.0
      ],
      "point": [
-      709.2,
-      579.2
+      709.3,
+      579.5
      ]
     }
    },
@@ -8423,13 +8423,13 @@
     59,
     192
    ],
-   "head_score": 0.913,
+   "head_score": 0.914,
    "id": "light_3.swing",
    "key": "layer:set:light_3.swing:boy:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 16185
+    "rod_px": 16169
    },
    "kind": "layer",
    "overlays": {
@@ -8455,77 +8455,77 @@
    "drift": {
     "dx": -0.0116,
     "dy": 0.1574,
-    "scale": 0.1059
+    "scale": 0.1104
    },
-   "figure_h": 956,
+   "figure_h": 960,
    "file": "layers/set/light_3.swing_girl_front.webp",
    "grip": {
     "angle": -29.73,
     "bottom": [
-     186.8,
-     786.5
+     184.9,
+     789.8
     ],
-    "bottom_len": 294.0,
-    "gap": 20.4,
+    "bottom_len": 293.3,
+    "gap": 22.6,
     "point": [
-     337.6,
-     522.4
+     335.9,
+     525.4
     ],
     "top": [
-     364.6,
-     475.1
+     363.5,
+     477.1
     ],
-    "top_len": 44.2,
-    "width": 21.4
+    "top_len": 44.4,
+    "width": 21.5
    },
-   "h": 958,
+   "h": 962,
    "hands": {
     "fist": {
      "point": [
-      337.6,
-      522.4
+      335.9,
+      525.4
      ]
     },
     "lhand": {
      "forearm": [
-      673.6,
-      454.9
+      674.3,
+      456.0
      ],
      "point": [
-      702.1,
-      496.8
+      703.9,
+      498.1
      ]
     }
    },
    "head": [
-    509.5,
+    509.0,
     60,
-    195
+    196
    ],
-   "head_score": 0.847,
+   "head_score": 0.844,
    "id": "light_3.swing",
    "key": "layer:set:light_3.swing:girl:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 14540
+    "rod_px": 14511
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/light_3.swing_girl_front.lhand.webp",
-     "h": 69,
-     "w": 83,
+     "h": 70,
+     "w": 84,
      "x": 658,
-     "y": 468
+     "y": 470
     }
    },
    "pose": "swing",
    "revision": 3,
    "slot": "set",
    "view": "front",
-   "w": 457,
-   "x": 294,
+   "w": 459,
+   "x": 292,
    "y": 59,
    "z": 20
   },
@@ -8536,7 +8536,7 @@
     "dy": -0.1722,
     "scale": 0.1976
    },
-   "figure_h": 963,
+   "figure_h": 1040,
    "file": "layers/set/light_3.vert_boy_front.webp",
    "grip": {
     "angle": -0.01,
@@ -8557,7 +8557,7 @@
     "top_len": 409.0,
     "width": 30.5
    },
-   "h": 965,
+   "h": 1042,
    "hands": {
     "fist": {
      "point": [
@@ -8605,14 +8605,14 @@
    "tilt": {
     "20": {
      "file": "layers/set/light_3.vert_boy_front.tilt20.webp",
-     "h": 965,
-     "w": 497,
+     "h": 1042,
+     "w": 500,
      "x": 243,
      "y": 59
     }
    },
    "view": "front",
-   "w": 496,
+   "w": 499,
    "x": 244,
    "y": 59,
    "z": 20
@@ -8708,7 +8708,7 @@
   "layer:set:light_3:boy:front": {
    "body": "boy",
    "drift": {
-    "dx": 0.012,
+    "dx": 0.0072,
     "dy": -0.4976,
     "scale": -0.0395
    },
@@ -8718,8 +8718,8 @@
    "hands": {
     "fist": {
      "point": [
-      327.5,
-      510.8
+      327.3,
+      510.5
      ]
     },
     "lhand": {
@@ -8729,16 +8729,16 @@
      ],
      "point": [
       694.1,
-      541.9
+      541.8
      ]
     }
    },
    "head": [
-    513.0,
+    512.0,
     60,
     189
    ],
-   "head_score": 0.845,
+   "head_score": 0.851,
    "id": "light_3",
    "key": "layer:set:light_3:boy:front",
    "kind": "layer",
@@ -8769,7 +8769,7 @@
   "layer:set:light_3:girl:front": {
    "body": "girl",
    "drift": {
-    "dx": 0.0046,
+    "dx": 0.0023,
     "dy": 0.0,
     "scale": -0.0007
    },
@@ -8785,21 +8785,21 @@
     },
     "lhand": {
      "forearm": [
-      685.8,
-      493.3
+      686.2,
+      494.4
      ],
      "point": [
-      695.4,
-      540.4
+      696.3,
+      540.7
      ]
     }
    },
    "head": [
-    512.0,
+    511.0,
     60,
     191
    ],
-   "head_score": 0.97,
+   "head_score": 0.976,
    "id": "light_3",
    "key": "layer:set:light_3:girl:front",
    "kind": "layer",
@@ -8813,10 +8813,10 @@
     },
     "lhand": {
      "file": "layers/set/light_3_girl_front.lhand.webp",
-     "h": 61,
+     "h": 59,
      "w": 50,
      "x": 667,
-     "y": 511
+     "y": 513
     }
    },
    "revision": 2,
@@ -8866,16 +8866,16 @@
     "lhand": {
      "forearm": [
       705.5,
-      526.8
+      526.9
      ],
      "point": [
-      710.5,
-      578.2
+      710.6,
+      578.1
      ]
     }
    },
    "head": [
-    512.5,
+    512.0,
     61,
     196
    ],
@@ -8885,7 +8885,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 18057
+    "rod_px": 18034
    },
    "kind": "layer",
    "overlays": {
@@ -8909,80 +8909,80 @@
   "layer:set:robe_1.angle:girl:front": {
    "body": "girl",
    "drift": {
-    "dx": 0.0069,
+    "dx": 0.0046,
     "dy": 0.1574,
-    "scale": 0.1209
+    "scale": 0.1009
    },
-   "figure_h": 963,
+   "figure_h": 951,
    "file": "layers/set/robe_1.angle_girl_front.webp",
    "grip": {
     "angle": 15.57,
     "bottom": [
-     360.6,
-     610.9
+     362.8,
+     601.1
     ],
-    "bottom_len": 130.5,
-    "gap": 33.1,
+    "bottom_len": 128.1,
+    "gap": 32.5,
     "point": [
-     321.1,
-     469.2
+     324.0,
+     462.0
     ],
     "top": [
-     218.7,
-     101.8
+     223.5,
+     101.3
     ],
-    "top_len": 364.9,
-    "width": 23.6
+    "top_len": 358.2,
+    "width": 23.2
    },
-   "h": 965,
+   "h": 953,
    "hands": {
     "fist": {
      "point": [
-      321.1,
-      469.2
+      324.0,
+      462.0
      ]
     },
     "lhand": {
      "forearm": [
-      707.8,
-      522.8
+      705.2,
+      518.2
      ],
      "point": [
-      725.8,
-      582.1
+      722.1,
+      580.2
      ]
     }
    },
    "head": [
-    509.0,
+    508.5,
     60,
-    196
+    194
    ],
-   "head_score": 0.855,
+   "head_score": 0.853,
    "id": "robe_1.angle",
    "key": "layer:set:robe_1.angle:girl:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 23612
+    "rod_px": 23585
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/robe_1.angle_girl_front.lhand.webp",
-     "h": 68,
-     "w": 46,
-     "x": 699,
-     "y": 551
+     "h": 59,
+     "w": 42,
+     "x": 698,
+     "y": 550
     }
    },
    "pose": "angle",
    "revision": 3,
    "slot": "set",
    "view": "front",
-   "w": 463,
-   "x": 282,
-   "y": 59,
+   "w": 454,
+   "x": 286,
+   "y": 60,
    "z": 20
   },
   "layer:set:robe_1.raise:boy:front": {
@@ -8992,48 +8992,48 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 963,
+   "figure_h": 970,
    "file": "layers/set/robe_1.raise_boy_front.webp",
    "grip": {
-    "angle": -64.11,
+    "angle": -64.12,
     "bottom": [
-     258.2,
-     162.2
+     256.9,
+     163.3
     ],
-    "bottom_len": 67.5,
-    "gap": 40.9,
+    "bottom_len": 68.0,
+    "gap": 41.2,
     "point": [
-     337.3,
-     123.8
+     336.6,
+     124.6
     ],
     "top": [
-     541.8,
-     24.6
+     542.6,
+     24.7
     ],
-    "top_len": 206.8,
-    "width": 16.8
+    "top_len": 208.3,
+    "width": 17.0
    },
-   "h": 965,
+   "h": 972,
    "hands": {
     "fist": {
      "point": [
-      337.3,
-      123.8
+      336.6,
+      124.6
      ]
     },
     "lhand": {
      "forearm": [
-      709.9,
-      529.8
+      711.5,
+      531.5
      ],
      "point": [
-      716.6,
-      579.1
+      718.6,
+      579.0
      ]
     }
    },
    "head": [
-    510.0,
+    510.5,
     60,
     193
    ],
@@ -9043,15 +9043,15 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 9590
+    "rod_px": 9561
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/robe_1.raise_boy_front.lhand.webp",
-     "h": 65,
+     "h": 67,
      "w": 51,
-     "x": 689,
+     "x": 691,
      "y": 549
     }
    },
@@ -9059,9 +9059,9 @@
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 479,
-   "x": 261,
-   "y": 59,
+   "w": 482,
+   "x": 260,
+   "y": 60,
    "z": 20
   },
   "layer:set:robe_1.raise:girl:front": {
@@ -9074,7 +9074,7 @@
    "figure_h": 951,
    "file": "layers/set/robe_1.raise_girl_front.webp",
    "grip": {
-    "angle": -61.79,
+    "angle": -61.8,
     "bottom": [
      264.6,
      174.3
@@ -9103,11 +9103,11 @@
     "lhand": {
      "forearm": [
       712.1,
-      521.2
+      520.7
      ],
      "point": [
-      729.8,
-      575.8
+      730.0,
+      575.0
      ]
     }
    },
@@ -9122,16 +9122,16 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 10648
+    "rod_px": 10623
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/robe_1.raise_girl_front.lhand.webp",
-     "h": 63,
+     "h": 64,
      "w": 44,
      "x": 703,
-     "y": 549
+     "y": 548
     }
    },
    "pose": "raise",
@@ -9146,159 +9146,159 @@
   "layer:set:robe_1.swing:boy:front": {
    "body": "boy",
    "drift": {
-    "dx": 0.0167,
+    "dx": 0.0191,
     "dy": -0.3301,
-    "scale": 0.0623
+    "scale": 0.0663
    },
-   "figure_h": 945,
+   "figure_h": 949,
    "file": "layers/set/robe_1.swing_boy_front.webp",
    "grip": {
     "angle": -29.19,
     "bottom": [
-     195.4,
-     785.4
+     193.5,
+     788.7
     ],
-    "bottom_len": 287.9,
-    "gap": 22.3,
+    "bottom_len": 289.1,
+    "gap": 24.4,
     "point": [
-     341.2,
-     524.3
+     340.4,
+     525.6
     ],
     "top": [
-     364.2,
-     483.2
+     363.0,
+     485.3
     ],
-    "top_len": 36.0,
-    "width": 20.9
+    "top_len": 34.0,
+    "width": 21.0
    },
-   "h": 947,
+   "h": 950,
    "hands": {
     "fist": {
      "point": [
-      341.2,
-      524.3
+      340.4,
+      525.6
      ]
     },
     "lhand": {
      "forearm": [
-      702.5,
-      520.7
+      702.9,
+      522.3
      ],
      "point": [
-      707.9,
-      572.1
+      708.4,
+      573.2
      ]
     }
    },
    "head": [
-    512.0,
+    511.5,
     60,
-    192
+    193
    ],
-   "head_score": 0.902,
+   "head_score": 0.903,
    "id": "robe_1.swing",
    "key": "layer:set:robe_1.swing:boy:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 13693
+    "rod_px": 13662
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/robe_1.swing_boy_front.lhand.webp",
-     "h": 57,
+     "h": 58,
      "w": 48,
      "x": 683,
-     "y": 542
+     "y": 544
     }
    },
    "pose": "swing",
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 437,
-   "x": 294,
+   "w": 438,
+   "x": 293,
    "y": 60,
    "z": 20
   },
   "layer:set:robe_1.swing:girl:front": {
    "body": "girl",
    "drift": {
-    "dx": 0.0046,
+    "dx": 0.0069,
     "dy": 0.1574,
-    "scale": 0.1009
+    "scale": 0.1059
    },
-   "figure_h": 951,
+   "figure_h": 956,
    "file": "layers/set/robe_1.swing_girl_front.webp",
    "grip": {
     "angle": -30.63,
     "bottom": [
-     188.7,
-     780.2
+     187.9,
+     783.5
     ],
-    "bottom_len": 294.8,
-    "gap": 18.3,
+    "bottom_len": 296.1,
+    "gap": 20.4,
     "point": [
-     343.7,
-     518.6
+     343.9,
+     519.9
     ],
     "top": [
-     365.8,
-     481.3
+     365.6,
+     483.3
     ],
-    "top_len": 34.2,
-    "width": 22.5
+    "top_len": 32.3,
+    "width": 22.6
    },
-   "h": 954,
+   "h": 957,
    "hands": {
     "fist": {
      "point": [
-      343.7,
-      518.6
+      343.9,
+      519.9
      ]
     },
     "lhand": {
      "forearm": [
-      705.8,
-      517.9
+      707.1,
+      519.7
      ],
      "point": [
       723.9,
-      576.5
+      580.3
      ]
     }
    },
    "head": [
-    508.5,
+    509.0,
     60,
     194
    ],
-   "head_score": 0.855,
+   "head_score": 0.857,
    "id": "robe_1.swing",
    "key": "layer:set:robe_1.swing:girl:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 14762
+    "rod_px": 14715
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/robe_1.swing_girl_front.lhand.webp",
-     "h": 59,
+     "h": 61,
      "w": 42,
-     "x": 699,
-     "y": 549
+     "x": 700,
+     "y": 550
     }
    },
    "pose": "swing",
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 462,
-   "x": 279,
-   "y": 59,
+   "w": 464,
+   "x": 278,
+   "y": 60,
    "z": 20
   },
   "layer:set:robe_1.vert:boy:front": {
@@ -9396,7 +9396,7 @@
     "dy": 0.3472,
     "scale": 0.1729
    },
-   "figure_h": 963,
+   "figure_h": 965,
    "file": "layers/set/robe_1.vert_girl_front.webp",
    "grip": {
     "angle": 1.61,
@@ -9417,7 +9417,7 @@
     "top_len": 268.0,
     "width": 24.6
    },
-   "h": 964,
+   "h": 966,
    "hands": {
     "fist": {
      "point": [
@@ -9465,7 +9465,7 @@
    "tilt": {
     "20": {
      "file": "layers/set/robe_1.vert_girl_front.tilt20.webp",
-     "h": 964,
+     "h": 966,
      "w": 445,
      "x": 280,
      "y": 60
@@ -9557,8 +9557,8 @@
     },
     "lhand": {
      "forearm": [
-      683.1,
-      486.1
+      682.9,
+      485.7
      ],
      "point": [
       698.8,
@@ -9606,18 +9606,18 @@
     "dy": -0.3732,
     "scale": 0.1023
    },
-   "figure_h": 963,
+   "figure_h": 997,
    "file": "layers/set/robe_2.angle_boy_front.webp",
    "grip": {
-    "angle": 17.6,
+    "angle": 17.62,
     "bottom": [
-     351.4,
+     351.5,
      542.7
     ],
     "bottom_len": 98.9,
     "gap": 44.2,
     "point": [
-     314.8,
+     314.9,
      427.4
     ],
     "top": [
@@ -9627,22 +9627,22 @@
     "top_len": 279.8,
     "width": 23.1
    },
-   "h": 964,
+   "h": 999,
    "hands": {
     "fist": {
      "point": [
-      314.8,
+      314.9,
       427.4
      ]
     },
     "lhand": {
      "forearm": [
-      706.8,
-      534.8
+      707.1,
+      534.4
      ],
      "point": [
-      713.1,
-      579.9
+      713.0,
+      580.1
      ]
     }
    },
@@ -9657,7 +9657,7 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 17022
+    "rod_px": 16970
    },
    "kind": "layer",
    "overlays": {
@@ -9685,7 +9685,7 @@
     "dy": 0.1759,
     "scale": 0.13
    },
-   "figure_h": 963,
+   "figure_h": 977,
    "file": "layers/set/robe_2.angle_girl_front.webp",
    "grip": {
     "angle": 15.51,
@@ -9706,7 +9706,7 @@
     "top_len": 373.5,
     "width": 24.7
    },
-   "h": 965,
+   "h": 979,
    "hands": {
     "fist": {
      "point": [
@@ -9716,19 +9716,19 @@
     },
     "lhand": {
      "forearm": [
-      704.6,
-      522.9
+      704.7,
+      522.5
      ],
      "point": [
-      710.8,
-      578.8
+      712.3,
+      578.7
      ]
     }
    },
    "head": [
-    509.0,
+    509.5,
     60,
-    193
+    194
    ],
    "head_score": 0.862,
    "id": "robe_2.angle",
@@ -9736,16 +9736,16 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 24494
+    "rod_px": 24454
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/robe_2.angle_girl_front.lhand.webp",
-     "h": 67,
+     "h": 69,
      "w": 99,
      "x": 650,
-     "y": 551
+     "y": 550
     }
    },
    "pose": "angle",
@@ -9764,66 +9764,66 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 963,
+   "figure_h": 970,
    "file": "layers/set/robe_2.raise_boy_front.webp",
    "grip": {
-    "angle": -63.95,
+    "angle": -63.94,
     "bottom": [
-     264.0,
-     171.4
+     261.6,
+     172.5
     ],
-    "bottom_len": 69.3,
-    "gap": 40.8,
+    "bottom_len": 69.8,
+    "gap": 41.1,
     "point": [
-     344.6,
-     132.0
+     342.8,
+     132.8
     ],
     "top": [
-     539.5,
-     36.7
+     539.2,
+     36.8
     ],
-    "top_len": 196.6,
-    "width": 16.8
+    "top_len": 198.0,
+    "width": 16.9
    },
-   "h": 964,
+   "h": 972,
    "hands": {
     "fist": {
      "point": [
-      344.6,
-      132.0
+      342.8,
+      132.8
      ]
     },
     "lhand": {
      "forearm": [
-      708.6,
-      526.5
+      709.1,
+      528.3
      ],
      "point": [
-      711.8,
-      579.8
+      712.7,
+      580.1
      ]
     }
    },
    "head": [
-    511.0,
-    59,
-    192
+    510.0,
+    60,
+    193
    ],
    "head_score": 1.0,
    "id": "robe_2.raise",
    "key": "layer:set:robe_2.raise:boy:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 1,
-    "rod_px": 9130
+    "green_left": 0,
+    "rod_px": 9113
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/robe_2.raise_boy_front.lhand.webp",
-     "h": 60,
+     "h": 64,
      "w": 52,
-     "x": 685,
+     "x": 686,
      "y": 549
     }
    },
@@ -9831,8 +9831,8 @@
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 467,
-   "x": 270,
+   "w": 470,
+   "x": 268,
    "y": 59,
    "z": 20
   },
@@ -9852,34 +9852,34 @@
      172.9
     ],
     "bottom_len": 67.6,
-    "gap": 37.8,
+    "gap": 39.8,
     "point": [
-     349.4,
-     132.3
+     350.3,
+     131.8
     ],
     "top": [
      538.3,
-     31.8
+     31.7
     ],
-    "top_len": 195.1,
+    "top_len": 193.1,
     "width": 17.3
    },
    "h": 953,
    "hands": {
     "fist": {
      "point": [
-      349.4,
-      132.3
+      350.3,
+      131.8
      ]
     },
     "lhand": {
      "forearm": [
-      704.3,
-      502.6
+      704.5,
+      500.6
      ],
      "point": [
-      716.2,
-      563.0
+      716.6,
+      560.4
      ]
     }
    },
@@ -9894,16 +9894,16 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 9859
+    "rod_px": 9826
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/robe_2.raise_girl_front.lhand.webp",
-     "h": 58,
-     "w": 101,
-     "x": 649,
-     "y": 536
+     "h": 60,
+     "w": 96,
+     "x": 654,
+     "y": 534
     }
    },
    "pose": "raise",
@@ -9918,78 +9918,78 @@
   "layer:set:robe_2.swing:boy:front": {
    "body": "boy",
    "drift": {
-    "dx": 0.0502,
+    "dx": 0.0526,
     "dy": -0.378,
-    "scale": 0.0823
+    "scale": 0.0773
    },
-   "figure_h": 963,
+   "figure_h": 973,
    "file": "layers/set/robe_2.swing_boy_front.webp",
    "grip": {
     "angle": -29.65,
     "bottom": [
-     179.8,
-     791.6
+     180.7,
+     788.3
     ],
-    "bottom_len": 287.1,
-    "gap": 22.7,
+    "bottom_len": 285.9,
+    "gap": 22.6,
     "point": [
-     327.4,
-     532.1
+     327.7,
+     530.0
     ],
     "top": [
-     348.7,
-     494.7
+     349.1,
+     492.4
     ],
-    "top_len": 31.7,
-    "width": 21.7
+    "top_len": 31.9,
+    "width": 21.6
    },
-   "h": 964,
+   "h": 975,
    "hands": {
     "fist": {
      "point": [
-      327.4,
-      532.1
+      327.7,
+      530.0
      ]
     },
     "lhand": {
      "forearm": [
-      706.6,
-      527.2
+      705.6,
+      526.5
      ],
      "point": [
-      711.1,
-      580.0
+      709.6,
+      579.9
      ]
     }
    },
    "head": [
-    516.5,
+    515.5,
     60,
-    194
+    193
    ],
-   "head_score": 0.867,
+   "head_score": 0.862,
    "id": "robe_2.swing",
    "key": "layer:set:robe_2.swing:boy:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 13494
+    "rod_px": 13458
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/robe_2.swing_boy_front.lhand.webp",
-     "h": 69,
-     "w": 67,
+     "h": 67,
+     "w": 65,
      "x": 671,
-     "y": 548
+     "y": 549
     }
    },
    "pose": "swing",
    "revision": 1,
    "slot": "set",
    "view": "front",
-   "w": 456,
+   "w": 454,
    "x": 282,
    "y": 60,
    "z": 20
@@ -10016,10 +10016,10 @@
      510.1
     ],
     "top": [
-     367.7,
-     465.5
+     367.6,
+     465.7
     ],
-    "top_len": 43.2,
+    "top_len": 42.9,
     "width": 21.4
    },
    "h": 964,
@@ -10032,12 +10032,12 @@
     },
     "lhand": {
      "forearm": [
-      703.1,
-      513.1
+      700.8,
+      511.0
      ],
      "point": [
-      727.5,
-      562.8
+      722.4,
+      562.4
      ]
     }
    },
@@ -10052,15 +10052,15 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 14421
+    "rod_px": 14397
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/robe_2.swing_girl_front.lhand.webp",
      "h": 62,
-     "w": 53,
-     "x": 693,
+     "w": 95,
+     "x": 651,
      "y": 535
     }
    },
@@ -10080,7 +10080,7 @@
     "dy": -0.2105,
     "scale": 0.1073
    },
-   "figure_h": 963,
+   "figure_h": 973,
    "file": "layers/set/robe_2.vert_boy_front.webp",
    "grip": {
     "angle": 0.51,
@@ -10101,7 +10101,7 @@
     "top_len": 374.5,
     "width": 25.4
    },
-   "h": 965,
+   "h": 975,
    "hands": {
     "fist": {
      "point": [
@@ -10149,7 +10149,7 @@
    "tilt": {
     "20": {
      "file": "layers/set/robe_2.vert_boy_front.tilt20.webp",
-     "h": 965,
+     "h": 975,
      "w": 442,
      "x": 278,
      "y": 59
@@ -10168,7 +10168,7 @@
     "dy": 0.1574,
     "scale": 0.1009
    },
-   "figure_h": 963,
+   "figure_h": 969,
    "file": "layers/set/robe_2.vert_girl_front.webp",
    "grip": {
     "angle": 1.21,
@@ -10189,7 +10189,7 @@
     "top_len": 255.2,
     "width": 21.1
    },
-   "h": 965,
+   "h": 971,
    "hands": {
     "fist": {
      "point": [
@@ -10237,7 +10237,7 @@
    "tilt": {
     "20": {
      "file": "layers/set/robe_2.vert_girl_front.tilt20.webp",
-     "h": 965,
+     "h": 971,
      "w": 442,
      "x": 293,
      "y": 59
@@ -10329,8 +10329,8 @@
     },
     "lhand": {
      "forearm": [
-      683.3,
-      486.4
+      683.1,
+      486.0
      ],
      "point": [
       697.5,
@@ -10376,76 +10376,76 @@
    "drift": {
     "dx": 0.0335,
     "dy": -0.3732,
-    "scale": 0.0495
+    "scale": 0.0546
    },
-   "figure_h": 939,
+   "figure_h": 944,
    "file": "layers/set/robe_3.angle_boy_front.webp",
    "grip": {
-    "angle": 12.47,
+    "angle": 12.48,
     "bottom": [
      379.3,
-     733.3
+     735.3
     ],
-    "bottom_len": 286.6,
-    "gap": 42.1,
+    "bottom_len": 287.8,
+    "gap": 42.3,
     "point": [
-     312.9,
-     433.0
+     312.5,
+     433.6
     ],
     "top": [
-     246.0,
-     130.5
+     245.3,
+     129.9
     ],
-    "top_len": 288.8,
-    "width": 17.8
+    "top_len": 289.9,
+    "width": 17.9
    },
-   "h": 942,
+   "h": 945,
    "hands": {
     "fist": {
      "point": [
-      312.9,
-      433.0
+      312.5,
+      433.6
      ]
     },
     "lhand": {
      "forearm": [
-      697.3,
-      520.3
+      698.6,
+      520.8
      ],
      "point": [
-      698.8,
-      573.8
+      700.1,
+      574.8
      ]
     }
    },
    "head": [
-    513.5,
-    61,
-    193
+    514.2,
+    60,
+    195
    ],
-   "head_score": 0.879,
+   "head_score": 0.885,
    "id": "robe_3.angle",
    "key": "layer:set:robe_3.angle:boy:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 22139
+    "rod_px": 22091
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/robe_3.angle_boy_front.lhand.webp",
-     "h": 58,
+     "h": 59,
      "w": 53,
-     "x": 672,
-     "y": 544
+     "x": 673,
+     "y": 545
     }
    },
    "pose": "angle",
    "revision": 5,
    "slot": "set",
    "view": "front",
-   "w": 445,
+   "w": 446,
    "x": 280,
    "y": 60,
    "z": 20
@@ -10453,79 +10453,79 @@
   "layer:set:robe_3.angle:girl:front": {
    "body": "girl",
    "drift": {
-    "dx": 0.0116,
+    "dx": 0.0139,
     "dy": 0.1528,
-    "scale": 0.1009
+    "scale": 0.1114
    },
-   "figure_h": 939,
+   "figure_h": 948,
    "file": "layers/set/robe_3.angle_girl_front.webp",
    "grip": {
-    "angle": 15.61,
+    "angle": 15.62,
     "bottom": [
-     363.7,
-     601.9
+     361.8,
+     607.6
     ],
-    "bottom_len": 126.1,
-    "gap": 32.5,
+    "bottom_len": 125.3,
+    "gap": 34.9,
     "point": [
-     325.4,
-     464.8
+     323.4,
+     470.2
     ],
     "top": [
-     223.2,
-     99.2
+     219.9,
+     100.0
     ],
-    "top_len": 363.3,
-    "width": 24.7
+    "top_len": 367.0,
+    "width": 24.9
    },
-   "h": 940,
+   "h": 949,
    "hands": {
     "fist": {
      "point": [
-      325.4,
-      464.8
+      323.4,
+      470.2
      ]
     },
     "lhand": {
      "forearm": [
-      705.6,
-      523.1
+      706.7,
+      526.7
      ],
      "point": [
-      699.8,
-      579.1
+      701.5,
+      583.0
      ]
     }
    },
    "head": [
-    509.5,
+    509.0,
     59,
-    193
+    195
    ],
-   "head_score": 0.86,
+   "head_score": 0.861,
    "id": "robe_3.angle",
    "key": "layer:set:robe_3.angle:girl:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 1,
-    "rod_px": 25060
+    "green_left": 0,
+    "rod_px": 25034
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/robe_3.angle_girl_front.lhand.webp",
-     "h": 59,
-     "w": 96,
-     "x": 645,
-     "y": 548
+     "h": 62,
+     "w": 97,
+     "x": 646,
+     "y": 551
     }
    },
    "pose": "angle",
    "revision": 5,
    "slot": "set",
    "view": "front",
-   "w": 448,
-   "x": 293,
+   "w": 452,
+   "x": 291,
    "y": 59,
    "z": 20
   },
@@ -10536,66 +10536,66 @@
     "dy": 0.0,
     "scale": 0.0
    },
-   "figure_h": 964,
+   "figure_h": 970,
    "file": "layers/set/robe_3.raise_boy_front.webp",
    "grip": {
     "angle": -63.9,
     "bottom": [
-     259.0,
-     170.1
+     256.7,
+     171.1
     ],
-    "bottom_len": 67.9,
-    "gap": 41.1,
+    "bottom_len": 68.4,
+    "gap": 41.4,
     "point": [
-     338.5,
-     131.2
+     336.7,
+     131.9
     ],
     "top": [
-     534.3,
-     35.2
+     534.0,
+     35.3
     ],
-    "top_len": 197.6,
-    "width": 17.3
+    "top_len": 199.0,
+    "width": 17.4
    },
-   "h": 965,
+   "h": 973,
    "hands": {
     "fist": {
      "point": [
-      338.5,
-      131.2
+      336.7,
+      131.9
      ]
     },
     "lhand": {
      "forearm": [
-      709.8,
-      528.9
+      710.4,
+      530.6
      ],
      "point": [
-      712.1,
-      580.0
+      713.3,
+      580.2
      ]
     }
    },
    "head": [
-    511.0,
-    59,
-    192
+    510.5,
+    60,
+    193
    ],
    "head_score": 1.0,
    "id": "robe_3.raise",
    "key": "layer:set:robe_3.raise:boy:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 1,
-    "rod_px": 9243
+    "green_left": 0,
+    "rod_px": 9219
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/robe_3.raise_boy_front.lhand.webp",
-     "h": 63,
-     "w": 52,
-     "x": 686,
+     "h": 67,
+     "w": 56,
+     "x": 683,
      "y": 549
     }
    },
@@ -10603,8 +10603,8 @@
    "revision": 2,
    "slot": "set",
    "view": "front",
-   "w": 478,
-   "x": 260,
+   "w": 481,
+   "x": 258,
    "y": 59,
    "z": 20
   },
@@ -10631,7 +10631,7 @@
     ],
     "top": [
      536.0,
-     31.1
+     31.0
     ],
     "top_len": 200.7,
     "width": 17.6
@@ -10646,11 +10646,11 @@
     },
     "lhand": {
      "forearm": [
-      706.8,
-      524.0
+      706.7,
+      524.5
      ],
      "point": [
-      695.0,
+      694.8,
       577.5
      ]
     }
@@ -10666,15 +10666,15 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 9670
+    "rod_px": 9625
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/robe_3.raise_girl_front.lhand.webp",
      "h": 59,
-     "w": 114,
-     "x": 641,
+     "w": 117,
+     "x": 638,
      "y": 550
     }
    },
@@ -10690,62 +10690,62 @@
   "layer:set:robe_3.swing:boy:front": {
    "body": "boy",
    "drift": {
-    "dx": 0.0311,
+    "dx": 0.0335,
     "dy": -0.3445,
-    "scale": 0.0963
+    "scale": 0.0913
    },
-   "figure_h": 963,
+   "figure_h": 972,
    "file": "layers/set/robe_3.swing_boy_front.webp",
    "grip": {
-    "angle": -29.38,
+    "angle": -29.37,
     "bottom": [
-     174.1,
-     800.5
+     176.0,
+     797.2
     ],
-    "bottom_len": 294.9,
-    "gap": 25.1,
+    "bottom_len": 293.7,
+    "gap": 25.0,
     "point": [
-     324.9,
-     532.5
+     326.2,
+     530.4
     ],
     "top": [
-     348.2,
-     491.2
+     349.3,
+     489.3
     ],
-    "top_len": 34.9,
-    "width": 22.4
+    "top_len": 34.6,
+    "width": 22.3
    },
-   "h": 964,
+   "h": 974,
    "hands": {
     "fist": {
      "point": [
-      324.9,
-      532.5
+      326.2,
+      530.4
      ]
     },
     "lhand": {
      "forearm": [
-      705.2,
-      531.3
+      705.0,
+      530.7
      ],
      "point": [
-      713.6,
-      580.1
+      713.3,
+      580.3
      ]
     }
    },
    "head": [
-    514.5,
+    513.0,
     60,
-    197
+    196
    ],
-   "head_score": 0.877,
+   "head_score": 0.875,
    "id": "robe_3.swing",
    "key": "layer:set:robe_3.swing:boy:front",
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
-    "rod_px": 14036
+    "rod_px": 13998
    },
    "kind": "layer",
    "overlays": {
@@ -10761,8 +10761,8 @@
    "revision": 2,
    "slot": "set",
    "view": "front",
-   "w": 459,
-   "x": 280,
+   "w": 456,
+   "x": 282,
    "y": 60,
    "z": 20
   },
@@ -10776,40 +10776,40 @@
    "figure_h": 943,
    "file": "layers/set/robe_3.swing_girl_front.webp",
    "grip": {
-    "angle": -31.2,
+    "angle": -31.19,
     "bottom": [
      190.9,
      762.5
     ],
     "bottom_len": 273.2,
-    "gap": 16.3,
+    "gap": 18.4,
     "point": [
-     336.6,
-     521.8
+     337.1,
+     520.9
     ],
     "top": [
      365.9,
      473.3
     ],
-    "top_len": 48.5,
+    "top_len": 46.4,
     "width": 21.1
    },
    "h": 945,
    "hands": {
     "fist": {
      "point": [
-      336.6,
-      521.8
+      337.1,
+      520.9
      ]
     },
     "lhand": {
      "forearm": [
-      713.8,
-      523.2
+      713.5,
+      524.1
      ],
      "point": [
-      707.9,
-      577.3
+      706.4,
+      578.9
      ]
     }
    },
@@ -10823,17 +10823,17 @@
    "key": "layer:set:robe_3.swing:girl:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 1,
-    "rod_px": 13482
+    "green_left": 0,
+    "rod_px": 13428
    },
    "kind": "layer",
    "overlays": {
     "lhand": {
      "file": "layers/set/robe_3.swing_girl_front.lhand.webp",
-     "h": 62,
+     "h": 60,
      "w": 111,
      "x": 646,
-     "y": 547
+     "y": 549
     }
    },
    "pose": "swing",
@@ -11024,61 +11024,61 @@
   "layer:set:robe_3:boy:front": {
    "body": "boy",
    "drift": {
-    "dx": 0.0072,
+    "dx": 0.0048,
     "dy": -0.4976,
-    "scale": -0.0395
+    "scale": -0.0348
    },
-   "figure_h": 883,
+   "figure_h": 887,
    "file": "layers/set/robe_3_boy_front.webp",
-   "h": 885,
+   "h": 889,
    "hands": {
     "fist": {
      "point": [
-      338.3,
-      508.3
+      337.2,
+      510.7
      ]
     },
     "lhand": {
      "forearm": [
-      680.7,
-      486.6
+      682.1,
+      488.2
      ],
      "point": [
-      695.9,
-      539.7
+      696.8,
+      542.4
      ]
     }
    },
    "head": [
-    513.0,
+    513.5,
     60,
     189
    ],
-   "head_score": 0.841,
+   "head_score": 0.842,
    "id": "robe_3",
    "key": "layer:set:robe_3:boy:front",
    "kind": "layer",
    "overlays": {
     "fist": {
      "file": "layers/set/robe_3_boy_front.fist.webp",
-     "h": 57,
-     "w": 88,
-     "x": 300,
-     "y": 479
+     "h": 56,
+     "w": 89,
+     "x": 299,
+     "y": 482
     },
     "lhand": {
      "file": "layers/set/robe_3_boy_front.lhand.webp",
      "h": 57,
-     "w": 63,
-     "x": 657,
-     "y": 512
+     "w": 64,
+     "x": 658,
+     "y": 514
     }
    },
    "revision": 2,
    "slot": "set",
    "view": "front",
-   "w": 420,
-   "x": 300,
+   "w": 423,
+   "x": 299,
    "y": 60,
    "z": 20
   },
@@ -11096,7 +11096,7 @@
     "fist": {
      "point": [
       321.0,
-      509.3
+      509.4
      ]
     },
     "lhand": {
@@ -11105,7 +11105,7 @@
       484.1
      ],
      "point": [
-      696.2,
+      696.5,
       538.2
      ]
     }
@@ -15843,6 +15843,6 @@
    "taupe": "#B68B6C"
   }
  },
- "updated": 1795498845,
+ "updated": 1795627973,
  "version": 1
 }

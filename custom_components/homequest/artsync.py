@@ -49,8 +49,10 @@ def _newest(root, files):
     return max((os.path.getmtime(os.path.join(root, f)) for f in files if os.path.exists(os.path.join(root, f))), default=0)
 
 
-def plan(prod_art, test_art):
-    """-> (promote: [(key, text, files)], skipped: [text], warnings: [text])."""
+def plan(prod_art, test_art, refit_always=False):
+    """-> (promote: [(key, text, files)], skipped: [text], warnings: [text]).
+    refit_always (v1.9.1, the package of an install): a same-revision item with other content is taken from the source even when the
+    install's file is newer - an install from the Marketplace makes no art of its own, the package is its only source."""
     pm = json.load(open(os.path.join(prod_art, "manifest.json")))
     tm = json.load(open(os.path.join(test_art, "manifest.json")))
     promote, skipped, warnings = [], [], []
@@ -73,7 +75,7 @@ def plan(prod_art, test_art):
         elif tr > pr:
             promote.append((key, f"r{pr} -> r{tr}", tfiles))
         elif _digest(test_art, tfiles) != _digest(prod_art, item_files(pi, prod_art)):
-            if _newest(test_art, tfiles) > _newest(prod_art, item_files(pi, prod_art)):
+            if refit_always or _newest(test_art, tfiles) > _newest(prod_art, item_files(pi, prod_art)):
                 promote.append((key, f"r{tr} refit (newer in test)", tfiles))
             else:
                 skipped.append(f"SKIP {key}: r{tr} content differs but production is newer than test")
