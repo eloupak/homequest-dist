@@ -262,7 +262,11 @@ function buildSetLayers(ix, spec, plainSet, body, outfitId) {
   }
   if (rodMode && we && we.grip) {
     const G = poseSet.grip.point;
-    add(we, null, "weapon", we.z == null ? 12 : we.z, Math.round(G[0] - we.grip[0]), Math.round(G[1] - we.grip[1]), tiltSet ? -tiltW : 0);
+    // v1.9.2 UAT ("není vidět jílec"): a set with its rod band painted out (manifest weapon_front) would hide the handle below the fist:
+    // the weapon goes over the set and the cut-out fist of the set (overlays.fist, the turned one for a slanted weapon) over the weapon
+    const fistOv = setEntry.weapon_front ? (tiltSet ? tiltSet.fist : ov.fist) : null;
+    add(we, null, "weapon", fistOv ? 22 : we.z == null ? 12 : we.z, Math.round(G[0] - we.grip[0]), Math.round(G[1] - we.grip[1]), tiltSet ? -tiltW : 0);
+    if (fistOv) add(fistOv, null, "fist", 23);
     const wt = findEntry(ix, "layer", "weapon_top", `${wi0.art || wi0.id}.${pose}`, body, "front");   // guard + blade over the arm
     if (wt) add(wt, null, "weapon_top", wt.z == null ? 25 : wt.z, Math.round(G[0] - we.grip[0]), Math.round(G[1] - we.grip[1]), tiltSet ? -tiltW : 0);   // addendum 10: the bow string turns with the bow
   } else if (we && hands.fist && we.grip) {

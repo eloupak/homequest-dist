@@ -18,6 +18,8 @@ def _files(item):
     out += [o["file"] for o in (item.get("overlays") or {}).values()]
     for group in (item.get("variants") or {}).values():
         out += list(group.values())
+    # v1.9.2: the bow's tilted fist set (layers/set/*.tilt20.webp) - without it a refit left the old file beside a new manifest
+    out += [t["file"] for t in (item.get("tilt") or {}).values() if isinstance(t, dict) and t.get("file")]
     return out
 
 

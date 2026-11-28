@@ -1981,6 +1981,7 @@
    "id": "cloth_0.angle",
    "key": "layer:set:cloth_0.angle:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 19307
@@ -2060,6 +2061,7 @@
    "id": "cloth_0.angle",
    "key": "layer:set:cloth_0.angle:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 22289
@@ -2139,6 +2141,7 @@
    "id": "cloth_0.raise",
    "key": "layer:set:cloth_0.raise:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 11419
@@ -2218,6 +2221,7 @@
    "id": "cloth_0.raise",
    "key": "layer:set:cloth_0.raise:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 12376
@@ -2297,6 +2301,7 @@
    "id": "cloth_0.swing",
    "key": "layer:set:cloth_0.swing:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 13519
@@ -2376,6 +2381,7 @@
    "id": "cloth_0.swing",
    "key": "layer:set:cloth_0.swing:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 14471
@@ -2455,6 +2461,7 @@
    "id": "cloth_0.vert",
    "key": "layer:set:cloth_0.vert:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 45254
@@ -2543,6 +2550,7 @@
    "id": "cloth_0.vert",
    "key": "layer:set:cloth_0.vert:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 36949
@@ -2753,6 +2761,7 @@
    "id": "heavy_1.angle",
    "key": "layer:set:heavy_1.angle:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 22819
@@ -2832,6 +2841,7 @@
    "id": "heavy_1.angle",
    "key": "layer:set:heavy_1.angle:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 25237
@@ -2911,6 +2921,7 @@
    "id": "heavy_1.raise",
    "key": "layer:set:heavy_1.raise:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 10304
@@ -2990,6 +3001,7 @@
    "id": "heavy_1.raise",
    "key": "layer:set:heavy_1.raise:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 10223
@@ -3069,6 +3081,7 @@
    "id": "heavy_1.swing",
    "key": "layer:set:heavy_1.swing:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 14806
@@ -3148,6 +3161,7 @@
    "id": "heavy_1.swing",
    "key": "layer:set:heavy_1.swing:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 13985
@@ -3227,6 +3241,7 @@
    "id": "heavy_1.vert",
    "key": "layer:set:heavy_1.vert:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 48233
@@ -3315,6 +3330,7 @@
    "id": "heavy_1.vert",
    "key": "layer:set:heavy_1.vert:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 37437
@@ -3525,6 +3541,7 @@
    "id": "heavy_2.angle",
    "key": "layer:set:heavy_2.angle:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 3,
     "rod_px": 16145
@@ -3604,6 +3621,7 @@
    "id": "heavy_2.angle",
    "key": "layer:set:heavy_2.angle:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 2,
     "rod_px": 24520
@@ -3683,6 +3701,7 @@
    "id": "heavy_2.raise",
    "key": "layer:set:heavy_2.raise:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 9303
@@ -3762,6 +3781,7 @@
    "id": "heavy_2.raise",
    "key": "layer:set:heavy_2.raise:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 9682
@@ -3841,6 +3861,7 @@
    "id": "heavy_2.swing",
    "key": "layer:set:heavy_2.swing:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 13826
@@ -3920,6 +3941,7 @@
    "id": "heavy_2.swing",
    "key": "layer:set:heavy_2.swing:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 15870
@@ -3999,6 +4021,7 @@
    "id": "heavy_2.vert",
    "key": "layer:set:heavy_2.vert:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 1,
     "rod_px": 48534
@@ -4087,6 +4110,7 @@
    "id": "heavy_2.vert",
    "key": "layer:set:heavy_2.vert:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 38839
@@ -4297,6 +4321,7 @@
    "id": "heavy_3.angle",
    "key": "layer:set:heavy_3.angle:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 1,
     "rod_px": 18024
@@ -4376,6 +4401,7 @@
    "id": "heavy_3.angle",
    "key": "layer:set:heavy_3.angle:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 24879
@@ -4455,6 +4481,7 @@
    "id": "heavy_3.raise",
    "key": "layer:set:heavy_3.raise:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 8774
@@ -4534,6 +4561,7 @@
    "id": "heavy_3.raise",
    "key": "layer:set:heavy_3.raise:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 10069
@@ -4613,6 +4641,7 @@
    "id": "heavy_3.swing",
    "key": "layer:set:heavy_3.swing:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 13190
@@ -4692,6 +4721,7 @@
    "id": "heavy_3.swing",
    "key": "layer:set:heavy_3.swing:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 14489
@@ -4771,6 +4801,7 @@
    "id": "heavy_3.vert",
    "key": "layer:set:heavy_3.vert:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 47128
@@ -4859,6 +4890,7 @@
    "id": "heavy_3.vert",
    "key": "layer:set:heavy_3.vert:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 1,
     "rod_px": 41286
@@ -5052,6 +5084,7 @@
    "id": "hunter_1.aim0_drawn",
    "key": "layer:set:hunter_1.aim0_drawn:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 47109
@@ -5114,6 +5147,7 @@
    "id": "hunter_1.aim0_drawn",
    "key": "layer:set:hunter_1.aim0_drawn:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 42557
@@ -5176,6 +5210,7 @@
    "id": "hunter_1.aim0_relaxed",
    "key": "layer:set:hunter_1.aim0_relaxed:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 47199
@@ -5238,6 +5273,7 @@
    "id": "hunter_1.aim0_relaxed",
    "key": "layer:set:hunter_1.aim0_relaxed:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 41397
@@ -5300,6 +5336,7 @@
    "id": "hunter_1.aim25_drawn",
    "key": "layer:set:hunter_1.aim25_drawn:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 12654
@@ -5362,6 +5399,7 @@
    "id": "hunter_1.aim25_drawn",
    "key": "layer:set:hunter_1.aim25_drawn:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 7,
     "rod_px": 15376
@@ -5424,6 +5462,7 @@
    "id": "hunter_1.aim25_relaxed",
    "key": "layer:set:hunter_1.aim25_relaxed:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 13744
@@ -5486,6 +5525,7 @@
    "id": "hunter_1.aim25_relaxed",
    "key": "layer:set:hunter_1.aim25_relaxed:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 17127
@@ -5548,6 +5588,7 @@
    "id": "hunter_1.aim50_drawn",
    "key": "layer:set:hunter_1.aim50_drawn:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 11461
@@ -5610,6 +5651,7 @@
    "id": "hunter_1.aim50_drawn",
    "key": "layer:set:hunter_1.aim50_drawn:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 14816
@@ -5672,6 +5714,7 @@
    "id": "hunter_1.aim50_relaxed",
    "key": "layer:set:hunter_1.aim50_relaxed:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 12685
@@ -5734,6 +5777,7 @@
    "id": "hunter_1.aim50_relaxed",
    "key": "layer:set:hunter_1.aim50_relaxed:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 13322
@@ -5813,6 +5857,7 @@
    "id": "hunter_1.angle",
    "key": "layer:set:hunter_1.angle:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 1,
     "rod_px": 20046
@@ -5892,6 +5937,7 @@
    "id": "hunter_1.angle",
    "key": "layer:set:hunter_1.angle:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 24687
@@ -5971,6 +6017,7 @@
    "id": "hunter_1.raise",
    "key": "layer:set:hunter_1.raise:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 11615
@@ -6050,6 +6097,7 @@
    "id": "hunter_1.raise",
    "key": "layer:set:hunter_1.raise:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 12832
@@ -6111,6 +6159,7 @@
    "id": "hunter_1.reach",
    "key": "layer:set:hunter_1.reach:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 44437
@@ -6163,6 +6212,7 @@
    "id": "hunter_1.reach",
    "key": "layer:set:hunter_1.reach:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 40530
@@ -6233,6 +6283,7 @@
    "id": "hunter_1.swing",
    "key": "layer:set:hunter_1.swing:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 14329
@@ -6312,6 +6363,7 @@
    "id": "hunter_1.swing",
    "key": "layer:set:hunter_1.swing:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 15161
@@ -6391,6 +6443,7 @@
    "id": "hunter_1.vert",
    "key": "layer:set:hunter_1.vert:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 7,
     "rod_px": 45580
@@ -6479,6 +6532,7 @@
    "id": "hunter_1.vert",
    "key": "layer:set:hunter_1.vert:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 18,
     "rod_px": 40713
@@ -6567,6 +6621,7 @@
    "id": "light_1.angle",
    "key": "layer:set:light_1.angle:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 21898
@@ -6646,6 +6701,7 @@
    "id": "light_1.angle",
    "key": "layer:set:light_1.angle:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 24213
@@ -6725,6 +6781,7 @@
    "id": "light_1.raise",
    "key": "layer:set:light_1.raise:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 11310
@@ -6804,6 +6861,7 @@
    "id": "light_1.raise",
    "key": "layer:set:light_1.raise:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 11863
@@ -6883,6 +6941,7 @@
    "id": "light_1.swing",
    "key": "layer:set:light_1.swing:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 13779
@@ -6962,6 +7021,7 @@
    "id": "light_1.swing",
    "key": "layer:set:light_1.swing:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 14033
@@ -7041,6 +7101,7 @@
    "id": "light_1.vert",
    "key": "layer:set:light_1.vert:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 40397
@@ -7129,6 +7190,7 @@
    "id": "light_1.vert",
    "key": "layer:set:light_1.vert:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 39496
@@ -7339,6 +7401,7 @@
    "id": "light_2.angle",
    "key": "layer:set:light_2.angle:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 4,
     "rod_px": 17039
@@ -7418,6 +7481,7 @@
    "id": "light_2.angle",
    "key": "layer:set:light_2.angle:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 23666
@@ -7497,6 +7561,7 @@
    "id": "light_2.raise",
    "key": "layer:set:light_2.raise:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 9017
@@ -7576,6 +7641,7 @@
    "id": "light_2.raise",
    "key": "layer:set:light_2.raise:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 11759
@@ -7655,6 +7721,7 @@
    "id": "light_2.swing",
    "key": "layer:set:light_2.swing:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 12517
@@ -7734,6 +7801,7 @@
    "id": "light_2.swing",
    "key": "layer:set:light_2.swing:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 14172
@@ -7813,6 +7881,7 @@
    "id": "light_2.vert",
    "key": "layer:set:light_2.vert:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 49446
@@ -7901,6 +7970,7 @@
    "id": "light_2.vert",
    "key": "layer:set:light_2.vert:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 38177
@@ -8111,6 +8181,7 @@
    "id": "light_3.angle",
    "key": "layer:set:light_3.angle:boy:front",
    "keying": {
+    "cloth_filled": 2480,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 40909
@@ -8190,6 +8261,7 @@
    "id": "light_3.angle",
    "key": "layer:set:light_3.angle:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 24061
@@ -8269,6 +8341,7 @@
    "id": "light_3.raise",
    "key": "layer:set:light_3.raise:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 10820
@@ -8348,6 +8421,7 @@
    "id": "light_3.raise",
    "key": "layer:set:light_3.raise:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 10927
@@ -8427,6 +8501,7 @@
    "id": "light_3.swing",
    "key": "layer:set:light_3.swing:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 16169
@@ -8506,6 +8581,7 @@
    "id": "light_3.swing",
    "key": "layer:set:light_3.swing:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 14511
@@ -8585,6 +8661,7 @@
    "id": "light_3.vert",
    "key": "layer:set:light_3.vert:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 53646
@@ -8673,6 +8750,7 @@
    "id": "light_3.vert",
    "key": "layer:set:light_3.vert:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 39911
@@ -8885,10 +8963,18 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
+    "rod_clean": 114971,
     "rod_px": 18034
    },
    "kind": "layer",
    "overlays": {
+    "fist": {
+     "file": "layers/set/robe_1.angle_boy_front.fist.webp",
+     "h": 64,
+     "w": 60,
+     "x": 294,
+     "y": 416
+    },
     "lhand": {
      "file": "layers/set/robe_1.angle_boy_front.lhand.webp",
      "h": 58,
@@ -8902,6 +8988,7 @@
    "slot": "set",
    "view": "front",
    "w": 440,
+   "weapon_front": true,
    "x": 294,
    "y": 60,
    "z": 20
@@ -8964,10 +9051,18 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
+    "rod_clean": 125473,
     "rod_px": 23585
    },
    "kind": "layer",
    "overlays": {
+    "fist": {
+     "file": "layers/set/robe_1.angle_girl_front.fist.webp",
+     "h": 108,
+     "w": 61,
+     "x": 292,
+     "y": 415
+    },
     "lhand": {
      "file": "layers/set/robe_1.angle_girl_front.lhand.webp",
      "h": 59,
@@ -8981,6 +9076,7 @@
    "slot": "set",
    "view": "front",
    "w": 454,
+   "weapon_front": true,
    "x": 286,
    "y": 60,
    "z": 20
@@ -9041,6 +9137,7 @@
    "id": "robe_1.raise",
    "key": "layer:set:robe_1.raise:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 9561
@@ -9120,6 +9217,7 @@
    "id": "robe_1.raise",
    "key": "layer:set:robe_1.raise:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 10623
@@ -9199,6 +9297,7 @@
    "id": "robe_1.swing",
    "key": "layer:set:robe_1.swing:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 13662
@@ -9278,6 +9377,7 @@
    "id": "robe_1.swing",
    "key": "layer:set:robe_1.swing:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 14715
@@ -9357,6 +9457,7 @@
    "id": "robe_1.vert",
    "key": "layer:set:robe_1.vert:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 47268
@@ -9447,10 +9548,18 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
+    "rod_clean": 204071,
     "rod_px": 40874
    },
    "kind": "layer",
    "overlays": {
+    "fist": {
+     "file": "layers/set/robe_1.vert_girl_front.fist.webp",
+     "h": 91,
+     "w": 65,
+     "x": 282,
+     "y": 347
+    },
     "lhand": {
      "file": "layers/set/robe_1.vert_girl_front.lhand.webp",
      "h": 60,
@@ -9465,6 +9574,13 @@
    "tilt": {
     "20": {
      "file": "layers/set/robe_1.vert_girl_front.tilt20.webp",
+     "fist": {
+      "file": "layers/set/robe_1.vert_girl_front.tilt20.fist.webp",
+      "h": 95,
+      "w": 75,
+      "x": 280,
+      "y": 343
+     },
      "h": 966,
      "w": 445,
      "x": 280,
@@ -9473,6 +9589,7 @@
    },
    "view": "front",
    "w": 443,
+   "weapon_front": true,
    "x": 282,
    "y": 60,
    "z": 20
@@ -9657,10 +9774,18 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
+    "rod_clean": 97601,
     "rod_px": 16970
    },
    "kind": "layer",
    "overlays": {
+    "fist": {
+     "file": "layers/set/robe_2.angle_boy_front.fist.webp",
+     "h": 101,
+     "w": 85,
+     "x": 283,
+     "y": 388
+    },
     "lhand": {
      "file": "layers/set/robe_2.angle_boy_front.lhand.webp",
      "h": 70,
@@ -9674,6 +9799,7 @@
    "slot": "set",
    "view": "front",
    "w": 454,
+   "weapon_front": true,
    "x": 283,
    "y": 60,
    "z": 20
@@ -9735,11 +9861,19 @@
    "key": "layer:set:robe_2.angle:girl:front",
    "keying": {
     "fringe_left": 0,
-    "green_left": 0,
+    "green_left": 1,
+    "rod_clean": 124119,
     "rod_px": 24454
    },
    "kind": "layer",
    "overlays": {
+    "fist": {
+     "file": "layers/set/robe_2.angle_girl_front.fist.webp",
+     "h": 120,
+     "w": 84,
+     "x": 288,
+     "y": 414
+    },
     "lhand": {
      "file": "layers/set/robe_2.angle_girl_front.lhand.webp",
      "h": 69,
@@ -9753,6 +9887,7 @@
    "slot": "set",
    "view": "front",
    "w": 470,
+   "weapon_front": true,
    "x": 279,
    "y": 59,
    "z": 20
@@ -9813,6 +9948,7 @@
    "id": "robe_2.raise",
    "key": "layer:set:robe_2.raise:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 9113
@@ -9892,6 +10028,7 @@
    "id": "robe_2.raise",
    "key": "layer:set:robe_2.raise:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 9826
@@ -9971,6 +10108,7 @@
    "id": "robe_2.swing",
    "key": "layer:set:robe_2.swing:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 13458
@@ -10050,6 +10188,7 @@
    "id": "robe_2.swing",
    "key": "layer:set:robe_2.swing:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 14397
@@ -10129,6 +10268,7 @@
    "id": "robe_2.vert",
    "key": "layer:set:robe_2.vert:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 10,
     "rod_px": 48443
@@ -10219,10 +10359,18 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
+    "rod_clean": 208008,
     "rod_px": 39542
    },
    "kind": "layer",
    "overlays": {
+    "fist": {
+     "file": "layers/set/robe_2.vert_girl_front.fist.webp",
+     "h": 91,
+     "w": 78,
+     "x": 295,
+     "y": 359
+    },
     "lhand": {
      "file": "layers/set/robe_2.vert_girl_front.lhand.webp",
      "h": 59,
@@ -10237,6 +10385,13 @@
    "tilt": {
     "20": {
      "file": "layers/set/robe_2.vert_girl_front.tilt20.webp",
+     "fist": {
+      "file": "layers/set/robe_2.vert_girl_front.tilt20.fist.webp",
+      "h": 96,
+      "w": 90,
+      "x": 293,
+      "y": 354
+     },
      "h": 971,
      "w": 442,
      "x": 293,
@@ -10245,6 +10400,7 @@
    },
    "view": "front",
    "w": 440,
+   "weapon_front": true,
    "x": 295,
    "y": 59,
    "z": 20
@@ -10429,10 +10585,18 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
+    "rod_clean": 141064,
     "rod_px": 22091
    },
    "kind": "layer",
    "overlays": {
+    "fist": {
+     "file": "layers/set/robe_3.angle_boy_front.fist.webp",
+     "h": 85,
+     "w": 65,
+     "x": 280,
+     "y": 395
+    },
     "lhand": {
      "file": "layers/set/robe_3.angle_boy_front.lhand.webp",
      "h": 59,
@@ -10446,6 +10610,7 @@
    "slot": "set",
    "view": "front",
    "w": 446,
+   "weapon_front": true,
    "x": 280,
    "y": 60,
    "z": 20
@@ -10508,10 +10673,18 @@
    "keying": {
     "fringe_left": 0,
     "green_left": 0,
+    "rod_clean": 127544,
     "rod_px": 25034
    },
    "kind": "layer",
    "overlays": {
+    "fist": {
+     "file": "layers/set/robe_3.angle_girl_front.fist.webp",
+     "h": 109,
+     "w": 72,
+     "x": 291,
+     "y": 423
+    },
     "lhand": {
      "file": "layers/set/robe_3.angle_girl_front.lhand.webp",
      "h": 62,
@@ -10525,6 +10698,7 @@
    "slot": "set",
    "view": "front",
    "w": 452,
+   "weapon_front": true,
    "x": 291,
    "y": 59,
    "z": 20
@@ -10585,6 +10759,7 @@
    "id": "robe_3.raise",
    "key": "layer:set:robe_3.raise:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 9219
@@ -10664,6 +10839,7 @@
    "id": "robe_3.raise",
    "key": "layer:set:robe_3.raise:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 9625
@@ -10743,6 +10919,7 @@
    "id": "robe_3.swing",
    "key": "layer:set:robe_3.swing:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 13998
@@ -10822,6 +10999,7 @@
    "id": "robe_3.swing",
    "key": "layer:set:robe_3.swing:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 13428
@@ -10901,6 +11079,7 @@
    "id": "robe_3.vert",
    "key": "layer:set:robe_3.vert:boy:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 2,
     "rod_px": 46755
@@ -10989,6 +11168,7 @@
    "id": "robe_3.vert",
    "key": "layer:set:robe_3.vert:girl:front",
    "keying": {
+    "cloth_filled": 0,
     "fringe_left": 0,
     "green_left": 0,
     "rod_px": 41786
@@ -11448,7 +11628,7 @@
    "two_handed": false,
    "view": "front",
    "w": 429,
-   "x": 192,
+   "x": 191,
    "y": -130,
    "z": 12
   },
@@ -11495,7 +11675,7 @@
    "view": "front",
    "w": 338,
    "x": 72,
-   "y": 379,
+   "y": 378,
    "z": 12
   },
   "layer:weapon:axe_battle.swing:girl:front": {
@@ -11517,8 +11697,8 @@
    "two_handed": false,
    "view": "front",
    "w": 345,
-   "x": 70,
-   "y": 369,
+   "x": 71,
+   "y": 368,
    "z": 12
   },
   "layer:weapon:axe_battle:boy:front": {
@@ -11616,7 +11796,7 @@
     222.0
    ],
    "h": 301,
-   "handle_ratio": 1.79,
+   "handle_ratio": 1.78,
    "id": "axe_hand.raise",
    "key": "layer:weapon:axe_hand.raise:boy:front",
    "kind": "layer",
@@ -11673,7 +11853,7 @@
    "view": "front",
    "w": 315,
    "x": 102,
-   "y": 396,
+   "y": 395,
    "z": 12
   },
   "layer:weapon:axe_hand.swing:girl:front": {
@@ -11681,7 +11861,7 @@
    "cylinder": true,
    "file": "layers/weapon/axe_hand.swing_girl_front.webp",
    "grip": [
-    237.7,
+    237.6,
     141.4
    ],
    "h": 417,
@@ -11695,8 +11875,8 @@
    "two_handed": false,
    "view": "front",
    "w": 321,
-   "x": 101,
-   "y": 387,
+   "x": 102,
+   "y": 386,
    "z": 12
   },
   "layer:weapon:axe_hand:boy:front": {
@@ -11832,8 +12012,8 @@
    "cylinder": true,
    "file": "layers/weapon/dagger_iron.angle_boy_front.webp",
    "grip": [
-    69.7,
-    169.9
+    73.3,
+    186.5
    ],
    "h": 233,
    "handle_ratio": 1.27,
@@ -11846,8 +12026,8 @@
    "two_handed": false,
    "view": "front",
    "w": 117,
-   "x": 233,
-   "y": 277,
+   "x": 229,
+   "y": 260,
    "z": 12
   },
   "layer:weapon:dagger_iron.angle:girl:front": {
@@ -11855,8 +12035,8 @@
    "cylinder": true,
    "file": "layers/weapon/dagger_iron.angle_girl_front.webp",
    "grip": [
-    79.4,
-    171.6
+    82.5,
+    182.8
    ],
    "h": 236,
    "handle_ratio": 0.93,
@@ -11869,8 +12049,8 @@
    "two_handed": false,
    "view": "front",
    "w": 130,
-   "x": 240,
-   "y": 301,
+   "x": 237,
+   "y": 290,
    "z": 12
   },
   "layer:weapon:dagger_iron.raise:boy:front": {
@@ -11878,11 +12058,11 @@
    "cylinder": true,
    "file": "layers/weapon/dagger_iron.raise_boy_front.webp",
    "grip": [
-    65.8,
-    106.7
+    51.5,
+    114.0
    ],
    "h": 165,
-   "handle_ratio": 1.11,
+   "handle_ratio": 1.1,
    "id": "dagger_iron.raise",
    "key": "layer:weapon:dagger_iron.raise:boy:front",
    "kind": "layer",
@@ -11892,8 +12072,8 @@
    "two_handed": false,
    "view": "front",
    "w": 230,
-   "x": 279,
-   "y": 16,
+   "x": 293,
+   "y": 9,
    "z": 12
   },
   "layer:weapon:dagger_iron.raise:girl:front": {
@@ -11901,8 +12081,8 @@
    "cylinder": true,
    "file": "layers/weapon/dagger_iron.raise_girl_front.webp",
    "grip": [
-    66.0,
-    108.6
+    52.7,
+    115.5
    ],
    "h": 167,
    "handle_ratio": 1.04,
@@ -11915,8 +12095,8 @@
    "two_handed": false,
    "view": "front",
    "w": 233,
-   "x": 282,
-   "y": 9,
+   "x": 295,
+   "y": 2,
    "z": 12
   },
   "layer:weapon:dagger_iron.swing:boy:front": {
@@ -11924,8 +12104,8 @@
    "cylinder": true,
    "file": "layers/weapon/dagger_iron.swing_boy_front.webp",
    "grip": [
-    113.6,
-    66.5
+    116.8,
+    60.9
    ],
    "h": 228,
    "handle_ratio": 1.01,
@@ -11938,8 +12118,8 @@
    "two_handed": false,
    "view": "front",
    "w": 172,
-   "x": 221,
-   "y": 469,
+   "x": 218,
+   "y": 474,
    "z": 12
   },
   "layer:weapon:dagger_iron.swing:girl:front": {
@@ -11947,8 +12127,8 @@
    "cylinder": true,
    "file": "layers/weapon/dagger_iron.swing_girl_front.webp",
    "grip": [
-    116.3,
-    66.8
+    117.3,
+    64.9
    ],
    "h": 230,
    "handle_ratio": 0.96,
@@ -11961,8 +12141,8 @@
    "two_handed": false,
    "view": "front",
    "w": 176,
-   "x": 223,
-   "y": 461,
+   "x": 222,
+   "y": 462,
    "z": 12
   },
   "layer:weapon:dagger_iron:boy:front": {
@@ -12010,8 +12190,8 @@
    "cylinder": true,
    "file": "layers/weapon/dagger_silver.angle_boy_front.webp",
    "grip": [
-    70.7,
-    170.1
+    74.1,
+    185.8
    ],
    "h": 233,
    "handle_ratio": 1.33,
@@ -12024,8 +12204,8 @@
    "two_handed": false,
    "view": "front",
    "w": 119,
-   "x": 232,
-   "y": 277,
+   "x": 228,
+   "y": 261,
    "z": 12
   },
   "layer:weapon:dagger_silver.angle:girl:front": {
@@ -12033,8 +12213,8 @@
    "cylinder": true,
    "file": "layers/weapon/dagger_silver.angle_girl_front.webp",
    "grip": [
-    80.1,
-    170.9
+    82.9,
+    181.1
    ],
    "h": 236,
    "handle_ratio": 0.98,
@@ -12047,8 +12227,8 @@
    "two_handed": false,
    "view": "front",
    "w": 132,
-   "x": 240,
-   "y": 302,
+   "x": 237,
+   "y": 292,
    "z": 12
   },
   "layer:weapon:dagger_silver.raise:boy:front": {
@@ -12056,11 +12236,11 @@
    "cylinder": true,
    "file": "layers/weapon/dagger_silver.raise_boy_front.webp",
    "grip": [
-    66.2,
-    107.6
+    52.9,
+    114.4
    ],
    "h": 167,
-   "handle_ratio": 1.16,
+   "handle_ratio": 1.15,
    "id": "dagger_silver.raise",
    "key": "layer:weapon:dagger_silver.raise:boy:front",
    "kind": "layer",
@@ -12070,8 +12250,8 @@
    "two_handed": false,
    "view": "front",
    "w": 231,
-   "x": 279,
-   "y": 15,
+   "x": 291,
+   "y": 8,
    "z": 12
   },
   "layer:weapon:dagger_silver.raise:girl:front": {
@@ -12079,8 +12259,8 @@
    "cylinder": true,
    "file": "layers/weapon/dagger_silver.raise_girl_front.webp",
    "grip": [
-    67.4,
-    109.0
+    54.9,
+    115.4
    ],
    "h": 169,
    "handle_ratio": 1.09,
@@ -12093,8 +12273,8 @@
    "two_handed": false,
    "view": "front",
    "w": 233,
-   "x": 281,
-   "y": 9,
+   "x": 293,
+   "y": 2,
    "z": 12
   },
   "layer:weapon:dagger_silver.swing:boy:front": {
@@ -12102,8 +12282,8 @@
    "cylinder": true,
    "file": "layers/weapon/dagger_silver.swing_boy_front.webp",
    "grip": [
-    114.5,
-    67.0
+    117.2,
+    62.2
    ],
    "h": 229,
    "handle_ratio": 1.06,
@@ -12116,8 +12296,8 @@
    "two_handed": false,
    "view": "front",
    "w": 174,
-   "x": 220,
-   "y": 469,
+   "x": 218,
+   "y": 473,
    "z": 12
   },
   "layer:weapon:dagger_silver.swing:girl:front": {
@@ -12125,8 +12305,8 @@
    "cylinder": true,
    "file": "layers/weapon/dagger_silver.swing_girl_front.webp",
    "grip": [
-    116.7,
-    68.1
+    117.2,
+    67.1
    ],
    "h": 231,
    "handle_ratio": 1.01,
@@ -12192,7 +12372,7 @@
     217.0
    ],
    "h": 479,
-   "handle_ratio": 1.74,
+   "handle_ratio": 1.73,
    "id": "staff_crystal.raise",
    "key": "layer:weapon:staff_crystal.raise:boy:front",
    "kind": "layer",
@@ -12202,7 +12382,7 @@
    "two_handed": true,
    "view": "front",
    "w": 799,
-   "x": -91,
+   "x": -92,
    "y": -94,
    "z": 12
   },
@@ -12248,8 +12428,8 @@
    "two_handed": true,
    "view": "front",
    "w": 511,
-   "x": 98,
-   "y": 105,
+   "x": 99,
+   "y": 104,
    "z": 12
   },
   "layer:weapon:staff_crystal.swing:girl:front": {
@@ -12257,8 +12437,8 @@
    "cylinder": true,
    "file": "layers/weapon/staff_crystal.swing_girl_front.webp",
    "grip": [
-    242.6,
-    433.4
+    242.5,
+    433.5
    ],
    "h": 791,
    "handle_ratio": 1.56,
@@ -12271,8 +12451,8 @@
    "two_handed": true,
    "view": "front",
    "w": 523,
-   "x": 96,
-   "y": 95,
+   "x": 97,
+   "y": 94,
    "z": 12
   },
   "layer:weapon:staff_crystal.vert:boy:front": {
@@ -12370,7 +12550,7 @@
     248.6
    ],
    "h": 546,
-   "handle_ratio": 1.32,
+   "handle_ratio": 1.31,
    "id": "staff_moon.raise",
    "key": "layer:weapon:staff_moon.raise:boy:front",
    "kind": "layer",
@@ -12380,7 +12560,7 @@
    "two_handed": true,
    "view": "front",
    "w": 834,
-   "x": -107,
+   "x": -108,
    "y": -126,
    "z": 12
   },
@@ -12427,7 +12607,7 @@
    "view": "front",
    "w": 577,
    "x": 63,
-   "y": 85,
+   "y": 84,
    "z": 12
   },
   "layer:weapon:staff_moon.swing:girl:front": {
@@ -12435,8 +12615,8 @@
    "cylinder": true,
    "file": "layers/weapon/staff_moon.swing_girl_front.webp",
    "grip": [
-    278.0,
-    454.1
+    277.9,
+    454.2
    ],
    "h": 830,
    "handle_ratio": 1.19,
@@ -12449,8 +12629,8 @@
    "two_handed": true,
    "view": "front",
    "w": 590,
-   "x": 61,
-   "y": 74,
+   "x": 62,
+   "y": 73,
    "z": 12
   },
   "layer:weapon:staff_moon.vert:boy:front": {
@@ -12548,7 +12728,7 @@
     227.2
    ],
    "h": 502,
-   "handle_ratio": 1.79,
+   "handle_ratio": 1.78,
    "id": "staff_wizard.raise",
    "key": "layer:weapon:staff_wizard.raise:boy:front",
    "kind": "layer",
@@ -12558,8 +12738,8 @@
    "two_handed": true,
    "view": "front",
    "w": 811,
-   "x": -96,
-   "y": -104,
+   "x": -97,
+   "y": -105,
    "z": 12
   },
   "layer:weapon:staff_wizard.raise:girl:front": {
@@ -12604,8 +12784,8 @@
    "two_handed": true,
    "view": "front",
    "w": 533,
-   "x": 85,
-   "y": 98,
+   "x": 86,
+   "y": 97,
    "z": 12
   },
   "layer:weapon:staff_wizard.swing:girl:front": {
@@ -12613,8 +12793,8 @@
    "cylinder": true,
    "file": "layers/weapon/staff_wizard.swing_girl_front.webp",
    "grip": [
-    255.1,
-    440.7
+    255.0,
+    440.8
    ],
    "h": 805,
    "handle_ratio": 1.61,
@@ -12626,9 +12806,9 @@
    "slot": "weapon",
    "two_handed": true,
    "view": "front",
-   "w": 547,
-   "x": 84,
-   "y": 87,
+   "w": 546,
+   "x": 85,
+   "y": 86,
    "z": 12
   },
   "layer:weapon:staff_wizard.vert:boy:front": {
@@ -12726,7 +12906,7 @@
     223.2
    ],
    "h": 478,
-   "handle_ratio": 1.53,
+   "handle_ratio": 1.52,
    "id": "staff_wooden.raise",
    "key": "layer:weapon:staff_wooden.raise:boy:front",
    "kind": "layer",
@@ -12736,8 +12916,8 @@
    "two_handed": true,
    "view": "front",
    "w": 799,
-   "x": -94,
-   "y": -100,
+   "x": -95,
+   "y": -101,
    "z": 12
   },
   "layer:weapon:staff_wooden.raise:girl:front": {
@@ -12782,8 +12962,8 @@
    "two_handed": true,
    "view": "front",
    "w": 510,
-   "x": 105,
-   "y": 109,
+   "x": 106,
+   "y": 108,
    "z": 12
   },
   "layer:weapon:staff_wooden.swing:girl:front": {
@@ -12791,10 +12971,10 @@
    "cylinder": true,
    "file": "layers/weapon/staff_wooden.swing_girl_front.webp",
    "grip": [
-    236.1,
-    429.6
+    236.0,
+    429.7
    ],
-   "h": 790,
+   "h": 791,
    "handle_ratio": 1.33,
    "id": "staff_wooden.swing",
    "key": "layer:weapon:staff_wooden.swing:girl:front",
@@ -12804,8 +12984,8 @@
    "slot": "weapon",
    "two_handed": true,
    "view": "front",
-   "w": 523,
-   "x": 103,
+   "w": 522,
+   "x": 104,
    "y": 98,
    "z": 12
   },
@@ -12960,7 +13140,7 @@
    "two_handed": false,
    "view": "front",
    "w": 417,
-   "x": 223,
+   "x": 222,
    "y": -71,
    "z": 12
   },
@@ -13006,8 +13186,8 @@
    "two_handed": false,
    "view": "front",
    "w": 315,
-   "x": 129,
-   "y": 413,
+   "x": 130,
+   "y": 412,
    "z": 12
   },
   "layer:weapon:sword_golden.swing:girl:front": {
@@ -13015,7 +13195,7 @@
    "cylinder": true,
    "file": "layers/weapon/sword_golden.swing_girl_front.webp",
    "grip": [
-    210.1,
+    210.0,
     124.1
    ],
    "h": 418,
@@ -13030,7 +13210,7 @@
    "view": "front",
    "w": 322,
    "x": 129,
-   "y": 404,
+   "y": 403,
    "z": 12
   },
   "layer:weapon:sword_golden:boy:front": {
@@ -13128,7 +13308,7 @@
     194.5
    ],
    "h": 292,
-   "handle_ratio": 1.32,
+   "handle_ratio": 1.31,
    "id": "sword_iron.raise",
    "key": "layer:weapon:sword_iron.raise:boy:front",
    "kind": "layer",
@@ -13138,7 +13318,7 @@
    "two_handed": false,
    "view": "front",
    "w": 412,
-   "x": 235,
+   "x": 234,
    "y": -72,
    "z": 12
   },
@@ -13184,8 +13364,8 @@
    "two_handed": false,
    "view": "front",
    "w": 306,
-   "x": 128,
-   "y": 425,
+   "x": 129,
+   "y": 424,
    "z": 12
   },
   "layer:weapon:sword_iron.swing:girl:front": {
@@ -13208,7 +13388,7 @@
    "view": "front",
    "w": 312,
    "x": 128,
-   "y": 416,
+   "y": 415,
    "z": 12
   },
   "layer:weapon:sword_iron:boy:front": {
@@ -13306,7 +13486,7 @@
     196.3
    ],
    "h": 293,
-   "handle_ratio": 1.21,
+   "handle_ratio": 1.2,
    "id": "sword_steel.raise",
    "key": "layer:weapon:sword_steel.raise:boy:front",
    "kind": "layer",
@@ -13317,7 +13497,7 @@
    "view": "front",
    "w": 413,
    "x": 237,
-   "y": -73,
+   "y": -74,
    "z": 12
   },
   "layer:weapon:sword_steel.raise:girl:front": {
@@ -13362,8 +13542,8 @@
    "two_handed": false,
    "view": "front",
    "w": 307,
-   "x": 126,
-   "y": 427,
+   "x": 127,
+   "y": 426,
    "z": 12
   },
   "layer:weapon:sword_steel.swing:girl:front": {
@@ -13371,7 +13551,7 @@
    "cylinder": true,
    "file": "layers/weapon/sword_steel.swing_girl_front.webp",
    "grip": [
-    213.7,
+    213.6,
     110.0
    ],
    "h": 413,
@@ -13385,8 +13565,8 @@
    "two_handed": false,
    "view": "front",
    "w": 314,
-   "x": 125,
-   "y": 418,
+   "x": 126,
+   "y": 417,
    "z": 12
   },
   "layer:weapon:sword_steel:boy:front": {
@@ -13484,7 +13664,7 @@
     196.3
    ],
    "h": 296,
-   "handle_ratio": 1.63,
+   "handle_ratio": 1.62,
    "id": "sword_wooden.raise",
    "key": "layer:weapon:sword_wooden.raise:boy:front",
    "kind": "layer",
@@ -13495,7 +13675,7 @@
    "view": "front",
    "w": 414,
    "x": 236,
-   "y": -73,
+   "y": -74,
    "z": 12
   },
   "layer:weapon:sword_wooden.raise:girl:front": {
@@ -13541,7 +13721,7 @@
    "view": "front",
    "w": 310,
    "x": 125,
-   "y": 425,
+   "y": 424,
    "z": 12
   },
   "layer:weapon:sword_wooden.swing:girl:front": {
@@ -13563,8 +13743,8 @@
    "two_handed": false,
    "view": "front",
    "w": 316,
-   "x": 124,
-   "y": 416,
+   "x": 125,
+   "y": 415,
    "z": 12
   },
   "layer:weapon:sword_wooden:boy:front": {
@@ -13616,7 +13796,7 @@
     83.4
    ],
    "h": 126,
-   "handle_ratio": 0.74,
+   "handle_ratio": 0.73,
    "id": "wand_crystal.raise",
    "key": "layer:weapon:wand_crystal.raise:boy:front",
    "kind": "layer",
@@ -13626,7 +13806,7 @@
    "two_handed": false,
    "view": "front",
    "w": 211,
-   "x": 279,
+   "x": 278,
    "y": 39,
    "z": 12
   },
@@ -13672,8 +13852,8 @@
    "two_handed": false,
    "view": "front",
    "w": 135,
-   "x": 246,
-   "y": 471,
+   "x": 247,
+   "y": 470,
    "z": 12
   },
   "layer:weapon:wand_crystal.swing:girl:front": {
@@ -13681,7 +13861,7 @@
    "cylinder": true,
    "file": "layers/weapon/wand_crystal.swing_girl_front.webp",
    "grip": [
-    90.9,
+    90.8,
     64.7
    ],
    "h": 208,
@@ -13695,7 +13875,7 @@
    "two_handed": false,
    "view": "front",
    "w": 138,
-   "x": 248,
+   "x": 249,
    "y": 463,
    "z": 12
   },
@@ -13804,8 +13984,8 @@
    "two_handed": false,
    "view": "front",
    "w": 217,
-   "x": 276,
-   "y": 34,
+   "x": 275,
+   "y": 33,
    "z": 12
   },
   "layer:weapon:wand_fire.raise:girl:front": {
@@ -13851,7 +14031,7 @@
    "view": "front",
    "w": 147,
    "x": 240,
-   "y": 467,
+   "y": 466,
    "z": 12
   },
   "layer:weapon:wand_fire.swing:girl:front": {
@@ -13859,7 +14039,7 @@
    "cylinder": true,
    "file": "layers/weapon/wand_fire.swing_girl_front.webp",
    "grip": [
-    97.4,
+    97.3,
     68.4
    ],
    "h": 216,
@@ -13874,7 +14054,7 @@
    "view": "front",
    "w": 151,
    "x": 242,
-   "y": 460,
+   "y": 459,
    "z": 12
   },
   "layer:weapon:wand_fire.vert:boy:front": {
@@ -13972,7 +14152,7 @@
     90.1
    ],
    "h": 140,
-   "handle_ratio": 0.53,
+   "handle_ratio": 0.52,
    "id": "wand_star.raise",
    "key": "layer:weapon:wand_star.raise:boy:front",
    "kind": "layer",
@@ -14029,7 +14209,7 @@
    "view": "front",
    "w": 148,
    "x": 240,
-   "y": 467,
+   "y": 466,
    "z": 12
   },
   "layer:weapon:wand_star.swing:girl:front": {
@@ -14050,8 +14230,8 @@
    "slot": "weapon",
    "two_handed": false,
    "view": "front",
-   "w": 152,
-   "x": 241,
+   "w": 151,
+   "x": 242,
    "y": 459,
    "z": 12
   },
@@ -14194,8 +14374,8 @@
    "cylinder": true,
    "file": "layers/weapon_top/dagger_iron.angle_boy_front.webp",
    "grip": [
-    69.7,
-    169.9
+    73.3,
+    186.5
    ],
    "h": 233,
    "handle_ratio": 1.27,
@@ -14208,8 +14388,8 @@
    "two_handed": false,
    "view": "front",
    "w": 117,
-   "x": 233,
-   "y": 277,
+   "x": 229,
+   "y": 260,
    "z": 25
   },
   "layer:weapon_top:dagger_iron.angle:girl:front": {
@@ -14217,8 +14397,8 @@
    "cylinder": true,
    "file": "layers/weapon_top/dagger_iron.angle_girl_front.webp",
    "grip": [
-    79.4,
-    171.6
+    82.5,
+    182.8
    ],
    "h": 236,
    "handle_ratio": 0.93,
@@ -14231,8 +14411,8 @@
    "two_handed": false,
    "view": "front",
    "w": 130,
-   "x": 240,
-   "y": 301,
+   "x": 237,
+   "y": 290,
    "z": 25
   },
   "layer:weapon_top:dagger_iron.raise:boy:front": {
@@ -14240,11 +14420,11 @@
    "cylinder": true,
    "file": "layers/weapon_top/dagger_iron.raise_boy_front.webp",
    "grip": [
-    65.8,
-    106.7
+    51.5,
+    114.0
    ],
    "h": 165,
-   "handle_ratio": 1.11,
+   "handle_ratio": 1.1,
    "id": "dagger_iron.raise",
    "key": "layer:weapon_top:dagger_iron.raise:boy:front",
    "kind": "layer",
@@ -14254,8 +14434,8 @@
    "two_handed": false,
    "view": "front",
    "w": 230,
-   "x": 279,
-   "y": 16,
+   "x": 293,
+   "y": 9,
    "z": 25
   },
   "layer:weapon_top:dagger_iron.raise:girl:front": {
@@ -14263,8 +14443,8 @@
    "cylinder": true,
    "file": "layers/weapon_top/dagger_iron.raise_girl_front.webp",
    "grip": [
-    66.0,
-    108.6
+    52.7,
+    115.5
    ],
    "h": 167,
    "handle_ratio": 1.04,
@@ -14277,8 +14457,8 @@
    "two_handed": false,
    "view": "front",
    "w": 233,
-   "x": 282,
-   "y": 9,
+   "x": 295,
+   "y": 2,
    "z": 25
   },
   "layer:weapon_top:dagger_iron.swing:boy:front": {
@@ -14286,8 +14466,8 @@
    "cylinder": true,
    "file": "layers/weapon_top/dagger_iron.swing_boy_front.webp",
    "grip": [
-    113.6,
-    66.5
+    116.8,
+    60.9
    ],
    "h": 228,
    "handle_ratio": 1.01,
@@ -14300,8 +14480,8 @@
    "two_handed": false,
    "view": "front",
    "w": 172,
-   "x": 221,
-   "y": 469,
+   "x": 218,
+   "y": 474,
    "z": 25
   },
   "layer:weapon_top:dagger_iron.swing:girl:front": {
@@ -14309,8 +14489,8 @@
    "cylinder": true,
    "file": "layers/weapon_top/dagger_iron.swing_girl_front.webp",
    "grip": [
-    116.3,
-    66.8
+    117.3,
+    64.9
    ],
    "h": 230,
    "handle_ratio": 0.96,
@@ -14323,8 +14503,8 @@
    "two_handed": false,
    "view": "front",
    "w": 176,
-   "x": 223,
-   "y": 461,
+   "x": 222,
+   "y": 462,
    "z": 25
   },
   "layer:weapon_top:dagger_silver.angle:boy:front": {
@@ -14332,8 +14512,8 @@
    "cylinder": true,
    "file": "layers/weapon_top/dagger_silver.angle_boy_front.webp",
    "grip": [
-    70.7,
-    170.1
+    74.1,
+    185.8
    ],
    "h": 233,
    "handle_ratio": 1.33,
@@ -14346,8 +14526,8 @@
    "two_handed": false,
    "view": "front",
    "w": 119,
-   "x": 232,
-   "y": 277,
+   "x": 228,
+   "y": 261,
    "z": 25
   },
   "layer:weapon_top:dagger_silver.angle:girl:front": {
@@ -14355,8 +14535,8 @@
    "cylinder": true,
    "file": "layers/weapon_top/dagger_silver.angle_girl_front.webp",
    "grip": [
-    80.1,
-    170.9
+    82.9,
+    181.1
    ],
    "h": 236,
    "handle_ratio": 0.98,
@@ -14369,8 +14549,8 @@
    "two_handed": false,
    "view": "front",
    "w": 132,
-   "x": 240,
-   "y": 302,
+   "x": 237,
+   "y": 292,
    "z": 25
   },
   "layer:weapon_top:dagger_silver.raise:boy:front": {
@@ -14378,11 +14558,11 @@
    "cylinder": true,
    "file": "layers/weapon_top/dagger_silver.raise_boy_front.webp",
    "grip": [
-    66.2,
-    107.6
+    52.9,
+    114.4
    ],
    "h": 167,
-   "handle_ratio": 1.16,
+   "handle_ratio": 1.15,
    "id": "dagger_silver.raise",
    "key": "layer:weapon_top:dagger_silver.raise:boy:front",
    "kind": "layer",
@@ -14392,8 +14572,8 @@
    "two_handed": false,
    "view": "front",
    "w": 231,
-   "x": 279,
-   "y": 15,
+   "x": 291,
+   "y": 8,
    "z": 25
   },
   "layer:weapon_top:dagger_silver.raise:girl:front": {
@@ -14401,8 +14581,8 @@
    "cylinder": true,
    "file": "layers/weapon_top/dagger_silver.raise_girl_front.webp",
    "grip": [
-    67.4,
-    109.0
+    54.9,
+    115.4
    ],
    "h": 169,
    "handle_ratio": 1.09,
@@ -14415,8 +14595,8 @@
    "two_handed": false,
    "view": "front",
    "w": 233,
-   "x": 281,
-   "y": 9,
+   "x": 293,
+   "y": 2,
    "z": 25
   },
   "layer:weapon_top:dagger_silver.swing:boy:front": {
@@ -14424,8 +14604,8 @@
    "cylinder": true,
    "file": "layers/weapon_top/dagger_silver.swing_boy_front.webp",
    "grip": [
-    114.5,
-    67.0
+    117.2,
+    62.2
    ],
    "h": 229,
    "handle_ratio": 1.06,
@@ -14438,8 +14618,8 @@
    "two_handed": false,
    "view": "front",
    "w": 174,
-   "x": 220,
-   "y": 469,
+   "x": 218,
+   "y": 473,
    "z": 25
   },
   "layer:weapon_top:dagger_silver.swing:girl:front": {
@@ -14447,8 +14627,8 @@
    "cylinder": true,
    "file": "layers/weapon_top/dagger_silver.swing_girl_front.webp",
    "grip": [
-    116.7,
-    68.1
+    117.2,
+    67.1
    ],
    "h": 231,
    "handle_ratio": 1.01,
@@ -14530,7 +14710,7 @@
    "two_handed": false,
    "view": "front",
    "w": 417,
-   "x": 223,
+   "x": 222,
    "y": -71,
    "z": 25
   },
@@ -14576,8 +14756,8 @@
    "two_handed": false,
    "view": "front",
    "w": 315,
-   "x": 129,
-   "y": 413,
+   "x": 130,
+   "y": 412,
    "z": 25
   },
   "layer:weapon_top:sword_golden.swing:girl:front": {
@@ -14585,7 +14765,7 @@
    "cylinder": true,
    "file": "layers/weapon_top/sword_golden.swing_girl_front.webp",
    "grip": [
-    210.1,
+    210.0,
     124.1
    ],
    "h": 418,
@@ -14600,7 +14780,7 @@
    "view": "front",
    "w": 322,
    "x": 129,
-   "y": 404,
+   "y": 403,
    "z": 25
   },
   "layer:weapon_top:sword_iron.angle:boy:front": {
@@ -14658,7 +14838,7 @@
     194.5
    ],
    "h": 292,
-   "handle_ratio": 1.32,
+   "handle_ratio": 1.31,
    "id": "sword_iron.raise",
    "key": "layer:weapon_top:sword_iron.raise:boy:front",
    "kind": "layer",
@@ -14668,7 +14848,7 @@
    "two_handed": false,
    "view": "front",
    "w": 412,
-   "x": 235,
+   "x": 234,
    "y": -72,
    "z": 25
   },
@@ -14714,8 +14894,8 @@
    "two_handed": false,
    "view": "front",
    "w": 306,
-   "x": 128,
-   "y": 425,
+   "x": 129,
+   "y": 424,
    "z": 25
   },
   "layer:weapon_top:sword_iron.swing:girl:front": {
@@ -14738,7 +14918,7 @@
    "view": "front",
    "w": 312,
    "x": 128,
-   "y": 416,
+   "y": 415,
    "z": 25
   },
   "layer:weapon_top:sword_steel.angle:boy:front": {
@@ -14796,7 +14976,7 @@
     196.3
    ],
    "h": 293,
-   "handle_ratio": 1.21,
+   "handle_ratio": 1.2,
    "id": "sword_steel.raise",
    "key": "layer:weapon_top:sword_steel.raise:boy:front",
    "kind": "layer",
@@ -14807,7 +14987,7 @@
    "view": "front",
    "w": 413,
    "x": 237,
-   "y": -73,
+   "y": -74,
    "z": 25
   },
   "layer:weapon_top:sword_steel.raise:girl:front": {
@@ -14852,8 +15032,8 @@
    "two_handed": false,
    "view": "front",
    "w": 307,
-   "x": 126,
-   "y": 427,
+   "x": 127,
+   "y": 426,
    "z": 25
   },
   "layer:weapon_top:sword_steel.swing:girl:front": {
@@ -14861,7 +15041,7 @@
    "cylinder": true,
    "file": "layers/weapon_top/sword_steel.swing_girl_front.webp",
    "grip": [
-    213.7,
+    213.6,
     110.0
    ],
    "h": 413,
@@ -14875,8 +15055,8 @@
    "two_handed": false,
    "view": "front",
    "w": 314,
-   "x": 125,
-   "y": 418,
+   "x": 126,
+   "y": 417,
    "z": 25
   },
   "layer:weapon_top:sword_wooden.angle:boy:front": {
@@ -14934,7 +15114,7 @@
     196.3
    ],
    "h": 296,
-   "handle_ratio": 1.63,
+   "handle_ratio": 1.62,
    "id": "sword_wooden.raise",
    "key": "layer:weapon_top:sword_wooden.raise:boy:front",
    "kind": "layer",
@@ -14945,7 +15125,7 @@
    "view": "front",
    "w": 414,
    "x": 236,
-   "y": -73,
+   "y": -74,
    "z": 25
   },
   "layer:weapon_top:sword_wooden.raise:girl:front": {
@@ -14991,7 +15171,7 @@
    "view": "front",
    "w": 310,
    "x": 125,
-   "y": 425,
+   "y": 424,
    "z": 25
   },
   "layer:weapon_top:sword_wooden.swing:girl:front": {
@@ -15013,8 +15193,8 @@
    "two_handed": false,
    "view": "front",
    "w": 316,
-   "x": 124,
-   "y": 416,
+   "x": 125,
+   "y": 415,
    "z": 25
   },
   "sprite::goblin_armored_hit:*:-": {
@@ -15843,6 +16023,6 @@
    "taupe": "#B68B6C"
   }
  },
- "updated": 1795627973,
+ "updated": 1795828257,
  "version": 1
 }
